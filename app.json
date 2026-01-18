@@ -1,48 +1,84 @@
 {
-  "expo": {
-    "name": "onefolio",
-    "slug": "onefolio",
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
-    "scheme": "onefolio",
-    "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
-    "ios": {
-      "supportsTablet": true
-    },
-    "android": {
-      "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/images/android-icon-foreground.png",
-        "backgroundImage": "./assets/images/android-icon-background.png",
-        "monochromeImage": "./assets/images/android-icon-monochrome.png"
-      },
-      "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
-    },
-    "web": {
-      "output": "static",
-      "favicon": "./assets/images/favicon.png"
-    },
-    "plugins": [
-      "expo-router",
-      [
-        "expo-splash-screen",
-        {
-          "image": "./assets/images/splash-icon.png",
-          "imageWidth": 200,
-          "resizeMode": "contain",
-          "backgroundColor": "#ffffff",
-          "dark": {
-            "backgroundColor": "#000000"
-          }
-        }
-      ]
-    ],
-    "experiments": {
-      "typedRoutes": true,
-      "reactCompiler": true
+    "expo": {
+        "name": "Onefolio",
+        "slug": "onefolio",
+        "version": "1.0",
+        "orientation": "portrait",
+        "icon": "./assets/images/icon.png",
+        "scheme": "onefolio",
+        "userInterfaceStyle": "automatic",
+        "newArchEnabled": true,
+        "ios": {
+            "supportsTablet": true,
+            "bundleIdentifier": "com.onefolio",
+            "usesAppleSignIn": true,
+            "appleTeamId": "TTNJQVH4P3",
+            "infoPlist": {
+                "GIDClientID": "772253634590-f9oe48o7uded4a1ui5s3701hmr0q8cjn.apps.googleusercontent.com",
+                "ITSAppUsesNonExemptEncryption": false
+            }
+        },
+        "android": {
+            "adaptiveIcon": {
+                "backgroundColor": "#E6F4FE",
+                "foregroundImage": "./assets/images/android-icon-foreground.png",
+                "backgroundImage": "./assets/images/android-icon-background.png",
+                "monochromeImage": "./assets/images/android-icon-monochrome.png"
+            },
+            "edgeToEdgeEnabled": true,
+            "predictiveBackGestureEnabled": false
+        },
+        "web": {
+            "bundler": "metro",
+            "output": "static",
+            "favicon": "./assets/images/favicon.png"
+        },
+        "plugins": [
+            "expo-router", [
+                "expo-splash-screen",
+                {
+                    "image": "./assets/images/splash-icon.png",
+                    "imageWidth": 200,
+                    "resizeMode": "contain",
+                    "backgroundColor": "#ffffff",
+                    "dark": {
+                        "backgroundColor": "#000000"
+                    }
+                }
+            ],
+            [
+                "expo-apple-authentication"
+            ],
+            ["expo-font",
+                {
+                    "fonts": [
+                        "./assets/fonts/Lausanne-300.otf",
+                        "./assets/fonts/Lausanne-400.otf",
+                        "./assets/fonts/Lausanne-500.otf",
+                        "./assets/fonts/Lausanne-600.otf",
+                        "./assets/fonts/Lausanne-700.otf",
+                        "./assets/fonts/Lausanne-800.otf"
+                    ]
+                }
+            ],
+            [
+                "@react-native-google-signin/google-signin",
+                {
+                    "iosUrlScheme": "com.googleusercontent.apps.772253634590-f9oe48o7uded4a1ui5s3701hmr0q8cjn"
+                }
+            ],
+            "expo-localization"
+        ],
+        "experiments": {
+            "typedRoutes": true,
+            "reactCompiler": true
+        },
+        "extra": {
+            "router": {},
+            "eas": {
+                "projectId": "00fd6b65-6519-4194-a964-0a371b916d87"
+            }
+        },
+        "owner": "javieralarcn10"
     }
-  }
 }

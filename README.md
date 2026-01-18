@@ -48,3 +48,36 @@ Join our community of developers creating universal apps.
 
 - [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
 - [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+
+
+### Useful Commands
+
+**Start the project without cache:**
+```bash
+npx expo start --clear
+```
+
+**Rebuild native code from scratch:**
+```bash
+npx expo prebuild --clean
+```
+
+
+**Create build in eas:**
+```bash
+eas build --platform ios
+
+eas build --platform ios --auto-submit
+
+eas build --platform ios --local
+```
+
+**Submit build in eas to app store:**
+```bash
+eas submit --platform ios
+```
+
+**Update app without submit new version:**
+```bash
+eas update --channel production
+```
