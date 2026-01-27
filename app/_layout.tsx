@@ -8,7 +8,7 @@ import { BlurView } from "expo-blur";
 import { SplashScreen, Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useRef, useState } from "react";
-import { AppState, AppStateStatus, StyleSheet, View } from "react-native";
+import { AppState, AppStateStatus, Pressable, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import "react-native-reanimated";
@@ -76,18 +76,17 @@ function RootNavigator({ showBlur, setShowBlur }: { showBlur: boolean; setShowBl
 
   const [hasSecurityEnabled, setHasSecurityEnabled] = useState(false);
   const [onboardingCompleted, setOnboardingCompleted] = useState(false);
-  const [needsAuth, setNeedsAuth] = useState(false); // Only to show Face ID prompt
+  const [isLocked, setIsLocked] = useState(false); // True when authentication is required
   const lastBackgroundTime = useRef<number | null>(null);
   const hasCheckedSecurity = useRef(false);
   const isAuthenticating = useRef(false);
   const appState = useRef(AppState.currentState);
-  const authCancelledRecently = useRef(false); // Avoid immediate retries
 
   // Authenticate with biometrics automatically
   const authenticate = async () => {
-    if (isAuthenticating.current || authCancelledRecently.current) return;
+    if (isAuthenticating.current) return;
     isAuthenticating.current = true;
-    setNeedsAuth(true);
+    setIsLocked(true);
 
     const biometricEnabled = await getBiometricEnabled();
 
@@ -96,24 +95,18 @@ function RootNavigator({ showBlur, setShowBlur }: { showBlur: boolean; setShowBl
         promptMessage: "Unlock Onefolio",
         fallbackLabel: "Use passcode",
         cancelLabel: "Cancel",
+        disableDeviceFallback: false, // Allow passcode fallback after Face ID fails
       });
 
       if (result.success) {
         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-        // Remove blur immediately after successful Face ID
-        setNeedsAuth(false);
+        // Remove blur immediately after successful authentication
+        setIsLocked(false);
         setShowBlur(false);
-        authCancelledRecently.current = false;
-      } else {
-        // User cancelled - mark to avoid immediate retries
-        authCancelledRecently.current = true;
-        // Reset after 2 seconds to allow manual retry if backgrounded again
-        setTimeout(() => {
-          authCancelledRecently.current = false;
-        }, 2000);
       }
+      // If failed/cancelled, stay locked - user can tap to retry
     } else {
-      setNeedsAuth(false);
+      setIsLocked(false);
       setShowBlur(false);
     }
 
@@ -134,7 +127,6 @@ function RootNavigator({ showBlur, setShowBlur }: { showBlur: boolean; setShowBl
       // Authenticate on first load if security is enabled
       if (biometricEnabled && !hasCheckedSecurity.current) {
         hasCheckedSecurity.current = true;
-        setNeedsAuth(true);
         authenticate();
       }
     };
@@ -166,12 +158,13 @@ function RootNavigator({ showBlur, setShowBlur }: { showBlur: boolean; setShowBl
       if (wasInBackground && nextAppState === "active") {
         if (onboardingCompleted && hasSecurityEnabled && lastBackgroundTime.current) {
           const timeSinceBackground = (Date.now() - lastBackgroundTime.current) / 1000;
-          if (timeSinceBackground >= LOCK_TIMEOUT_SECONDS) {
+          // Only authenticate if was in background long enough AND not already locked
+          // If already locked, don't re-trigger (user might have cancelled)
+          if (timeSinceBackground >= LOCK_TIMEOUT_SECONDS && !isLocked) {
             authenticate();
-          } else {
-            // Returned quickly, unlock without authentication
-            setNeedsAuth(false);
           }
+          // If already locked, stay locked - user needs to authenticate
+          // If returned quickly and not locked, stay unlocked
         }
       }
 
@@ -187,7 +180,7 @@ function RootNavigator({ showBlur, setShowBlur }: { showBlur: boolean; setShowBl
     return () => {
       subscription.remove();
     };
-  }, [isLoading, hasSecurityEnabled, onboardingCompleted]);
+  }, [isLoading, hasSecurityEnabled, onboardingCompleted, isLocked]);
 
   if (isLoading) {
     return null;
@@ -195,8 +188,8 @@ function RootNavigator({ showBlur, setShowBlur }: { showBlur: boolean; setShowBl
 
   // Show blur if:
   // 1. App is not in foreground (showBlur from parent) AND has security enabled
-  // 2. Or needs authentication (Face ID pending)
-  const shouldShowBlur = (showBlur && hasSecurityEnabled && onboardingCompleted) || needsAuth;
+  // 2. Or is locked (authentication pending/failed)
+  const shouldShowBlur = (showBlur && hasSecurityEnabled && onboardingCompleted) || isLocked;
 
   return (
     <View className="flex-1 bg-background">
@@ -227,11 +220,22 @@ function RootNavigator({ showBlur, setShowBlur }: { showBlur: boolean; setShowBl
 
       {/* Security blur overlay */}
       {shouldShowBlur && (
-        <BlurView
-          intensity={30}
-          tint="light"
+        <Pressable
+          onPress={() => {
+            // If locked and not currently authenticating, retry authentication
+            if (isLocked && !isAuthenticating.current) {
+              authenticate();
+            }
+          }}
           className="absolute inset-0 z-50"
-        />
+        >
+          <BlurView
+            intensity={50}
+            tint="light"
+            experimentalBlurMethod="dimezisBlurView"
+            className="flex-1"
+          />
+        </Pressable>
       )}
     </View>
   );
