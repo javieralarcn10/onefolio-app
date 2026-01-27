@@ -1,4 +1,4 @@
-import { User } from '@/types/custom';
+import { Asset, User } from '@/types/custom';
 import Storage from 'expo-sqlite/kv-store';
 
 async function setItem(key: string, value: any) {
@@ -66,4 +66,49 @@ export async function setNotifications(notifications: boolean) {
 
 export async function removeNotifications() {
 	await removeItem('notifications');
+}
+
+// Assets Management
+export async function getAssets(): Promise<Asset[]> {
+	const value = await getItem('assets');
+	return value || [];
+}
+
+export async function addAsset(asset: Asset): Promise<void> {
+	const assets = await getAssets();
+	assets.push(asset);
+	await setItem('assets', assets);
+}
+
+export async function updateAsset(updatedAsset: Asset): Promise<void> {
+	const assets = await getAssets();
+	const index = assets.findIndex(a => a.id === updatedAsset.id);
+	if (index !== -1) {
+		assets[index] = updatedAsset;
+		await setItem('assets', assets);
+	}
+}
+
+export async function removeAsset(assetId: string): Promise<void> {
+	const assets = await getAssets();
+	const filteredAssets = assets.filter(a => a.id !== assetId);
+	await setItem('assets', filteredAssets);
+}
+
+export async function clearAssets(): Promise<void> {
+	await removeItem('assets');
+}
+
+export function generateAssetId(): string {
+	return `asset_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+}
+
+// Security Settings
+export async function getBiometricEnabled(): Promise<boolean> {
+	const value = await getItem('biometricEnabled');
+	return value === true;
+}
+
+export async function setBiometricEnabled(enabled: boolean): Promise<void> {
+	await setItem('biometricEnabled', enabled);
 }

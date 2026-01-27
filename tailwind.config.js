@@ -10,16 +10,23 @@ module.exports = {
       colors: {
         background: Colors.background,
         foreground: Colors.foreground,
-        "muted-foreground": Colors.mutedForegroundDark,
+        "muted-foreground": Colors.mutedForeground,
         secondary: Colors.secondary,
         accent: Colors.accent,
         border: Colors.border,
+        input: Colors.input,
       },
       borderRadius: {
+        sm: ".25rem",
+        md: ".375rem",
+        lg: ".5rem",
+        xl: ".75rem",
+        "2xl": "1rem",
+        "3xl": "1.5rem",
         "4xl": "2.5rem",
       },
       borderWidth: {
-        DEFAULT: "1.5px",
+        DEFAULT: "1.4px",
       },
       fontSize: {
         xs: ["12px", { lineHeight: "16px" }],
@@ -35,7 +42,8 @@ module.exports = {
         "7xl": ["72px", { lineHeight: "1" }],
       },
       fontFamily: {
-        lausanne: ["TWKLausanne-400"],
+        'lausanne-light': ["TWKLausanne-300"],
+        'lausanne-regular': ["TWKLausanne-400"],
         "lausanne-medium": ["TWKLausanne-500"],
         "lausanne-semibold": ["TWKLausanne-600"],
         "lausanne-bold": ["TWKLausanne-700"],

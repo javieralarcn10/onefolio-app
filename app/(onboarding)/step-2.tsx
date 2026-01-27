@@ -1,11 +1,137 @@
-import React from "react";
-import { Text, View } from "react-native";
+import { AnimatedArrow } from "@/components/animated-arrow";
+import { Colors } from "@/constants/colors";
+import * as Haptics from "expo-haptics";
+import { router } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+import { ArrowLeftIcon } from "phosphor-react-native";
+import React, { useRef, useState } from "react";
+import { Pressable, Text, TextInput, View } from "react-native";
+import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
+
+const STEP_NUMBER = 2;
+const TOTAL_STEPS = 7;
+
+const URL_PATTERN = /^https?:\/\/|www\.|\.(?:com|net|org|edu|gov|io|co|es|mx|app|dev)\b/i;
+const VALID_NAME_PATTERN = /^[\p{L}\s\-']+$/u;
+const MIN_LENGTH_DEBOUNCE_MS = 500;
 
 export default function Step2() {
+  const [name, setName] = useState("");
+  const [error, setError] = useState("");
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const validateImmediate = (value: string): string | null => {
+    const trimmed = value.trim();
+    if (!trimmed) return null;
+
+    if (URL_PATTERN.test(trimmed)) return "Please enter a valid name, not a URL";
+    if (/\d/.test(trimmed)) return "Name cannot contain numbers";
+    if (!VALID_NAME_PATTERN.test(trimmed)) return "Name can only contain letters, spaces, hyphens and apostrophes";
+    if (trimmed.length > 50) return "Name must be less than 50 characters";
+
+    return null;
+  };
+
+  const handleNameChange = (text: string) => {
+    setName(text);
+
+    // Clear any pending debounce
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+      debounceRef.current = null;
+    }
+
+    // Check immediate errors first
+    const immediateError = validateImmediate(text);
+    if (immediateError) {
+      setError(immediateError);
+      return;
+    }
+
+    // If valid so far, clear error immediately
+    const trimmed = text.trim();
+    if (trimmed.length >= 2 || !trimmed) {
+      setError("");
+      return;
+    }
+
+    // Debounce the "too short" error
+    debounceRef.current = setTimeout(() => {
+      if (trimmed.length > 0 && trimmed.length < 2) {
+        setError("Name must be at least 2 characters");
+      }
+    }, MIN_LENGTH_DEBOUNCE_MS);
+  };
+
+  const isValid = name.trim().length >= 2 && !validateImmediate(name);
+  const isNextButtonDisabled = !isValid;
 
   return (
     <View className="flex-1 my-safe">
-      <Text>Step 2</Text>
+      <StatusBar style="dark" />
+
+      {/* Header */}
+      <View className="px-5 pt-5 flex-row items-center justify-between">
+        <Pressable className="w-[15%] py-1" onPress={() => router.back()}>
+          <ArrowLeftIcon color={Colors.foreground} size={24} />
+        </Pressable>
+        <Text className="text-muted-foreground text-sm text-center font-lausanne-regular leading-normal">
+          Step {STEP_NUMBER} of {TOTAL_STEPS}
+        </Text>
+        <View className="w-[15%]" />
+      </View>
+
+      {/* Content */}
+      <KeyboardAwareScrollView
+        keyboardShouldPersistTaps="handled"
+        bottomOffset={40}
+        showsVerticalScrollIndicator={false}
+        contentContainerClassName="flex-grow px-5 mt-6">
+        <View className="mb-8">
+          <Text className="text-2xl font-lausanne-medium text-foreground leading-snug mb-2">Let's personalize your experience</Text>
+          <Text className="text-lg font-lausanne-light text-muted-foreground leading-normal">What should we call you?</Text>
+        </View>
+
+        <View>
+          <TextInput
+            autoCorrect={false}
+            onChangeText={handleNameChange}
+            value={name}
+            allowFontScaling={false}
+            enterKeyHint="done"
+            enablesReturnKeyAutomatically={true}
+            textContentType="name"
+            autoComplete="name-given"
+            placeholder="Your first name"
+            placeholderTextColor={Colors.placeholder}
+            className={`bg-background border-b ${error ? "border-red-600" : "border-foreground"} text-foreground font-lausanne-light`}
+            style={{ fontSize: 17, height: 40, textAlignVertical: "bottom" }}
+          />
+          {error !== "" && (
+            <Animated.View entering={FadeIn.duration(200)} exiting={FadeOut.duration(150)}>
+              <Text className="text-red-600 text-sm font-lausanne-regular mt-2">
+                {error}
+              </Text>
+            </Animated.View>
+          )}
+        </View>
+      </KeyboardAwareScrollView>
+
+      {/* Footer with Next Button */}
+      <View className="px-5 pb-5 pt-4">
+        <Pressable
+          disabled={isNextButtonDisabled}
+          onPress={() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
+            router.push({ pathname: "/(onboarding)/step-3", params: { name: name.trim() } });
+          }}
+          className={`bg-foreground flex-row items-center justify-center gap-3 py-4 border border-foreground ${isNextButtonDisabled ? "opacity-50" : ""
+            }`}>
+          <Text className="text-white font-lausanne-light text-xl">Continue</Text>
+          <AnimatedArrow color={Colors.accent} size={21} animate={!isNextButtonDisabled} />
+        </Pressable>
+      </View>
     </View>
   );
 }

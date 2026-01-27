@@ -1,4 +1,6 @@
 import * as Notifications from 'expo-notifications';
+import * as Device from 'expo-device';
+import Constants from 'expo-constants';
 import { Alert, Linking, Platform } from 'react-native';
 
 
@@ -9,7 +11,7 @@ Notifications.setNotificationHandler({
 		shouldShowAlert: false,
 		shouldPlaySound: false,
 		shouldSetBadge: false,
-		shouldShowBanner: false,
+		shouldShowBanner: true,
 		shouldShowList: false,
 	}),
 });
@@ -118,3 +120,34 @@ export async function disableNotifications(): Promise<void> {
 	await clearBadgeCount();
 }
 
+export async function registerForPushNotificationsAsync(): Promise<string | null> {
+	let token = null;
+
+	if (Platform.OS === 'android') {
+		await Notifications.setNotificationChannelAsync('defaultChannel', {
+			name: 'A channel is needed for the permissions prompt to appear',
+			importance: Notifications.AndroidImportance.MAX,
+			vibrationPattern: [0, 250, 250, 250],
+			lightColor: '#FF231F7C',
+		});
+	}
+
+	if (Device.isDevice) {
+		try {
+			const projectId =
+				Constants?.expoConfig?.extra?.eas?.projectId ?? Constants?.easConfig?.projectId;
+			if (!projectId) {
+				throw new Error('Project ID not found');
+			}
+			token = (await Notifications.getExpoPushTokenAsync({ projectId })).data;
+
+		} catch (e) {
+			console.error('Error getting push token:', e);
+			return null;
+		}
+	} else {
+		alert('Must use physical device for Push Notifications');
+	}
+
+	return token;
+}
