@@ -64,7 +64,7 @@ export default function Step7() {
 		await requestNotificationPermissions();
 		const token = await registerForPushNotificationsAsync();
 		if (token) {
-			router.push({ pathname: "/(onboarding)/step-8", params: { name, profile, goals, notificationsToken: token } });
+			router.push({ pathname: "/(onboarding)/step-8", params: { name, profile, goals, notificationToken: token } });
 		} else {
 			router.push({ pathname: "/(onboarding)/step-8", params: { name, profile, goals } });
 		}

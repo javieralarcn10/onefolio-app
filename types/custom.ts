@@ -7,6 +7,9 @@ export type User = {
 	email?: string;
 	timezone: string;
 	language: string;
+	investorProfile?: string;
+	investmentGoals?: string;
+	currency: string;
 	isPremium: boolean;
 	createdAt: string;
 	updatedAt: string;

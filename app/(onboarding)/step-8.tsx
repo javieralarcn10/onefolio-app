@@ -18,16 +18,16 @@ const STEP_NUMBER = 7;
 const TOTAL_STEPS = 7;
 
 export default function Step8() {
+	const { signIn } = useSession();
+	const [isLoading, setIsLoading] = useState(false);
 	const { languageCode } = getLocales()[0];
 	const { timeZone } = getCalendars()[0];
-	const { name, profile, goals, notificationsToken } = useLocalSearchParams<{
+	const { name, profile, goals, notificationToken } = useLocalSearchParams<{
 		name: string;
 		profile: string;
 		goals: string[];
-		notificationsToken: string;
+		notificationToken: string;
 	}>();
-	const { signIn } = useSession();
-	const [isLoading, setIsLoading] = useState(false);
 
 	const buttonScale = useSharedValue(1);
 
@@ -61,20 +61,17 @@ export default function Step8() {
 
 		try {
 			const user: any = {
-				name,
+				firstName: name,
 				investorProfile: profile,
 				investmentGoals: goals,
-				notificationsToken: notificationsToken ?? null,
-				device: {
-					manufacturer: Device.manufacturer,
-					modelName: Device.modelName,
-				}
+				notificationToken: notificationToken ?? null,
+				device: `${Device.manufacturer} ${Device.modelName}`
 			};
 
-			// const customerInfo = await getCustomerInfo();
-			// if (customerInfo && customerInfo.originalAppUserId) {
-			// 	user.revenueCatId = customerInfo.originalAppUserId;
-			// }
+			const customerInfo = await getCustomerInfo();
+			if (customerInfo && customerInfo.originalAppUserId) {
+				user.revenueCatId = customerInfo.originalAppUserId;
+			}
 			if (timeZone !== undefined) {
 				user.timezone = timeZone;
 			}
@@ -82,19 +79,17 @@ export default function Step8() {
 				user.language = languageCode;
 			}
 
-			// const apiResponse = await usersApi.signInWithoutEmail(user);
-			// if (apiResponse.user) {
-			if (true) {
+			const apiResponse = await usersApi.signInWithoutEmail(user);
+			if (apiResponse.user) {
 				await markOnboardingCompleted();
-				await setUser(user);
-				// await setUser(apiResponse.user);
-				// await setRevenueCatUserId({ userId: apiResponse.user.id, firstName: apiResponse.user.firstName });
+				await setUser(apiResponse.user);
+				await setRevenueCatUserId({ userId: apiResponse.user.id, firstName: apiResponse.user.firstName });
 
 				await signIn();
 				Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
 				router.replace({ pathname: "/(tabs)" });
 			} else {
-				// throw new Error("Error signing in");
+				throw new Error("Error signing in");
 			}
 		} catch (error) {
 			Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);

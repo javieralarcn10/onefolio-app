@@ -16,6 +16,7 @@ import * as Notifications from 'expo-notifications';
 import * as LocalAuthentication from "expo-local-authentication";
 import * as Haptics from "expo-haptics";
 import { clearBadgeCount } from "@/utils/notifications";
+import { initializeRevenueCat } from "@/utils/revenue-cat";
 
 // Time in seconds before requiring authentication after backgrounding
 const LOCK_TIMEOUT_SECONDS = 30;
@@ -40,7 +41,7 @@ export default function RootLayout() {
   }, []);
 
   useEffect(() => {
-    // initializeRevenueCat();
+    initializeRevenueCat();
   }, []);
 
   // Immediate blur when app loses focus (for multitasking)

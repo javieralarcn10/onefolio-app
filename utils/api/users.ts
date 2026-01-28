@@ -14,7 +14,11 @@ export const usersApi = {
       });
       return response.data;
     } catch (error: unknown) {
-      throw error instanceof Error ? error.message : 'Unknown error';
+      if (axios.isAxiosError(error)) {
+        const errorMessage = error.response?.data?.error || error.response?.data?.message || error.message;
+        throw new Error(errorMessage || 'Failed to send email OTP');
+      }
+      throw error instanceof Error ? error : new Error('Unknown error occurred');
     }
   },
   verifyOtpCode: async (body: { email: string, code: string }): Promise<{ message?: string, error?: string, details?: any }> => {
@@ -56,7 +60,11 @@ export const usersApi = {
       });
       return response.data;
     } catch (error: unknown) {
-      throw error instanceof Error ? error.message : 'Unknown error';
+      if (axios.isAxiosError(error)) {
+        const errorMessage = error.response?.data?.error || error.response?.data?.message || error.message;
+        throw new Error(errorMessage || 'Failed to sign in');
+      }
+      throw error instanceof Error ? error : new Error('Unknown error occurred');
     }
   },
 
@@ -70,7 +78,11 @@ export const usersApi = {
       });
       return response.data;
     } catch (error: unknown) {
-      throw error instanceof Error ? error.message : 'Unknown error';
+      if (axios.isAxiosError(error)) {
+        const errorMessage = error.response?.data?.error || error.response?.data?.message || error.message;
+        throw new Error(errorMessage || 'Failed to sign in');
+      }
+      throw error instanceof Error ? error : new Error('Unknown error occurred');
     }
   },
 
@@ -84,7 +96,11 @@ export const usersApi = {
       });
       return response.data;
     } catch (error: unknown) {
-      throw error instanceof Error ? error.message : 'Unknown error';
+      if (axios.isAxiosError(error)) {
+        const errorMessage = error.response?.data?.error || error.response?.data?.message || error.message;
+        throw new Error(errorMessage || 'Failed to sign in with Google');
+      }
+      throw error instanceof Error ? error : new Error('Unknown error occurred');
     }
   },
 
@@ -98,7 +114,11 @@ export const usersApi = {
       });
       return response.data;
     } catch (error: unknown) {
-      throw error instanceof Error ? error.message : 'Unknown error';
+      if (axios.isAxiosError(error)) {
+        const errorMessage = error.response?.data?.error || error.response?.data?.message || error.message;
+        throw new Error(errorMessage || 'Failed to sign in with Apple');
+      }
+      throw error instanceof Error ? error : new Error('Unknown error occurred');
     }
   },
 
@@ -112,7 +132,11 @@ export const usersApi = {
       });
       return response.data;
     } catch (error: unknown) {
-      throw error instanceof Error ? error.message : 'Unknown error';
+      if (axios.isAxiosError(error)) {
+        const errorMessage = error.response?.data?.error || error.response?.data?.message || error.message;
+        throw new Error(errorMessage || 'Failed to update user info');
+      }
+      throw error instanceof Error ? error : new Error('Unknown error occurred');
     }
   },
 
@@ -126,7 +150,11 @@ export const usersApi = {
         },
       });
     } catch (error: unknown) {
-      throw error instanceof Error ? error.message : 'Unknown error';
+      if (axios.isAxiosError(error)) {
+        const errorMessage = error.response?.data?.error || error.response?.data?.message || error.message;
+        throw new Error(errorMessage || 'Failed to sign out');
+      }
+      throw error instanceof Error ? error : new Error('Unknown error occurred');
     }
   },
 };
