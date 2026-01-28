@@ -1,5 +1,6 @@
 import { AssetSearch } from "@/components/onboarding/asset-search";
 import { ChipSelector } from "@/components/onboarding/chip-selector";
+import { CountryField } from "@/components/onboarding/country-field";
 import { CurrencySelector } from "@/components/onboarding/currency-selector";
 import { DateField } from "@/components/onboarding/date-field";
 import { InlineInputField } from "@/components/onboarding/inline-input-field";
@@ -33,6 +34,7 @@ import { useMemo, useState } from "react";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { ASSETS_OPTIONS } from "./step-5";
+import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing } from "react-native-reanimated";
 
 export default function AddInvestment() {
 	const { type } = useLocalSearchParams<{ type: string }>();
@@ -84,6 +86,27 @@ export default function AddInvestment() {
 	// Crypto (now with search)
 	const [selectedCryptoSymbol, setSelectedCryptoSymbol] = useState<string | null>(null);
 	const [selectedCryptoName, setSelectedCryptoName] = useState<string | null>(null);
+
+	// Button animation
+	const buttonScale = useSharedValue(1);
+
+	const buttonAnimatedStyle = useAnimatedStyle(() => ({
+		transform: [{ scale: buttonScale.value }],
+	}));
+
+	const handlePressIn = () => {
+		buttonScale.value = withTiming(0.98, {
+			duration: 100,
+			easing: Easing.out(Easing.ease),
+		});
+	};
+
+	const handlePressOut = () => {
+		buttonScale.value = withTiming(1, {
+			duration: 150,
+			easing: Easing.out(Easing.ease),
+		});
+	};
 
 	// Check if form is valid (all required fields filled)
 	const isFormValid = useMemo(() => {
@@ -538,11 +561,10 @@ export default function AddInvestment() {
 				placeholder="e.g., 250000"
 				keyboardType="decimal-pad"
 			/>
-			<InputField
+			<CountryField
 				label="Country"
 				value={country}
-				onChangeText={setCountry}
-				placeholder="e.g., Spain, USA"
+				onChange={setCountry}
 			/>
 			{/* City and Zip in a row */}
 			<View className="flex-row gap-4 mb-7">
@@ -724,19 +746,23 @@ export default function AddInvestment() {
 
 			{/* Save Button */}
 			<View className="px-5 pb-5 pt-4">
-				<Pressable
-					disabled={isButtonDisabled}
-					onPress={handleSave}
-					className={`bg-foreground flex-row items-center justify-center gap-3 py-4 border border-foreground ${isButtonDisabled ? "opacity-50" : ""}`}
-				>
-					{isSaving ? (
-						<ActivityIndicator size="small" className="my-[4]" color={Colors.background} />
-					) : (
-						<Text className="text-white font-lausanne-light text-xl">
-							Add Asset
-						</Text>
-					)}
-				</Pressable>
+				<Animated.View style={[buttonAnimatedStyle]}>
+					<Pressable
+						disabled={isButtonDisabled}
+						onPressIn={handlePressIn}
+						onPressOut={handlePressOut}
+						onPress={handleSave}
+						className={`bg-foreground flex-row items-center justify-center gap-3 py-4 border border-foreground ${isButtonDisabled ? "opacity-50" : ""}`}
+					>
+						{isSaving ? (
+							<ActivityIndicator size="small" className="my-[4]" color={Colors.background} />
+						) : (
+							<Text className="text-white font-lausanne-light text-xl">
+								Add Asset
+							</Text>
+						)}
+					</Pressable>
+				</Animated.View>
 			</View>
 		</View>
 	);

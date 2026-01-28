@@ -3,11 +3,11 @@ import { Colors } from "@/constants/colors";
 import * as Haptics from "expo-haptics";
 import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { ArrowLeftIcon } from "phosphor-react-native";
 import React, { useRef, useState } from "react";
 import { Pressable, Text, TextInput, View } from "react-native";
-import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
+import Animated, { FadeIn, FadeOut, useSharedValue, useAnimatedStyle, withTiming, Easing } from "react-native-reanimated";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
+import Icon from "react-native-remix-icon";
 
 const STEP_NUMBER = 2;
 const TOTAL_STEPS = 7;
@@ -20,6 +20,26 @@ export default function Step2() {
   const [name, setName] = useState("");
   const [error, setError] = useState("");
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const buttonScale = useSharedValue(1);
+
+  const buttonAnimatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: buttonScale.value }],
+  }));
+
+  const handlePressIn = () => {
+    buttonScale.value = withTiming(0.98, {
+      duration: 100,
+      easing: Easing.out(Easing.ease),
+    });
+  };
+
+  const handlePressOut = () => {
+    buttonScale.value = withTiming(1, {
+      duration: 150,
+      easing: Easing.out(Easing.ease),
+    });
+  };
 
   const validateImmediate = (value: string): string | null => {
     const trimmed = value.trim();
@@ -74,7 +94,7 @@ export default function Step2() {
       {/* Header */}
       <View className="px-5 pt-5 flex-row items-center justify-between">
         <Pressable className="w-[15%] py-1" onPress={() => router.back()}>
-          <ArrowLeftIcon color={Colors.foreground} size={24} />
+          <Icon name="arrow-left-line" size="24" color={Colors.foreground} fallback={null} />
         </Pressable>
         <Text className="text-muted-foreground text-sm text-center font-lausanne-regular leading-normal">
           Step {STEP_NUMBER} of {TOTAL_STEPS}
@@ -120,17 +140,21 @@ export default function Step2() {
 
       {/* Footer with Next Button */}
       <View className="px-5 pb-5 pt-4">
-        <Pressable
-          disabled={isNextButtonDisabled}
-          onPress={() => {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
-            router.push({ pathname: "/(onboarding)/step-3", params: { name: name.trim() } });
-          }}
-          className={`bg-foreground flex-row items-center justify-center gap-3 py-4 border border-foreground ${isNextButtonDisabled ? "opacity-50" : ""
-            }`}>
-          <Text className="text-white font-lausanne-light text-xl">Continue</Text>
-          <AnimatedArrow color={Colors.accent} size={21} animate={!isNextButtonDisabled} />
-        </Pressable>
+        <Animated.View style={[buttonAnimatedStyle]}>
+          <Pressable
+            disabled={isNextButtonDisabled}
+            onPressIn={handlePressIn}
+            onPressOut={handlePressOut}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
+              router.push({ pathname: "/(onboarding)/step-3", params: { name: name.trim() } });
+            }}
+            className={`bg-foreground flex-row items-center justify-center gap-3 py-4 border border-foreground ${isNextButtonDisabled ? "opacity-50" : ""
+              }`}>
+            <Text className="text-white font-lausanne-light text-xl">Continue</Text>
+            <AnimatedArrow color={Colors.accent} size={21} animate={!isNextButtonDisabled} />
+          </Pressable>
+        </Animated.View>
       </View>
     </View>
   );

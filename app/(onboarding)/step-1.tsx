@@ -4,9 +4,10 @@ import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { ArrowLeftIcon, CheckIcon } from "phosphor-react-native";
 import React from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
+import Icon from "react-native-remix-icon";
+import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing } from "react-native-reanimated";
 
 const STEP_NUMBER = 1;
 const TOTAL_STEPS = 7;
@@ -37,7 +38,7 @@ function ValueProp({ prop }: { prop: typeof VALUE_PROPS[0] }) {
     <View>
       <View className="flex-1">
         <View className="flex-row items-center gap-2 bg-accent self-start pl-1 pr-2">
-          <CheckIcon color={Colors.foreground} size={20} weight="regular" />
+          <Icon name="check-line" size="22" color={Colors.foreground} fallback={null} />
           <Text className="font-lausanne-regular text-foreground text-lg">
             {prop.title}
           </Text>
@@ -53,6 +54,26 @@ function ValueProp({ prop }: { prop: typeof VALUE_PROPS[0] }) {
 }
 
 export default function Step1() {
+  const buttonScale = useSharedValue(1);
+
+  const buttonAnimatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: buttonScale.value }],
+  }));
+
+  const handlePressIn = () => {
+    buttonScale.value = withTiming(0.98, {
+      duration: 100,
+      easing: Easing.out(Easing.ease),
+    });
+  };
+
+  const handlePressOut = () => {
+    buttonScale.value = withTiming(1, {
+      duration: 150,
+      easing: Easing.out(Easing.ease),
+    });
+  };
+
   return (
     <View className="flex-1 my-safe">
       <StatusBar style="dark" />
@@ -60,7 +81,7 @@ export default function Step1() {
       {/* Header */}
       <View className="px-5 pt-5 flex-row items-center justify-between">
         <Pressable className="w-[15%] py-1" onPress={() => router.back()}>
-          <ArrowLeftIcon color={Colors.foreground} size={24} />
+          <Icon name="arrow-left-line" size="24" color={Colors.foreground} fallback={null} />
         </Pressable>
         <Text className="text-muted-foreground text-sm text-center font-lausanne-regular leading-normal">
           Step {STEP_NUMBER} of {TOTAL_STEPS}
@@ -97,15 +118,19 @@ export default function Step1() {
           colors={["rgba(255, 255, 255, 0)", "rgba(255, 255, 255, 0.7)", "#fff"]}
           style={{ position: "absolute", left: 0, right: 0, top: -40, height: 60 }}
         />
-        <Pressable
-          onPress={() => {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
-            router.push({ pathname: "/(onboarding)/step-2" });
-          }}
-          className={`bg-foreground flex-row items-center justify-center gap-3 py-4 border border-foreground`}>
-          <Text className="text-white font-lausanne-light text-xl">Continue</Text>
-          <AnimatedArrow color={Colors.accent} size={21} animate={true} />
-        </Pressable>
+        <Animated.View style={[buttonAnimatedStyle]}>
+          <Pressable
+            onPressIn={handlePressIn}
+            onPressOut={handlePressOut}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
+              router.push({ pathname: "/(onboarding)/step-2" });
+            }}
+            className={`bg-foreground flex-row items-center justify-center gap-3 py-4 border border-foreground`}>
+            <Text className="text-white font-lausanne-light text-xl">Continue</Text>
+            <AnimatedArrow color={Colors.accent} size={21} animate={true} />
+          </Pressable>
+        </Animated.View>
       </View>
     </View>
   );

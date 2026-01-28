@@ -12,6 +12,7 @@ import { getLocales, getCalendars } from "expo-localization";
 import { getCustomerInfo, setRevenueCatUserId } from "@/utils/revenue-cat";
 import { useSession } from "@/utils/auth-context";
 import { usersApi } from "@/utils/api/users";
+import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing } from "react-native-reanimated";
 
 const STEP_NUMBER = 7;
 const TOTAL_STEPS = 7;
@@ -27,6 +28,26 @@ export default function Step8() {
 	}>();
 	const { signIn } = useSession();
 	const [isLoading, setIsLoading] = useState(false);
+
+	const buttonScale = useSharedValue(1);
+
+	const buttonAnimatedStyle = useAnimatedStyle(() => ({
+		transform: [{ scale: buttonScale.value }],
+	}));
+
+	const handlePressIn = () => {
+		buttonScale.value = withTiming(0.98, {
+			duration: 100,
+			easing: Easing.out(Easing.ease),
+		});
+	};
+
+	const handlePressOut = () => {
+		buttonScale.value = withTiming(1, {
+			duration: 150,
+			easing: Easing.out(Easing.ease),
+		});
+	};
 
 	const markOnboardingCompleted = async () => {
 		const completedOnboarding = await hasCompletedOnboarding();
@@ -101,19 +122,23 @@ export default function Step8() {
 					</Text>
 				</View>
 
-				<Pressable
-					onPress={handleSignIn}
-					disabled={isLoading}
-					className="bg-foreground flex-row items-center justify-center gap-3 py-4 border border-foreground w-full">
-					{isLoading ? (
-						<ActivityIndicator size="small" className="my-[4]" color={Colors.background} />
-					) : (
-						<>
-							<Text className="text-white font-lausanne-light text-xl">See my analysis</Text>
-							<AnimatedArrow color={Colors.accent} size={21} />
-						</>
-					)}
-				</Pressable>
+				<Animated.View className="w-full" style={[buttonAnimatedStyle]}>
+					<Pressable
+						onPressIn={handlePressIn}
+						onPressOut={handlePressOut}
+						onPress={handleSignIn}
+						disabled={isLoading}
+						className="bg-foreground flex-row items-center justify-center gap-3 py-4 border border-foreground w-full">
+						{isLoading ? (
+							<ActivityIndicator size="small" className="my-[4]" color={Colors.background} />
+						) : (
+							<>
+								<Text className="text-white font-lausanne-light text-xl">Analyze my position</Text>
+								<AnimatedArrow color={Colors.accent} size={21} />
+							</>
+						)}
+					</Pressable>
+				</Animated.View>
 			</View>
 		</View>
 	);

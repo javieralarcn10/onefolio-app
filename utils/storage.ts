@@ -60,12 +60,13 @@ export async function setNotificationsPermission(notificationsPermission: boolea
 	await setItem('notificationsPermission', notificationsPermission);
 }
 
-export async function setNotifications(notifications: boolean) {
-	await setItem('notifications', notifications);
+export async function getHapticsPermission() {
+	const value = await getItem('hapticsPermission');
+	return value;
 }
 
-export async function removeNotifications() {
-	await removeItem('notifications');
+export async function setHapticsPermission(hapticsPermission: boolean) {
+	await setItem('hapticsPermission', hapticsPermission);
 }
 
 // Assets Management

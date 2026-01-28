@@ -1,12 +1,13 @@
 import { AnimatedArrow } from "@/components/animated-arrow";
 import { Colors } from "@/constants/colors";
+import { BiometricType } from "@/types/custom";
 import { setBiometricEnabled } from "@/utils/storage";
 import * as Haptics from "expo-haptics";
 import { Image } from "expo-image";
 import * as LocalAuthentication from "expo-local-authentication";
 import { router, useLocalSearchParams } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { ArrowLeftIcon } from "phosphor-react-native";
+import Icon from "react-native-remix-icon";
 import React, { useEffect, useState } from "react";
 import { Pressable, Text, View, Platform } from "react-native";
 import Animated, {
@@ -20,8 +21,6 @@ import Animated, {
 const STEP_NUMBER = 6;
 const TOTAL_STEPS = 7;
 
-type BiometricType = "faceid" | "fingerprint" | "none";
-
 export default function Step6() {
 	const { name, profile, goals } = useLocalSearchParams<{
 		name: string;
@@ -30,9 +29,51 @@ export default function Step6() {
 	}>();
 
 	const [biometricType, setBiometricType] = useState<BiometricType>("none");
+	const [isAuthenticating, setIsAuthenticating] = useState(false);
 
 	// Pulse animation
 	const scale = useSharedValue(1);
+
+	// Button animation
+	const buttonScaleSkip = useSharedValue(1);
+	const buttonScaleEnable = useSharedValue(1);
+
+	const buttonSkipAnimatedStyle = useAnimatedStyle(() => ({
+		transform: [{ scale: buttonScaleSkip.value }],
+	}));
+
+	const buttonEnableAnimatedStyle = useAnimatedStyle(() => ({
+		transform: [{ scale: buttonScaleEnable.value }],
+	}));
+
+	const handlePressInSkip = () => {
+		buttonScaleSkip.value = withTiming(0.98, {
+			duration: 100,
+			easing: Easing.out(Easing.ease),
+		});
+	};
+
+	const handlePressOutSkip = () => {
+		buttonScaleSkip.value = withTiming(1, {
+			duration: 150,
+			easing: Easing.out(Easing.ease),
+		});
+	};
+
+	const handlePressInEnable = () => {
+		Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
+		buttonScaleEnable.value = withTiming(0.98, {
+			duration: 100,
+			easing: Easing.out(Easing.ease),
+		});
+	};
+
+	const handlePressOutEnable = () => {
+		buttonScaleEnable.value = withTiming(1, {
+			duration: 150,
+			easing: Easing.out(Easing.ease),
+		});
+	};
 
 	useEffect(() => {
 		scale.value = withRepeat(
@@ -48,6 +89,9 @@ export default function Step6() {
 
 	useEffect(() => {
 		checkBiometricSupport();
+		(async () => {
+			await setBiometricEnabled(false)
+		})();
 	}, []);
 
 	const checkBiometricSupport = async () => {
@@ -78,7 +122,7 @@ export default function Step6() {
 	};
 
 	const handleEnable = async () => {
-		Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
+		setIsAuthenticating(true);
 
 		const result = await LocalAuthentication.authenticateAsync({
 			promptMessage: `Enable ${getBiometricLabel()}`,
@@ -89,12 +133,14 @@ export default function Step6() {
 		if (result.success) {
 			Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
 			await setBiometricEnabled(true);
+			setIsAuthenticating(false);
 			router.push({
 				pathname: "/(onboarding)/step-7",
 				params: { name, profile, goals },
 			});
 		} else {
 			Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+			setIsAuthenticating(false);
 		}
 	};
 
@@ -113,7 +159,7 @@ export default function Step6() {
 			{/* Header */}
 			<View className="px-5 pt-5 flex-row items-center justify-between">
 				<Pressable className="w-[15%] py-1" onPress={() => router.back()}>
-					<ArrowLeftIcon color={Colors.foreground} size={24} />
+					<Icon name="arrow-left-line" size="24" color={Colors.foreground} fallback={null} />
 				</Pressable>
 				<Text className="text-muted-foreground text-sm text-center font-lausanne-regular leading-normal">
 					Step {STEP_NUMBER} of {TOTAL_STEPS}
@@ -157,21 +203,31 @@ export default function Step6() {
 
 			{/* Footer with Buttons */}
 			<View className="px-5 pb-5 pt-4 flex-row items-center justify-between gap-2">
-				<Pressable
-					onPress={handleSkip}
-					className="bg-secondary flex-row items-center justify-center gap-3 py-4 border border-secondary flex-grow max-w-36"
-				>
-					<Text className="text-foreground font-lausanne-light text-xl">
-						Not now
-					</Text>
-				</Pressable>
-				<Pressable
-					onPress={handleEnable}
-					className="bg-foreground flex-row items-center justify-center gap-3 py-4 border border-foreground flex-grow"
-				>
-					<Text className="text-white font-lausanne-light text-xl">Enable</Text>
-					<AnimatedArrow color={Colors.accent} size={21} animate={true} />
-				</Pressable>
+				<Animated.View style={[{ flex: 1, maxWidth: 144 }, buttonSkipAnimatedStyle]}>
+					<Pressable
+						onPressIn={handlePressInSkip}
+						onPressOut={handlePressOutSkip}
+						onPress={handleSkip}
+						disabled={isAuthenticating}
+						className="bg-secondary flex-row items-center justify-center gap-3 py-4 border border-secondary"
+					>
+						<Text className="text-foreground font-lausanne-light text-xl">
+							Not now
+						</Text>
+					</Pressable>
+				</Animated.View>
+				<Animated.View style={[{ flex: 1 }, buttonEnableAnimatedStyle]}>
+					<Pressable
+						onPressIn={handlePressInEnable}
+						onPressOut={handlePressOutEnable}
+						onPress={handleEnable}
+						disabled={isAuthenticating}
+						className="bg-foreground flex-row items-center justify-center gap-3 py-4 border border-foreground"
+					>
+						<Text className="text-white font-lausanne-light text-xl">Enable</Text>
+						<AnimatedArrow color={Colors.accent} size={21} animate={true} />
+					</Pressable>
+				</Animated.View>
 			</View>
 		</View>
 	);

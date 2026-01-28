@@ -3,7 +3,8 @@ import { Colors } from "@/constants/colors";
 import { OnboardingOption } from "@/types/custom";
 import { memo, useCallback } from "react";
 import { CheckIcon } from "phosphor-react-native";
-import Animated, { BounceIn, FadeIn, FadeOut, LightSpeedInLeft, PinwheelIn, RotateInDownLeft, StretchInX, ZoomIn, ZoomOut, } from "react-native-reanimated";
+import Animated, { ZoomIn, ZoomOut, } from "react-native-reanimated";
+import Icon from "react-native-remix-icon";
 
 export const Option = memo(
 	({ option, selected, onPress }: { option: OnboardingOption; selected: boolean; onPress: (option: OnboardingOption) => void }) => {
@@ -21,7 +22,7 @@ export const Option = memo(
 					</View>
 					{selected && (
 						<Animated.View entering={ZoomIn.duration(150)} exiting={ZoomOut.duration(150)}>
-							<CheckIcon color={Colors.foreground} weight="regular" size={20} />
+							<Icon name="check-line" size="22" color={Colors.foreground} fallback={null} />
 						</Animated.View>
 					)}
 				</View>

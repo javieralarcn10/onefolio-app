@@ -1,85 +1,76 @@
 import { AnimatedArrow } from "@/components/animated-arrow";
 import { AssetOption } from "@/components/onboarding/asset-option";
 import { Colors } from "@/constants/colors";
-import { AssetType } from "@/types/custom";
+import { AssetOption as AssetOptionType, AssetType } from "@/types/custom";
 import { useOnboarding } from "@/utils/onboarding-context";
 import { addAsset } from "@/utils/storage";
 import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import {
-	ArrowLeftIcon,
-	BankIcon,
-	BuildingApartmentIcon,
-	ChartLineIcon,
-	CoinsIcon,
-	CurrencyBtcIcon,
-	HandCoinsIcon,
-	MedalIcon,
-	PiggyBankIcon,
-} from "phosphor-react-native";
 import React from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
+import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing } from "react-native-reanimated";
+import Icon from "react-native-remix-icon";
 
 const STEP_NUMBER = 5;
 const TOTAL_STEPS = 7;
 
-export const ASSETS_OPTIONS = [
+export const ASSETS_OPTIONS: AssetOptionType[] = [
 	{
 		id: 1,
 		title: "Stocks & ETFs",
 		description: "Stocks, index funds, ETFs",
-		icon: ChartLineIcon,
+		icon: "stock-line",
 		assetType: "stocks_etfs" as AssetType,
 	},
 	{
 		id: 2,
 		title: "Bonds & Fixed Income",
 		description: "Bonds, treasury bills, fixed income",
-		icon: BankIcon,
+		icon: "bank-line",
 		assetType: "bonds" as AssetType,
 	},
 	{
 		id: 3,
 		title: "Deposits",
 		description: "Fixed deposits, high-yield accounts",
-		icon: PiggyBankIcon,
+		icon: "safe-3-line",
 		assetType: "deposits" as AssetType,
 	},
 	{
 		id: 4,
 		title: "Precious Metals",
 		description: "Gold, silver (physical or ETFs)",
-		icon: MedalIcon,
+		icon: "diamond-line",
 		assetType: "precious_metals" as AssetType,
 	},
 	{
 		id: 5,
 		title: "Real Estate",
 		description: "Properties, REITs, crowdfunding",
-		icon: BuildingApartmentIcon,
+		icon: "building-line",
 		assetType: "real_estate" as AssetType,
 	},
 	{
 		id: 6,
 		title: "Private Investments",
 		description: "Loans, crowdlending, equity stakes",
-		icon: HandCoinsIcon,
+		icon: "hand-coin-line",
 		assetType: "private_investments" as AssetType,
 	},
 	{
 		id: 7,
 		title: "Cash",
 		description: "Cash, checking accounts",
-		icon: CoinsIcon,
+		icon: "cash-line",
 		assetType: "cash" as AssetType,
 	},
 	{
 		id: 8,
 		title: "Crypto",
 		description: "Bitcoin, Ethereum, others",
-		icon: CurrencyBtcIcon,
+		icon: "btc-line",
 		assetType: "crypto" as AssetType,
 	},
 ];
@@ -94,6 +85,26 @@ export default function Step5() {
 
 	const isNextButtonDisabled = pendingAssets.length < 2;
 	const buttonText = pendingAssets.length == 0 ? "Continue" : pendingAssets.length < 2 ? "Add at least 2 investments" : "Continue";
+
+	const buttonScale = useSharedValue(1);
+
+	const buttonAnimatedStyle = useAnimatedStyle(() => ({
+		transform: [{ scale: buttonScale.value }],
+	}));
+
+	const handlePressIn = () => {
+		buttonScale.value = withTiming(0.98, {
+			duration: 100,
+			easing: Easing.out(Easing.ease),
+		});
+	};
+
+	const handlePressOut = () => {
+		buttonScale.value = withTiming(1, {
+			duration: 150,
+			easing: Easing.out(Easing.ease),
+		});
+	};
 
 	const handleContinue = async () => {
 		Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
@@ -120,7 +131,7 @@ export default function Step5() {
 			{/* Header */}
 			<View className="px-5 pt-5 flex-row items-center justify-between">
 				<Pressable className="w-[15%] py-1" onPress={() => router.back()}>
-					<ArrowLeftIcon color={Colors.foreground} size={24} />
+					<Icon name="arrow-left-line" size="24" color={Colors.foreground} fallback={null} />
 				</Pressable>
 				<Text className="text-muted-foreground text-sm text-center font-lausanne-regular leading-normal">
 					Step {STEP_NUMBER} of {TOTAL_STEPS}
@@ -166,20 +177,24 @@ export default function Step5() {
 						height: 60,
 					}}
 				/>
-				<Pressable
-					disabled={isNextButtonDisabled}
-					onPress={handleContinue}
-					className={`bg-foreground flex-row items-center justify-center gap-3 py-4 border border-foreground ${isNextButtonDisabled ? "opacity-50" : ""}`}
-				>
-					<Text className="text-white font-lausanne-light text-xl">
-						{buttonText}
-					</Text>
-					<AnimatedArrow
-						color={Colors.accent}
-						size={21}
-						animate={!isNextButtonDisabled}
-					/>
-				</Pressable>
+				<Animated.View style={[buttonAnimatedStyle]}>
+					<Pressable
+						disabled={isNextButtonDisabled}
+						onPressIn={handlePressIn}
+						onPressOut={handlePressOut}
+						onPress={handleContinue}
+						className={`bg-foreground flex-row items-center justify-center gap-3 py-4 border border-foreground ${isNextButtonDisabled ? "opacity-50" : ""}`}
+					>
+						<Text className="text-white font-lausanne-light text-xl">
+							{buttonText}
+						</Text>
+						<AnimatedArrow
+							color={Colors.accent}
+							size={21}
+							animate={!isNextButtonDisabled}
+						/>
+					</Pressable>
+				</Animated.View>
 			</View>
 		</View>
 	);

@@ -4,9 +4,11 @@ import { registerForPushNotificationsAsync, requestNotificationPermissions } fro
 import * as Haptics from "expo-haptics";
 import { router, useLocalSearchParams } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { ArrowBendRightUpIcon, ArrowLeftIcon } from "phosphor-react-native";
+import { ArrowBendRightUpIcon } from "phosphor-react-native";
 import React from "react";
 import { Pressable, Text, View } from "react-native";
+import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing } from "react-native-reanimated";
+import Icon from "react-native-remix-icon";
 
 const STEP_NUMBER = 7;
 const TOTAL_STEPS = 7;
@@ -18,7 +20,47 @@ export default function Step7() {
 		goals: string;
 	}>();
 
+	const buttonScaleSkip = useSharedValue(1);
+	const buttonScaleEnable = useSharedValue(1);
+
+	const buttonSkipAnimatedStyle = useAnimatedStyle(() => ({
+		transform: [{ scale: buttonScaleSkip.value }],
+	}));
+
+	const buttonEnableAnimatedStyle = useAnimatedStyle(() => ({
+		transform: [{ scale: buttonScaleEnable.value }],
+	}));
+
+	const handlePressInSkip = () => {
+		buttonScaleSkip.value = withTiming(0.98, {
+			duration: 100,
+			easing: Easing.out(Easing.ease),
+		});
+	};
+
+	const handlePressOutSkip = () => {
+		buttonScaleSkip.value = withTiming(1, {
+			duration: 150,
+			easing: Easing.out(Easing.ease),
+		});
+	};
+
+	const handlePressInEnable = () => {
+		buttonScaleEnable.value = withTiming(0.98, {
+			duration: 100,
+			easing: Easing.out(Easing.ease),
+		});
+	};
+
+	const handlePressOutEnable = () => {
+		buttonScaleEnable.value = withTiming(1, {
+			duration: 150,
+			easing: Easing.out(Easing.ease),
+		});
+	};
+
 	async function enableNotifications() {
+		Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
 		await requestNotificationPermissions();
 		const token = await registerForPushNotificationsAsync();
 		if (token) {
@@ -35,7 +77,7 @@ export default function Step7() {
 			{/* Header */}
 			<View className="px-5 pt-5 flex-row items-center justify-between">
 				<Pressable className="w-[15%] py-1" onPress={() => router.back()}>
-					<ArrowLeftIcon color={Colors.foreground} size={24} />
+					<Icon name="arrow-left-line" size="24" color={Colors.foreground} fallback={null} />
 				</Pressable>
 				<Text className="text-muted-foreground text-sm text-center font-lausanne-regular leading-normal">
 					Step {STEP_NUMBER} of {TOTAL_STEPS}
@@ -85,22 +127,30 @@ export default function Step7() {
 
 			{/* Footer with Next Button */}
 			<View className="px-5 pb-5 pt-4 flex-row items-center justify-between gap-2">
-				<Pressable
-					onPress={() => {
-						Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
-						router.push({ pathname: "/(onboarding)/step-8", params: { name, profile, goals } });
-					}}
-					className="bg-secondary flex-row items-center justify-center gap-3 py-4 border border-secondary flex-grow max-w-36">
-					<Text className="text-foreground font-lausanne-light text-xl">
-						Not now
-					</Text>
-				</Pressable>
-				<Pressable
-					onPress={enableNotifications}
-					className="bg-foreground flex-row items-center justify-center gap-3 py-4 border border-foreground flex-grow">
-					<Text className="text-white font-lausanne-light text-xl">Enable</Text>
-					<AnimatedArrow color={Colors.accent} size={21} animate={true} />
-				</Pressable>
+				<Animated.View style={[{ flex: 1, maxWidth: 144 }, buttonSkipAnimatedStyle]}>
+					<Pressable
+						onPressIn={handlePressInSkip}
+						onPressOut={handlePressOutSkip}
+						onPress={() => {
+							Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
+							router.push({ pathname: "/(onboarding)/step-8", params: { name, profile, goals } });
+						}}
+						className="bg-secondary flex-row items-center justify-center gap-3 py-4 border border-secondary">
+						<Text className="text-foreground font-lausanne-light text-xl">
+							Skip
+						</Text>
+					</Pressable>
+				</Animated.View>
+				<Animated.View style={[{ flex: 1 }, buttonEnableAnimatedStyle]}>
+					<Pressable
+						onPressIn={handlePressInEnable}
+						onPressOut={handlePressOutEnable}
+						onPress={enableNotifications}
+						className="bg-foreground flex-row items-center justify-center gap-3 py-4 border border-foreground">
+						<Text className="text-white font-lausanne-light text-xl">Get alerts</Text>
+						<AnimatedArrow color={Colors.accent} size={21} animate={true} />
+					</Pressable>
+				</Animated.View>
 			</View>
 		</View>
 	);

@@ -15,6 +15,7 @@ module.exports = {
         accent: Colors.accent,
         border: Colors.border,
         input: Colors.input,
+        placeholder: Colors.placeholder,
       },
       borderRadius: {
         sm: ".25rem",

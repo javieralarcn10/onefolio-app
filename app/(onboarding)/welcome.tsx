@@ -7,9 +7,30 @@ import { StatusBar } from "expo-status-bar";
 import { TrendUpIcon } from "phosphor-react-native";
 import React, { useLayoutEffect, useState } from "react";
 import { Pressable, Text, View } from "react-native";
+import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing } from "react-native-reanimated";
 
 export default function Welcome() {
   const [completedOnboarding, setCompletedOnboarding] = useState(false);
+
+  const buttonScale = useSharedValue(1);
+
+  const buttonAnimatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: buttonScale.value }],
+  }));
+
+  const handlePressIn = () => {
+    buttonScale.value = withTiming(0.98, {
+      duration: 100,
+      easing: Easing.out(Easing.ease),
+    });
+  };
+
+  const handlePressOut = () => {
+    buttonScale.value = withTiming(1, {
+      duration: 150,
+      easing: Easing.out(Easing.ease),
+    });
+  };
 
   const checkOnboardingCompleted = async () => {
     const completedOnboarding = await hasCompletedOnboarding();
@@ -40,15 +61,19 @@ export default function Welcome() {
         <Text className="text-muted-foreground text-lg font-lausanne-light leading-normal mb-8">
           Understand how geopolitics and macro events affect your wealth across countries, currencies and sectors.
         </Text>
-        <Pressable
-          className="bg-foreground flex-row items-center justify-center gap-3 py-4 border border-foreground"
-          onPress={() => {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
-            router.push("/(onboarding)/step-1");
-          }}>
-          <Text className="text-background font-lausanne-light text-xl">Start now</Text>
-          <TrendUpIcon color={Colors.accent} size={21} />
-        </Pressable>
+        <Animated.View style={[buttonAnimatedStyle]}>
+          <Pressable
+            className="bg-foreground flex-row items-center justify-center gap-3 py-4 border border-foreground"
+            onPressIn={handlePressIn}
+            onPressOut={handlePressOut}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
+              router.push("/(onboarding)/step-1");
+            }}>
+            <Text className="text-background font-lausanne-light text-xl">Start now</Text>
+            <TrendUpIcon color={Colors.accent} size={21} />
+          </Pressable>
+        </Animated.View>
         <Text className="text-foreground text-sm text-center mt-2 font-lausanne-light leading-normal">
           By continuing, you accept our <Text className="font-lausanne-medium">Terms of Use</Text>.
         </Text>

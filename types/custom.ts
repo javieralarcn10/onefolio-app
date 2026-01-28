@@ -1,3 +1,5 @@
+import { IconName } from "react-native-remix-icon";
+
 export type User = {
 	id: string;
 	accessToken: string;
@@ -16,6 +18,16 @@ export type OnboardingOption = {
 	feedback?: string;
 	icon?: React.ElementType;
 };
+
+export type AssetOption = {
+	id: number;
+	title: string;
+	description: string;
+	icon: IconName;
+	assetType: AssetType;
+};
+
+export type BiometricType = "faceid" | "fingerprint" | "none";
 
 // Asset Types
 export type AssetType =

@@ -1,7 +1,8 @@
 import { Colors } from "@/constants/colors";
-import { EraserIcon, MagnifyingGlassIcon, XIcon } from "phosphor-react-native";
+import { EraserIcon, } from "phosphor-react-native";
 import { useState } from "react";
 import { Pressable, Text, TextInput, View } from "react-native";
+import Icon from "react-native-remix-icon";
 
 // Mock data for stocks - in production this would come from an API
 const MOCK_STOCKS = [
@@ -107,7 +108,7 @@ export function AssetSearch({
 
 			{/* Search Input */}
 			<View className="flex-row items-center gap-2 border-b border-foreground">
-				<MagnifyingGlassIcon color={Colors.placeholder} size={18} />
+				<Icon name="search-line" size="17" color={Colors.placeholder} fallback={null} />
 				<TextInput
 					autoCorrect={false}
 					onChangeText={setSearchQuery}

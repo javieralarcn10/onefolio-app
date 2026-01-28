@@ -1,17 +1,12 @@
 import { Colors } from "@/constants/colors";
-import { AssetType } from "@/types/custom";
+import { AssetOption as AssetOptionType } from "@/types/custom";
 import { router } from "expo-router";
 import { PlusIcon } from "phosphor-react-native";
 import { Pressable, Text, View } from "react-native";
+import Icon from "react-native-remix-icon";
 
 type AssetOptionProps = {
-	asset: {
-		id: number;
-		title: string;
-		description: string;
-		icon: React.ElementType;
-		assetType: AssetType;
-	};
+	asset: AssetOptionType;
 	count?: number;
 };
 
@@ -32,10 +27,7 @@ export function AssetOption({ asset, count = 0 }: AssetOptionProps) {
 				<View className="flex-row flex-grow items-center gap-3 flex-1">
 					<View
 						className="aspect-square flex items-center justify-center w-12 bg-secondary">
-						<asset.icon
-							color={Colors.foreground}
-							size={20}
-						/>
+						<Icon name={asset.icon} size="20" color={Colors.foreground} fallback={null} />
 					</View>
 					<View className="flex-1">
 						<View className="flex-row items-center gap-2">

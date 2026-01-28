@@ -1,7 +1,7 @@
 import { HapticTab } from '@/components/haptic-tab';
 import { Colors } from '@/constants/colors';
 import { Tabs } from 'expo-router';
-import { CirclesThreePlusIcon, DetectiveIcon, HouseIcon, UserIcon } from 'phosphor-react-native';
+import Icon from "react-native-remix-icon";
 import React from 'react';
 import { View } from 'react-native';
 
@@ -30,7 +30,7 @@ export default function TabLayout() {
             title: "Home",
             tabBarIcon: ({ color, focused }) =>
               <View className="relative">
-                <HouseIcon size={28} weight="regular" color={color} />
+                <Icon name="home-6-line" size="27" color={color} fallback={null} />
                 <View style={{
                   backgroundColor: Colors.accent,
                   width: 6.5,
@@ -59,7 +59,7 @@ export default function TabLayout() {
             title: "Assets",
             tabBarIcon: ({ color, focused }) => (
               <View className="relative">
-                <CirclesThreePlusIcon size={29} weight="regular" color={color} />
+                <Icon name="apps-2-add-line" size="25" color={color} fallback={null} />
                 <View style={{
                   backgroundColor: Colors.accent,
                   width: 6.5,
@@ -69,7 +69,7 @@ export default function TabLayout() {
                   bottom: -11,
                   left: '50%',
                   opacity: focused ? 1 : 0,
-                  transform: [{ translateX: -4.5 }],
+                  transform: [{ translateX: -6 }],
                 }} />
               </View>
             ),
@@ -89,7 +89,7 @@ export default function TabLayout() {
             title: "Analysis",
             tabBarIcon: ({ color, focused }) => (
               <View className="relative">
-                <DetectiveIcon size={26} weight="regular" color={color} />
+                <Icon name="scan-2-line" size="26" color={color} fallback={null} />
                 <View style={{
                   backgroundColor: Colors.accent,
                   width: 6.5,
@@ -119,7 +119,7 @@ export default function TabLayout() {
             title: "Profile",
             tabBarIcon: ({ color, focused }) =>
               <View className="relative">
-                <UserIcon size={28} weight="regular" color={color} />
+                <Icon name="user-3-line" size="26" color={color} fallback={null} />
                 <View style={{
                   backgroundColor: Colors.accent,
                   width: 6.5,
@@ -129,7 +129,7 @@ export default function TabLayout() {
                   bottom: -11,
                   left: '50%',
                   opacity: focused ? 1 : 0,
-                  transform: [{ translateX: -4.5 }],
+                  transform: [{ translateX: -5.5 }],
                 }} />
               </View>,
             tabBarLabelStyle: {

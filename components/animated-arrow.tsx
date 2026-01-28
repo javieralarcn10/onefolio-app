@@ -1,6 +1,7 @@
 import { ArrowRightIcon } from "phosphor-react-native";
 import { useEffect } from "react";
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withRepeat, withTiming } from "react-native-reanimated";
+import Icon from "react-native-remix-icon";
 
 export const AnimatedArrow = ({ size, color, animate = true }: { size: number; color: string; animate?: boolean }) => {
   const offset = useSharedValue(0);
@@ -19,7 +20,8 @@ export const AnimatedArrow = ({ size, color, animate = true }: { size: number; c
 
   return (
     <Animated.View style={animate ? animatedStyles : undefined}>
-      <ArrowRightIcon color={color} size={size} />
+      <Icon name="arrow-right-line" size={size} color={color} fallback={null} />
+      {/* <ArrowRightIcon color={color} size={size} /> */}
     </Animated.View>
   );
 };

@@ -1,5 +1,5 @@
 import { Colors } from "@/constants/colors";
-import { CheckIcon, XIcon } from "phosphor-react-native";
+import Icon from "react-native-remix-icon";
 import React, { FC, useEffect } from "react";
 import { Pressable, StyleSheet } from "react-native";
 import Animated, { useAnimatedStyle, useSharedValue, withSpring, interpolateColor, ZoomIn } from "react-native-reanimated";
@@ -84,11 +84,11 @@ export const CustomSwitch: FC<Props> = ({ value = false, onValueChange }) => {
             // Key prop ensures ZoomIn animation triggers on state change
             // Icons provide clear visual feedback matching Discord's design language
             <Animated.View key="check" entering={ZoomIn}>
-              <CheckIcon size={13} color={TRACK_ACTIVE_COLOR} weight="bold" />
+              <Icon name="check-line" size="15" color={TRACK_ACTIVE_COLOR} fallback={null} />
             </Animated.View>
           ) : (
             <Animated.View key="x" entering={ZoomIn}>
-              <XIcon size={14} color={TRACK_DEFAULT_COLOR} weight="bold" />
+              <Icon name="close-line" size="15" color={TRACK_DEFAULT_COLOR} fallback={null} />
             </Animated.View>
           )}
         </Animated.View>

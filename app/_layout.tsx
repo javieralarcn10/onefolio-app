@@ -202,6 +202,9 @@ function RootNavigator({ showBlur, setShowBlur }: { showBlur: boolean; setShowBl
         }}>
         <Stack.Protected guard={session}>
           <Stack.Screen name="(tabs)" options={{ headerShown: false, animation: "fade", animationDuration: 250 }} />
+          <Stack.Screen name="account-settings" options={{ headerShown: false }} />
+          <Stack.Screen name="currency-settings" options={{ headerShown: false }} />
+          <Stack.Screen name="settings" options={{ headerShown: false }} />
         </Stack.Protected>
 
         <Stack.Protected guard={!session}>
