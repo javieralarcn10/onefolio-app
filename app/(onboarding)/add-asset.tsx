@@ -87,6 +87,45 @@ export default function AddInvestment() {
 	const [selectedCryptoSymbol, setSelectedCryptoSymbol] = useState<string | null>(null);
 	const [selectedCryptoName, setSelectedCryptoName] = useState<string | null>(null);
 
+	// Field errors
+	const [errors, setErrors] = useState<Record<string, string>>({});
+
+	// Minimum date for purchase dates (reasonable historical limit - 1900)
+	const MIN_DATE = new Date(1900, 0, 1);
+	// Maximum date is today
+	const MAX_DATE = new Date();
+
+	// Validation helper for numeric fields
+	const isValidNumber = (value: string): boolean => {
+		if (!value.trim()) return false;
+		// Remove commas used as thousand separators
+		const normalized = value.replace(/,/g, ".");
+		// Check if it's a valid positive number
+		const num = parseFloat(normalized);
+		return !isNaN(num) && num > 0;
+	};
+
+	// Get numeric error message
+	const getNumericError = (value: string, fieldName: string): string | undefined => {
+		if (!value.trim()) return undefined; // Empty is not an error (required validation handles this)
+		if (!isValidNumber(value)) {
+			return `Please enter a valid ${fieldName}`;
+		}
+		return undefined;
+	};
+
+	// Validate a field and update errors
+	const validateField = (field: string, value: string, fieldLabel: string) => {
+		const error = getNumericError(value, fieldLabel);
+		setErrors(prev => {
+			if (error) {
+				return { ...prev, [field]: error };
+			}
+			const { [field]: _, ...rest } = prev;
+			return rest;
+		});
+	};
+
 	// Button animation
 	const buttonScale = useSharedValue(1);
 
@@ -108,22 +147,25 @@ export default function AddInvestment() {
 		});
 	};
 
-	// Check if form is valid (all required fields filled)
+	// Check if form is valid (all required fields filled and no errors)
 	const isFormValid = useMemo(() => {
+		// Check if there are any validation errors
+		if (Object.keys(errors).length > 0) return false;
+
 		// Type-specific validation
 		switch (assetType) {
 			case "stocks_etfs":
 				return (
 					selectedStockTicker !== null &&
 					selectedStockName !== null &&
-					quantity !== "" && parseFloat(quantity) > 0 &&
-					purchasePrice !== "" && parseFloat(purchasePrice) > 0
+					quantity !== "" && isValidNumber(quantity) &&
+					purchasePrice !== "" && isValidNumber(purchasePrice)
 				);
 
 			case "bonds":
 				return (
 					name.trim() !== "" &&
-					amount !== "" && parseFloat(amount) > 0 &&
+					amount !== "" && isValidNumber(amount) &&
 					maturityDate !== null
 				);
 
@@ -131,7 +173,7 @@ export default function AddInvestment() {
 				return (
 					name.trim() !== "" &&
 					bankName.trim() !== "" &&
-					amount !== "" && parseFloat(amount) > 0
+					amount !== "" && isValidNumber(amount)
 				);
 
 			case "precious_metals":
@@ -140,22 +182,24 @@ export default function AddInvestment() {
 						name.trim() !== "" &&
 						metalType !== null &&
 						metalFormat !== null &&
-						quantity !== "" && parseFloat(quantity) > 0 &&
+						quantity !== "" && isValidNumber(quantity) &&
 						quantityUnit !== null
 					);
 				}
+				// ETF requires purchase price for profitability calculation
 				return (
 					name.trim() !== "" &&
 					metalType !== null &&
 					metalFormat !== null &&
-					quantity !== "" && parseFloat(quantity) > 0
+					quantity !== "" && isValidNumber(quantity) &&
+					purchasePrice !== "" && isValidNumber(purchasePrice)
 				);
 
 			case "real_estate":
 				return (
 					name.trim() !== "" &&
 					propertyType !== null &&
-					estimatedValue !== "" && parseFloat(estimatedValue) > 0 &&
+					estimatedValue !== "" && isValidNumber(estimatedValue) &&
 					country.trim() !== "" &&
 					city.trim() !== "" &&
 					zip.trim() !== ""
@@ -165,21 +209,22 @@ export default function AddInvestment() {
 				return (
 					name.trim() !== "" &&
 					investmentType !== null &&
-					amount !== "" && parseFloat(amount) > 0
+					amount !== "" && isValidNumber(amount)
 				);
 
 			case "cash":
 				return (
 					name.trim() !== "" &&
 					accountName.trim() !== "" &&
-					amount !== "" && parseFloat(amount) > 0
+					amount !== "" && isValidNumber(amount)
 				);
 
 			case "crypto":
 				return (
 					selectedCryptoSymbol !== null &&
 					selectedCryptoName !== null &&
-					quantity !== "" && parseFloat(quantity) > 0
+					quantity !== "" && isValidNumber(quantity) &&
+					purchasePrice !== "" && isValidNumber(purchasePrice)
 				);
 
 			default:
@@ -189,7 +234,7 @@ export default function AddInvestment() {
 		assetType, selectedStockTicker, selectedStockName, quantity, purchasePrice,
 		name, amount, maturityDate, bankName, metalType, metalFormat, quantityUnit,
 		propertyType, estimatedValue, country, city, zip, investmentType, accountName,
-		selectedCryptoSymbol, selectedCryptoName
+		selectedCryptoSymbol, selectedCryptoName, errors
 	]);
 
 	const handleSave = async () => {
@@ -359,22 +404,34 @@ export default function AddInvestment() {
 			<InputField
 				label="Quantity"
 				value={quantity}
-				onChangeText={setQuantity}
+				onChangeText={(text) => {
+					setQuantity(text);
+					validateField("quantity", text, "quantity");
+				}}
 				placeholder="e.g., 10"
 				keyboardType="decimal-pad"
+				required
+				error={errors.quantity}
 			/>
 			<InputField
 				label="Purchase Price (per share)"
 				value={purchasePrice}
-				onChangeText={setPurchasePrice}
+				onChangeText={(text) => {
+					setPurchasePrice(text);
+					validateField("purchasePrice", text, "price");
+				}}
 				placeholder="e.g., 150.00"
 				keyboardType="decimal-pad"
+				required
+				error={errors.purchasePrice}
 			/>
 			<DateField
 				label="Purchase Date"
 				value={purchaseDate}
 				onChange={setPurchaseDate}
 				optional
+				minimumDate={MIN_DATE}
+				maximumDate={MAX_DATE}
 			/>
 			<View className="mb-7">
 				<SectionLabel>Currency</SectionLabel>
@@ -390,31 +447,45 @@ export default function AddInvestment() {
 				value={name}
 				onChangeText={setName}
 				placeholder="e.g., US Treasury 10Y"
+				required
 			/>
 			<InputField
 				label="Amount Invested"
 				value={amount}
-				onChangeText={setAmount}
+				onChangeText={(text) => {
+					setAmount(text);
+					validateField("amount", text, "amount");
+				}}
 				placeholder="e.g., 10000"
 				keyboardType="decimal-pad"
+				required
+				error={errors.amount}
 			/>
 			<InputField
 				label="Interest Rate (%)"
 				value={interestRate}
-				onChangeText={setInterestRate}
+				onChangeText={(text) => {
+					setInterestRate(text);
+					validateField("interestRate", text, "interest rate");
+				}}
 				placeholder="e.g., 4.5"
 				keyboardType="decimal-pad"
+				error={errors.interestRate}
+				optional
 			/>
 			<DateField
 				label="Purchase Date"
 				value={purchaseDate}
 				onChange={setPurchaseDate}
 				optional
+				minimumDate={MIN_DATE}
+				maximumDate={MAX_DATE}
 			/>
 			<DateField
 				label="Maturity Date"
 				value={maturityDate}
 				onChange={setMaturityDate}
+				minimumDate={MIN_DATE}
 			/>
 			<View className="mb-7">
 				<SectionLabel>Currency</SectionLabel>
@@ -430,32 +501,45 @@ export default function AddInvestment() {
 				value={name}
 				onChangeText={setName}
 				placeholder="e.g., High-Yield Savings"
+				required
 			/>
 			<InputField
 				label="Bank Name"
 				value={bankName}
 				onChangeText={setBankName}
 				placeholder="e.g., Chase, BBVA"
+				required
 			/>
 			<InputField
 				label="Amount"
 				value={amount}
-				onChangeText={setAmount}
+				onChangeText={(text) => {
+					setAmount(text);
+					validateField("amount", text, "amount");
+				}}
 				placeholder="e.g., 5000"
 				keyboardType="decimal-pad"
+				required
+				error={errors.amount}
 			/>
 			<InputField
 				label="Interest Rate (%) - Annual"
 				value={interestRate}
-				onChangeText={setInterestRate}
+				onChangeText={(text) => {
+					setInterestRate(text);
+					validateField("interestRate", text, "interest rate");
+				}}
 				placeholder="e.g., 3.5"
 				keyboardType="decimal-pad"
+				error={errors.interestRate}
+				optional
 			/>
 			<DateField
 				label="Maturity Date"
 				value={maturityDate}
 				onChange={setMaturityDate}
 				optional
+				minimumDate={MIN_DATE}
 			/>
 			<View className="mb-7">
 				<SectionLabel>Currency</SectionLabel>
@@ -471,9 +555,10 @@ export default function AddInvestment() {
 				value={name}
 				onChangeText={setName}
 				placeholder="e.g., Gold Coins, Silver ETF"
+				required
 			/>
 			<View className="mb-7">
-				<SectionLabel>Metal Type</SectionLabel>
+				<SectionLabel required>Metal Type</SectionLabel>
 				<ChipSelector
 					options={METAL_TYPES}
 					selected={metalType}
@@ -482,7 +567,7 @@ export default function AddInvestment() {
 			</View>
 			<View className="mb-7 flex flex-row items-start justify-between gap-2">
 				<View>
-					<SectionLabel>Format</SectionLabel>
+					<SectionLabel required>Format</SectionLabel>
 					<ChipSelector
 						options={METAL_FORMATS}
 						selected={metalFormat}
@@ -498,7 +583,7 @@ export default function AddInvestment() {
 				{/* Show quantity unit selector only for physical */}
 				{metalFormat === "physical" && (
 					<View>
-						<SectionLabel>Quantity Unit</SectionLabel>
+						<SectionLabel required>Quantity Unit</SectionLabel>
 						<ChipSelector
 							options={QUANTITY_UNITS}
 							selected={quantityUnit}
@@ -515,9 +600,14 @@ export default function AddInvestment() {
 						: "Quantity (units)"
 				}
 				value={quantity}
-				onChangeText={setQuantity}
+				onChangeText={(text) => {
+					setQuantity(text);
+					validateField("quantity", text, "quantity");
+				}}
 				placeholder="e.g., 10"
 				keyboardType="decimal-pad"
+				required
+				error={errors.quantity}
 			/>
 
 			{/* Only show purchase price for ETF - physical value is calculated from spot price */}
@@ -525,9 +615,14 @@ export default function AddInvestment() {
 				<InputField
 					label="Purchase Price (per unit)"
 					value={purchasePrice}
-					onChangeText={setPurchasePrice}
+					onChangeText={(text) => {
+						setPurchasePrice(text);
+						validateField("purchasePrice", text, "price");
+					}}
 					placeholder="e.g., 180.00"
 					keyboardType="decimal-pad"
+					error={errors.purchasePrice}
+					required
 				/>
 			)}
 
@@ -545,9 +640,10 @@ export default function AddInvestment() {
 				value={name}
 				onChangeText={setName}
 				placeholder="e.g., Downtown Apartment"
+				required
 			/>
 			<View className="mb-7">
-				<SectionLabel>Property Type</SectionLabel>
+				<SectionLabel required>Property Type</SectionLabel>
 				<ChipSelector
 					options={PROPERTY_TYPES}
 					selected={propertyType}
@@ -557,14 +653,20 @@ export default function AddInvestment() {
 			<InputField
 				label="Purchase Price"
 				value={estimatedValue}
-				onChangeText={setEstimatedValue}
+				onChangeText={(text) => {
+					setEstimatedValue(text);
+					validateField("estimatedValue", text, "price");
+				}}
 				placeholder="e.g., 250000"
 				keyboardType="decimal-pad"
+				required
+				error={errors.estimatedValue}
 			/>
 			<CountryField
 				label="Country"
 				value={country}
 				onChange={setCountry}
+				required
 			/>
 			{/* City and Zip in a row */}
 			<View className="flex-row gap-4 mb-7">
@@ -573,12 +675,14 @@ export default function AddInvestment() {
 					value={city}
 					onChangeText={setCity}
 					placeholder="e.g., Madrid"
+					required
 				/>
 				<InlineInputField
 					label="Zip"
 					value={zip}
 					onChangeText={setZip}
 					placeholder="e.g., 28001"
+					required
 				/>
 			</View>
 			<View className="mb-7">
@@ -595,9 +699,10 @@ export default function AddInvestment() {
 				value={name}
 				onChangeText={setName}
 				placeholder="e.g., Startup XYZ"
+				required
 			/>
 			<View className="mb-7">
-				<SectionLabel>Investment Type</SectionLabel>
+				<SectionLabel required>Investment Type</SectionLabel>
 				<ChipSelector
 					options={INVESTMENT_TYPES}
 					selected={investmentType}
@@ -607,22 +712,33 @@ export default function AddInvestment() {
 			<InputField
 				label="Amount Invested"
 				value={amount}
-				onChangeText={setAmount}
+				onChangeText={(text) => {
+					setAmount(text);
+					validateField("amount", text, "amount");
+				}}
 				placeholder="e.g., 5000"
 				keyboardType="decimal-pad"
+				required
+				error={errors.amount}
 			/>
 			<InputField
 				label="Expected Return (%)"
 				value={expectedReturn}
-				onChangeText={setExpectedReturn}
+				onChangeText={(text) => {
+					setExpectedReturn(text);
+					validateField("expectedReturn", text, "expected return");
+				}}
 				placeholder="e.g., 12"
 				keyboardType="decimal-pad"
+				error={errors.expectedReturn}
+				optional
 			/>
 			<DateField
 				label="Maturity Date"
 				value={maturityDate}
 				onChange={setMaturityDate}
 				optional
+				minimumDate={MIN_DATE}
 			/>
 			<View className="mb-7">
 				<SectionLabel>Currency</SectionLabel>
@@ -638,19 +754,26 @@ export default function AddInvestment() {
 				value={name}
 				onChangeText={setName}
 				placeholder="e.g., Emergency Fund"
+				required
 			/>
 			<InputField
 				label="Account / Location"
 				value={accountName}
 				onChangeText={setAccountName}
 				placeholder="e.g., Chase Checking"
+				required
 			/>
 			<InputField
 				label="Amount"
 				value={amount}
-				onChangeText={setAmount}
+				onChangeText={(text) => {
+					setAmount(text);
+					validateField("amount", text, "amount");
+				}}
 				placeholder="e.g., 10000"
 				keyboardType="decimal-pad"
+				required
+				error={errors.amount}
 			/>
 			<View className="mb-7">
 				<SectionLabel>Currency</SectionLabel>
@@ -677,16 +800,26 @@ export default function AddInvestment() {
 			<InputField
 				label="Quantity"
 				value={quantity}
-				onChangeText={setQuantity}
+				onChangeText={(text) => {
+					setQuantity(text);
+					validateField("quantity", text, "quantity");
+				}}
 				placeholder="e.g., 0.5"
 				keyboardType="decimal-pad"
+				required
+				error={errors.quantity}
 			/>
 			<InputField
 				label="Purchase Price (per unit)"
 				value={purchasePrice}
-				onChangeText={setPurchasePrice}
+				onChangeText={(text) => {
+					setPurchasePrice(text);
+					validateField("purchasePrice", text, "price");
+				}}
 				placeholder="e.g., 45000"
 				keyboardType="decimal-pad"
+				error={errors.purchasePrice}
+				required
 			/>
 			<View className="mb-7">
 				<SectionLabel>Currency</SectionLabel>

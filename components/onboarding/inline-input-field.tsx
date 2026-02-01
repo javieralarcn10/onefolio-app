@@ -1,5 +1,6 @@
 import { Colors } from "@/constants/colors";
 import { Text, TextInput, View } from "react-native";
+import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 
 type InlineInputFieldProps = {
 	label: string;
@@ -7,6 +8,8 @@ type InlineInputFieldProps = {
 	onChangeText: (text: string) => void;
 	placeholder: string;
 	keyboardType?: "default" | "numeric" | "decimal-pad";
+	error?: string;
+	required?: boolean;
 };
 
 export function InlineInputField({
@@ -15,11 +18,13 @@ export function InlineInputField({
 	onChangeText,
 	placeholder,
 	keyboardType = "default",
+	error,
+	required = false,
 }: InlineInputFieldProps) {
 	return (
 		<View className="flex-1">
 			<Text className="font-lausanne-regular text-foreground text-sm">
-				{label}
+				{label}{required && <Text className="text-red-700"> *</Text>}
 			</Text>
 			<TextInput
 				autoCorrect={false}
@@ -29,9 +34,16 @@ export function InlineInputField({
 				placeholder={placeholder}
 				placeholderTextColor={Colors.placeholder}
 				keyboardType={keyboardType}
-				className="border-b border-foreground text-foreground font-lausanne-light"
+				className={`border-b ${error ? "border-red-600" : "border-foreground"} text-foreground font-lausanne-light`}
 				style={{ fontSize: 17, height: 40, textAlignVertical: "bottom" }}
 			/>
+			{error && (
+				<Animated.View entering={FadeIn.duration(200)} exiting={FadeOut.duration(150)}>
+					<Text className="text-red-600 text-sm font-lausanne-regular mt-2">
+						{error}
+					</Text>
+				</Animated.View>
+			)}
 		</View>
 	);
 }

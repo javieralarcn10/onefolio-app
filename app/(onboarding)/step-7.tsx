@@ -11,11 +11,14 @@ import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing } from "
 import Icon from "react-native-remix-icon";
 
 const STEP_NUMBER = 7;
-const TOTAL_STEPS = 7;
+const TOTAL_STEPS = 8;
 
 export default function Step7() {
-	const { name, profile, goals } = useLocalSearchParams<{
+	const { name, email, googleId, appleId, profile, goals } = useLocalSearchParams<{
 		name: string;
+		email?: string;
+		googleId?: string;
+		appleId?: string;
 		profile: string;
 		goals: string;
 	}>();
@@ -64,9 +67,9 @@ export default function Step7() {
 		await requestNotificationPermissions();
 		const token = await registerForPushNotificationsAsync();
 		if (token) {
-			router.push({ pathname: "/(onboarding)/step-8", params: { name, profile, goals, notificationToken: token } });
+			router.push({ pathname: "/(onboarding)/step-8", params: { name, email: email ?? null, googleId: googleId ?? null, appleId: appleId ?? null, profile, goals, notificationToken: token } });
 		} else {
-			router.push({ pathname: "/(onboarding)/step-8", params: { name, profile, goals } });
+			router.push({ pathname: "/(onboarding)/step-8", params: { name, email: email ?? null, googleId: googleId ?? null, appleId: appleId ?? null, profile, goals } });
 		}
 	}
 
@@ -93,12 +96,13 @@ export default function Step7() {
 						Stay ahead of what matters
 					</Text>
 					<Text className="text-lg font-lausanne-light text-muted-foreground leading-normal mb-6">
-						Get alerts when global events or market shifts could impact your investments. We'll notify you about risks so you can act with confidence.
+						Get alerts for bond maturities, earnings reports, and global events. We'll notify you when market shifts impact your investments so you can act with confidence.
 					</Text>
 				</View>
 				<View className="flex-1 items-center justify-center px-2">
-					<Pressable
-						onPress={enableNotifications}
+
+					<View
+						// onPress={enableNotifications}
 						className="bg-[#EFEFED] border border-white items-center justify-center w-[91%] max-w-[340px]"
 						style={{ transform: [{ scale: 0.95 }], borderRadius: 36 }}>
 						<View className="p-5">
@@ -117,7 +121,7 @@ export default function Step7() {
 								</View>
 							</View>
 						</View>
-					</Pressable>
+					</View>
 					<View className="flex-row w-[90%] max-w-[290px] items-center justify-end mt-3 pr-[16%]">
 						<ArrowBendRightUpIcon color={Colors.foreground} size={34} />
 					</View>
@@ -133,7 +137,7 @@ export default function Step7() {
 						onPressOut={handlePressOutSkip}
 						onPress={() => {
 							Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
-							router.push({ pathname: "/(onboarding)/step-8", params: { name, profile, goals } });
+							router.push({ pathname: "/(onboarding)/step-8", params: { name, email: email ?? null, googleId: googleId ?? null, appleId: appleId ?? null, profile, goals } });
 						}}
 						className="bg-secondary flex-row items-center justify-center gap-3 py-4 border border-secondary">
 						<Text className="text-foreground font-lausanne-light text-xl">

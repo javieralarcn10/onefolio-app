@@ -7,9 +7,10 @@ type CountryFieldProps = {
 	label: string;
 	value: string;
 	onChange: (country: string) => void;
+	required?: boolean;
 };
 
-export function CountryField({ label, value, onChange }: CountryFieldProps) {
+export function CountryField({ label, value, onChange, required = false }: CountryFieldProps) {
 	const [show, setShow] = useState(false);
 	const [tempCountry, setTempCountry] = useState<string>(value || "");
 
@@ -36,7 +37,7 @@ export function CountryField({ label, value, onChange }: CountryFieldProps) {
 	return (
 		<View className="mb-7">
 			<Text className="font-lausanne-regular text-foreground text-sm">
-				{label}
+				{label}{required && <Text className="text-red-700"> *</Text>}
 			</Text>
 			<Pressable
 				onPress={openPicker}

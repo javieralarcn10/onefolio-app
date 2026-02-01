@@ -2,12 +2,16 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { useState } from "react";
 import { Keyboard, Modal, Platform, Pressable, Text, View } from "react-native";
 import * as Localization from "expo-localization";
+import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 
 type DateFieldProps = {
 	label: string;
 	value: Date | null;
 	onChange: (date: Date | null) => void;
 	optional?: boolean;
+	minimumDate?: Date;
+	maximumDate?: Date;
+	error?: string;
 };
 
 export function DateField({
@@ -15,6 +19,9 @@ export function DateField({
 	value,
 	onChange,
 	optional = false,
+	minimumDate,
+	maximumDate,
+	error,
 }: DateFieldProps) {
 	const locale = Localization.getLocales()[0]?.languageCode || "en-US";
 	const [show, setShow] = useState(false);
@@ -53,11 +60,13 @@ export function DateField({
 	return (
 		<View className="mb-7">
 			<Text className="font-lausanne-regular text-foreground text-sm">
-				{label} {optional && <Text className="text-muted-foreground">(optional)</Text>}
+				{label}
+				{!optional && <Text className="text-red-700"> *</Text>}
+				{optional && <Text className="text-muted-foreground"> (optional)</Text>}
 			</Text>
 			<Pressable
 				onPress={openPicker}
-				className="border-b border-foreground py-2"
+				className={`border-b ${error ? "border-red-600" : "border-foreground"} py-2`}
 			>
 				<Text
 					className={`font-lausanne-light text-lg ${value ? "text-foreground" : "text-placeholder"}`}
@@ -65,6 +74,13 @@ export function DateField({
 					{value ? value.toLocaleDateString() : "Select date"}
 				</Text>
 			</Pressable>
+			{error && (
+				<Animated.View entering={FadeIn.duration(200)} exiting={FadeOut.duration(150)}>
+					<Text className="text-red-600 text-sm font-lausanne-regular mt-2">
+						{error}
+					</Text>
+				</Animated.View>
+			)}
 
 			{/* Android uses native dialog automatically */}
 			{Platform.OS === "android" && show && (
@@ -74,6 +90,8 @@ export function DateField({
 					display="default"
 					locale={locale}
 					onChange={handleChange}
+					minimumDate={minimumDate}
+					maximumDate={maximumDate}
 				/>
 			)}
 
@@ -118,6 +136,8 @@ export function DateField({
 									display="spinner"
 									locale={locale}
 									onChange={handleChange}
+									minimumDate={minimumDate}
+									maximumDate={maximumDate}
 									style={{ height: 200, }}
 								/>
 							</View>

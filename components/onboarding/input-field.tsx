@@ -9,6 +9,8 @@ type InputFieldProps = {
 	placeholder: string;
 	keyboardType?: "default" | "numeric" | "decimal-pad";
 	error?: string;
+	required?: boolean;
+	optional?: boolean;
 };
 
 export function InputField({
@@ -18,11 +20,15 @@ export function InputField({
 	placeholder,
 	keyboardType = "default",
 	error,
+	required = false,
+	optional = false,
 }: InputFieldProps) {
 	return (
 		<View className="mb-7">
 			<Text className="font-lausanne-regular text-foreground text-sm mb-0">
 				{label}
+				{required && <Text className="text-red-700"> *</Text>}
+				{optional && <Text className="text-muted-foreground"> (optional)</Text>}
 			</Text>
 			<TextInput
 				autoCorrect={false}

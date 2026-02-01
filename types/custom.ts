@@ -27,6 +27,8 @@ export type AssetOption = {
 	title: string;
 	description: string;
 	icon: IconName;
+	bgIcon: string;
+	colorIcon: string;
 	assetType: AssetType;
 };
 

@@ -78,6 +78,7 @@ export function AssetSearch({
 			<View className="mb-5">
 				<Text className="font-lausanne-regular text-foreground text-sm mb-2">
 					{type === "stock" ? "Stock / ETF" : "Cryptocurrency"}
+					<Text className="text-red-700"> *</Text>
 				</Text>
 				<View className="flex-row items-center justify-between border border-foreground p-3 bg-secondary">
 					<View className="flex-1">
@@ -104,6 +105,7 @@ export function AssetSearch({
 		<View className="mb-5">
 			<Text className="font-lausanne-regular text-foreground text-sm mb-2">
 				{type === "stock" ? "Search Stock / ETF" : "Search Cryptocurrency"}
+				<Text className="text-red-700"> *</Text>
 			</Text>
 
 			{/* Search Input */}
@@ -126,7 +128,7 @@ export function AssetSearch({
 
 			{/* Results */}
 			{isFocused && filteredResults.length > 0 && (
-				<View className="border border-border border-t-0 border-b-0 bg-secondary absolute top-full left-0 right-0 z-10">
+				<View className="border border-border border-t-0 border-b-0 bg-[#f2f2f2] absolute top-full left-0 right-0 z-10">
 					{filteredResults.map((item) => {
 						const sym = type === "stock" ? (item as any).ticker : (item as any).symbol;
 						return (
@@ -149,7 +151,7 @@ export function AssetSearch({
 
 			{/* No results message */}
 			{isFocused && searchQuery.trim() && filteredResults.length === 0 && (
-				<View className="border border-border border-t-0 px-3 py-4 bg-secondary">
+				<View className="border border-border border-t-0 px-3 py-4 bg-[#f2f2f2]">
 					<Text className="font-lausanne-light text-muted-foreground text-sm text-center">
 						No results found for "{searchQuery}"
 					</Text>

@@ -11,7 +11,7 @@ import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing } from "
 import Icon from "react-native-remix-icon";
 
 const STEP_NUMBER = 3;
-const TOTAL_STEPS = 7;
+const TOTAL_STEPS = 8;
 
 const INVESTMENT_OPTIONS = [
   {
@@ -29,7 +29,7 @@ const INVESTMENT_OPTIONS = [
 ] as const;
 
 export default function Step3() {
-  const { name } = useLocalSearchParams<{ name: string }>();
+  const { name, email, googleId, appleId } = useLocalSearchParams<{ name: string; email?: string; googleId?: string; appleId?: string }>();
 
   const [selectedId, setSelectedId] = useState<number | null>(null);
 
@@ -104,7 +104,7 @@ export default function Step3() {
             onPressOut={handlePressOut}
             onPress={() => {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
-              router.push({ pathname: "/(onboarding)/step-4", params: { name, profile: selectedId !== null ? INVESTMENT_OPTIONS.find(option => option.id === selectedId)?.title : null } });
+              router.push({ pathname: "/(onboarding)/step-4", params: { name, email: email ?? null, googleId: googleId ?? null, appleId: appleId ?? null, profile: selectedId !== null ? INVESTMENT_OPTIONS.find(option => option.id === selectedId)?.title : null } });
             }}
             className={`bg-foreground flex-row items-center justify-center gap-3 py-4 border border-foreground ${isNextButtonDisabled ? "opacity-50" : ""
               }`}>

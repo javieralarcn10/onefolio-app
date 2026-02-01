@@ -1,17 +1,14 @@
 import { Colors } from "@/constants/colors";
-import { hasCompletedOnboarding } from "@/utils/storage";
 import * as Haptics from "expo-haptics";
 import { Image, ImageBackground } from "expo-image";
 import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { TrendUpIcon } from "phosphor-react-native";
-import React, { useLayoutEffect, useState } from "react";
+import React from "react";
 import { Pressable, Text, View } from "react-native";
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing } from "react-native-reanimated";
 
 export default function Welcome() {
-  const [completedOnboarding, setCompletedOnboarding] = useState(false);
-
   const buttonScale = useSharedValue(1);
 
   const buttonAnimatedStyle = useAnimatedStyle(() => ({
@@ -31,15 +28,6 @@ export default function Welcome() {
       easing: Easing.out(Easing.ease),
     });
   };
-
-  const checkOnboardingCompleted = async () => {
-    const completedOnboarding = await hasCompletedOnboarding();
-    setCompletedOnboarding(completedOnboarding);
-  };
-
-  useLayoutEffect(() => {
-    checkOnboardingCompleted();
-  }, []);
 
   return (
     <>
@@ -74,9 +62,17 @@ export default function Welcome() {
             <TrendUpIcon color={Colors.accent} size={21} />
           </Pressable>
         </Animated.View>
-        <Text className="text-foreground text-sm text-center mt-2 font-lausanne-light leading-normal">
-          By continuing, you accept our <Text className="font-lausanne-medium">Terms of Use</Text>.
-        </Text>
+
+        <Pressable
+          className="mt-3"
+          onPress={() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
+            router.push("/(onboarding)/auth");
+          }}>
+          <Text className="text-foreground text-base text-center font-lausanne-light leading-normal">Already have an account?
+            <Text className="font-lausanne-medium"> Sign in</Text>
+          </Text>
+        </Pressable>
       </View>
     </>
   );

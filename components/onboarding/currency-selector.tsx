@@ -1,5 +1,5 @@
 import * as Haptics from "expo-haptics";
-import { Pressable, Text, View } from "react-native";
+import { Keyboard, Pressable, Text, View } from "react-native";
 
 const CURRENCIES = ["USD", "EUR", "GBP", "CHF", "JPY", "CAD", "AUD", "MXN", "BRL"];
 
@@ -14,6 +14,7 @@ export function CurrencySelector({ selected, onSelect }: CurrencySelectorProps) 
 			{CURRENCIES.map((currency) => (
 				<Pressable
 					key={currency}
+					onPressIn={() => Keyboard.dismiss()}
 					onPress={() => {
 						Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 						onSelect(currency);

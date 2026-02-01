@@ -7,6 +7,7 @@ type OnboardingContextType = {
 	removePendingAsset: (assetId: string) => void;
 	clearPendingAssets: () => void;
 	getAssetCountByType: (assetType: string) => number;
+	getAssetsByType: (assetType: string) => Asset[];
 };
 
 const OnboardingContext = createContext<OnboardingContextType | null>(null);
@@ -33,6 +34,13 @@ export function OnboardingProvider({ children }: { children: React.ReactNode }) 
 		[pendingAssets]
 	);
 
+	const getAssetsByType = useCallback(
+		(assetType: string) => {
+			return pendingAssets.filter((asset) => asset.type === assetType);
+		},
+		[pendingAssets]
+	);
+
 	return (
 		<OnboardingContext.Provider
 			value={{
@@ -41,6 +49,7 @@ export function OnboardingProvider({ children }: { children: React.ReactNode }) 
 				removePendingAsset,
 				clearPendingAssets,
 				getAssetCountByType,
+				getAssetsByType,
 			}}
 		>
 			{children}

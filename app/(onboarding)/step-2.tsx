@@ -1,7 +1,7 @@
 import { AnimatedArrow } from "@/components/animated-arrow";
 import { Colors } from "@/constants/colors";
 import * as Haptics from "expo-haptics";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useRef, useState } from "react";
 import { Pressable, Text, TextInput, View } from "react-native";
@@ -10,13 +10,14 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import Icon from "react-native-remix-icon";
 
 const STEP_NUMBER = 2;
-const TOTAL_STEPS = 7;
+const TOTAL_STEPS = 8;
 
 const URL_PATTERN = /^https?:\/\/|www\.|\.(?:com|net|org|edu|gov|io|co|es|mx|app|dev)\b/i;
 const VALID_NAME_PATTERN = /^[\p{L}\s\-']+$/u;
 const MIN_LENGTH_DEBOUNCE_MS = 500;
 
 export default function Step2() {
+  const { email, googleId, appleId } = useLocalSearchParams<{ email?: string; googleId?: string; appleId?: string }>();
   const [name, setName] = useState("");
   const [error, setError] = useState("");
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -117,7 +118,6 @@ export default function Step2() {
           <TextInput
             autoCorrect={false}
             onChangeText={handleNameChange}
-            value={name}
             allowFontScaling={false}
             enterKeyHint="done"
             enablesReturnKeyAutomatically={true}
@@ -147,7 +147,7 @@ export default function Step2() {
             onPressOut={handlePressOut}
             onPress={() => {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
-              router.push({ pathname: "/(onboarding)/step-3", params: { name: name.trim() } });
+              router.push({ pathname: "/(onboarding)/step-3", params: { name: name.trim(), email: email ?? null, googleId: googleId ?? null, appleId: appleId ?? null } });
             }}
             className={`bg-foreground flex-row items-center justify-center gap-3 py-4 border border-foreground ${isNextButtonDisabled ? "opacity-50" : ""
               }`}>

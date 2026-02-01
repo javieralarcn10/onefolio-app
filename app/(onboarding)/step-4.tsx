@@ -11,7 +11,7 @@ import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing } from "
 import Icon from "react-native-remix-icon";
 
 const STEP_NUMBER = 4;
-const TOTAL_STEPS = 7;
+const TOTAL_STEPS = 8;
 
 const GOAL_OPTIONS = [
 	{
@@ -37,7 +37,7 @@ const GOAL_OPTIONS = [
 ] as const;
 
 export default function Step4() {
-	const { name, profile } = useLocalSearchParams<{ name: string, profile: string }>();
+	const { name, email, googleId, appleId, profile } = useLocalSearchParams<{ name: string, email?: string, googleId?: string; appleId?: string, profile: string }>();
 
 	const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
 
@@ -120,7 +120,7 @@ export default function Step4() {
 							const selectedGoals = Array.from(selectedIds)
 								.map(id => GOAL_OPTIONS.find(opt => opt.id === id)?.title)
 								.filter(Boolean) as string[];
-							router.push({ pathname: "/(onboarding)/step-5", params: { name, profile, goals: selectedGoals } });
+							router.push({ pathname: "/(onboarding)/step-5", params: { name, email: email ?? null, googleId: googleId ?? null, appleId: appleId ?? null, profile, goals: selectedGoals } });
 						}}
 						className={`bg-foreground flex-row items-center justify-center gap-3 py-4 border border-foreground ${isNextButtonDisabled ? "opacity-50" : ""
 							}`}>

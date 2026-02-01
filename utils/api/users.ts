@@ -16,7 +16,12 @@ export const usersApi = {
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         const errorMessage = error.response?.data?.error || error.response?.data?.message || error.message;
-        throw new Error(errorMessage || 'Failed to send email OTP');
+        const errorDetails = error.response?.data?.details;
+
+        if (errorDetails) {
+          throw { message: errorMessage || 'Failed to sign in', details: errorDetails };
+        }
+        throw new Error(errorMessage || 'Failed to sign in');
       }
       throw error instanceof Error ? error : new Error('Unknown error occurred');
     }
@@ -52,7 +57,7 @@ export const usersApi = {
 
   signIn: async (body: { email?: string, username?: string, password: string, platform: string }): Promise<{ user: User, error?: string }> => {
     try {
-      const response = await axios.post(`${API_URL}/auth/signin`, body, {
+      const response = await axios.post(`${API_URL}/auth/signin-with-email`, body, {
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
@@ -62,6 +67,11 @@ export const usersApi = {
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         const errorMessage = error.response?.data?.error || error.response?.data?.message || error.message;
+        const errorDetails = error.response?.data?.details;
+
+        if (errorDetails) {
+          throw { message: errorMessage || 'Failed to sign in', details: errorDetails };
+        }
         throw new Error(errorMessage || 'Failed to sign in');
       }
       throw error instanceof Error ? error : new Error('Unknown error occurred');
@@ -80,6 +90,11 @@ export const usersApi = {
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         const errorMessage = error.response?.data?.error || error.response?.data?.message || error.message;
+        const errorDetails = error.response?.data?.details;
+
+        if (errorDetails) {
+          throw { message: errorMessage || 'Failed to sign in', details: errorDetails };
+        }
         throw new Error(errorMessage || 'Failed to sign in');
       }
       throw error instanceof Error ? error : new Error('Unknown error occurred');
@@ -98,7 +113,12 @@ export const usersApi = {
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         const errorMessage = error.response?.data?.error || error.response?.data?.message || error.message;
-        throw new Error(errorMessage || 'Failed to sign in with Google');
+        const errorDetails = error.response?.data?.details;
+
+        if (errorDetails) {
+          throw { message: errorMessage || 'Failed to sign in', details: errorDetails };
+        }
+        throw new Error(errorMessage || 'Failed to sign in');
       }
       throw error instanceof Error ? error : new Error('Unknown error occurred');
     }
@@ -116,7 +136,12 @@ export const usersApi = {
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         const errorMessage = error.response?.data?.error || error.response?.data?.message || error.message;
-        throw new Error(errorMessage || 'Failed to sign in with Apple');
+        const errorDetails = error.response?.data?.details;
+
+        if (errorDetails) {
+          throw { message: errorMessage || 'Failed to sign in', details: errorDetails };
+        }
+        throw new Error(errorMessage || 'Failed to sign in');
       }
       throw error instanceof Error ? error : new Error('Unknown error occurred');
     }
@@ -134,7 +159,12 @@ export const usersApi = {
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         const errorMessage = error.response?.data?.error || error.response?.data?.message || error.message;
-        throw new Error(errorMessage || 'Failed to update user info');
+        const errorDetails = error.response?.data?.details;
+
+        if (errorDetails) {
+          throw { message: errorMessage || 'Failed to sign in', details: errorDetails };
+        }
+        throw new Error(errorMessage || 'Failed to sign in');
       }
       throw error instanceof Error ? error : new Error('Unknown error occurred');
     }
@@ -152,7 +182,12 @@ export const usersApi = {
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         const errorMessage = error.response?.data?.error || error.response?.data?.message || error.message;
-        throw new Error(errorMessage || 'Failed to sign out');
+        const errorDetails = error.response?.data?.details;
+
+        if (errorDetails) {
+          throw { message: errorMessage || 'Failed to sign in', details: errorDetails };
+        }
+        throw new Error(errorMessage || 'Failed to sign in');
       }
       throw error instanceof Error ? error : new Error('Unknown error occurred');
     }

@@ -2,7 +2,7 @@ import { AnimatedArrow } from "@/components/animated-arrow";
 import { Colors } from "@/constants/colors";
 import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
@@ -10,7 +10,7 @@ import Icon from "react-native-remix-icon";
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing } from "react-native-reanimated";
 
 const STEP_NUMBER = 1;
-const TOTAL_STEPS = 7;
+const TOTAL_STEPS = 8;
 
 
 const VALUE_PROPS = [
@@ -54,6 +54,7 @@ function ValueProp({ prop }: { prop: typeof VALUE_PROPS[0] }) {
 }
 
 export default function Step1() {
+  const { name, email, googleId, appleId } = useLocalSearchParams<{ name?: string; email?: string; googleId?: string; appleId?: string }>();
   const buttonScale = useSharedValue(1);
 
   const buttonAnimatedStyle = useAnimatedStyle(() => ({
@@ -124,7 +125,13 @@ export default function Step1() {
             onPressOut={handlePressOut}
             onPress={() => {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
-              router.push({ pathname: "/(onboarding)/step-2" });
+              if (name && email) {
+                router.push({ pathname: "/(onboarding)/step-3", params: { name, email, googleId: googleId ?? null, appleId: appleId ?? null } });
+              } else if (email) {
+                router.push({ pathname: "/(onboarding)/step-2", params: { email, googleId: googleId ?? null, appleId: appleId ?? null } });
+              } else {
+                router.push({ pathname: "/(onboarding)/step-2" });
+              }
             }}
             className={`bg-foreground flex-row items-center justify-center gap-3 py-4 border border-foreground`}>
             <Text className="text-white font-lausanne-light text-xl">Continue</Text>

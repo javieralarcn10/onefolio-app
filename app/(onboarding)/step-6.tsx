@@ -19,11 +19,14 @@ import Animated, {
 } from "react-native-reanimated";
 
 const STEP_NUMBER = 6;
-const TOTAL_STEPS = 7;
+const TOTAL_STEPS = 8;
 
 export default function Step6() {
-	const { name, profile, goals } = useLocalSearchParams<{
+	const { name, email, googleId, appleId, profile, goals } = useLocalSearchParams<{
 		name: string;
+		email?: string;
+		googleId?: string;
+		appleId?: string;
 		profile: string;
 		goals: string;
 	}>();
@@ -136,7 +139,7 @@ export default function Step6() {
 			setIsAuthenticating(false);
 			router.push({
 				pathname: "/(onboarding)/step-7",
-				params: { name, profile, goals },
+				params: { name, email: email ?? null, googleId: googleId ?? null, appleId: appleId ?? null, profile, goals },
 			});
 		} else {
 			Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
@@ -148,7 +151,7 @@ export default function Step6() {
 		Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
 		router.push({
 			pathname: "/(onboarding)/step-7",
-			params: { name, profile, goals },
+			params: { name, email: email ?? null, googleId: googleId ?? null, appleId: appleId ?? null, profile, goals },
 		});
 	};
 

@@ -14,7 +14,7 @@ import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing } from "
 import Icon from "react-native-remix-icon";
 
 const STEP_NUMBER = 5;
-const TOTAL_STEPS = 7;
+const TOTAL_STEPS = 8;
 
 export const ASSETS_OPTIONS: AssetOptionType[] = [
 	{
@@ -23,6 +23,8 @@ export const ASSETS_OPTIONS: AssetOptionType[] = [
 		description: "Stocks, index funds, ETFs",
 		icon: "stock-line",
 		assetType: "stocks_etfs" as AssetType,
+		bgIcon: "#dbe7f0",
+		colorIcon: "#213C51",
 	},
 	{
 		id: 2,
@@ -30,6 +32,8 @@ export const ASSETS_OPTIONS: AssetOptionType[] = [
 		description: "Bonds, treasury bills, fixed income",
 		icon: "bank-line",
 		assetType: "bonds" as AssetType,
+		colorIcon: "#9E3B3B",
+		bgIcon: "#f1dada",
 	},
 	{
 		id: 3,
@@ -37,6 +41,8 @@ export const ASSETS_OPTIONS: AssetOptionType[] = [
 		description: "Fixed deposits, high-yield accounts",
 		icon: "safe-3-line",
 		assetType: "deposits" as AssetType,
+		colorIcon: "#5C8D89",
+		bgIcon: "#e0ebea",
 	},
 	{
 		id: 4,
@@ -44,6 +50,8 @@ export const ASSETS_OPTIONS: AssetOptionType[] = [
 		description: "Gold, silver (physical or ETFs)",
 		icon: "diamond-line",
 		assetType: "precious_metals" as AssetType,
+		colorIcon: "#FAB12F",
+		bgIcon: "#feeccd",
 	},
 	{
 		id: 5,
@@ -51,6 +59,8 @@ export const ASSETS_OPTIONS: AssetOptionType[] = [
 		description: "Properties, REITs, crowdfunding",
 		icon: "building-line",
 		assetType: "real_estate" as AssetType,
+		colorIcon: "#8B7BA8",
+		bgIcon: "#f0ebf5",
 	},
 	{
 		id: 6,
@@ -58,6 +68,8 @@ export const ASSETS_OPTIONS: AssetOptionType[] = [
 		description: "Loans, crowdlending, equity stakes",
 		icon: "hand-coin-line",
 		assetType: "private_investments" as AssetType,
+		colorIcon: "#116A7B",
+		bgIcon: "#e9f9fc",
 	},
 	{
 		id: 7,
@@ -65,6 +77,8 @@ export const ASSETS_OPTIONS: AssetOptionType[] = [
 		description: "Cash, checking accounts",
 		icon: "cash-line",
 		assetType: "cash" as AssetType,
+		colorIcon: "#7B6079",
+		bgIcon: "#eee9ec",
 	},
 	{
 		id: 8,
@@ -72,16 +86,21 @@ export const ASSETS_OPTIONS: AssetOptionType[] = [
 		description: "Bitcoin, Ethereum, others",
 		icon: "btc-line",
 		assetType: "crypto" as AssetType,
+		colorIcon: "#F1935C",
+		bgIcon: "#fce7dc",
 	},
 ];
 
 export default function Step5() {
-	const { name, profile, goals } = useLocalSearchParams<{
+	const { name, email, googleId, appleId, profile, goals } = useLocalSearchParams<{
 		name: string;
+		email?: string;
+		googleId?: string;
+		appleId?: string;
 		profile: string;
 		goals: string;
 	}>();
-	const { pendingAssets, getAssetCountByType, clearPendingAssets } = useOnboarding();
+	const { pendingAssets, getAssetsByType, clearPendingAssets } = useOnboarding();
 
 	const isNextButtonDisabled = pendingAssets.length < 2;
 	const buttonText = pendingAssets.length == 0 ? "Continue" : pendingAssets.length < 2 ? "Add at least 2 investments" : "Continue";
@@ -120,7 +139,7 @@ export default function Step5() {
 		// Navigate to next step
 		router.push({
 			pathname: "/(onboarding)/step-6",
-			params: { name, profile, goals },
+			params: { name, email: email ?? null, googleId: googleId ?? null, appleId: appleId ?? null, profile, goals },
 		});
 	};
 
@@ -155,7 +174,7 @@ export default function Step5() {
 						<AssetOption
 							key={option.id}
 							asset={option}
-							count={getAssetCountByType(option.assetType)}
+							assets={getAssetsByType(option.assetType)}
 						/>
 					))}
 				</View>

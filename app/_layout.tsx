@@ -218,6 +218,7 @@ function RootNavigator({ showBlur, setShowBlur }: { showBlur: boolean; setShowBl
           <Stack.Screen name="(onboarding)/step-6" options={{ headerShown: false }} />
           <Stack.Screen name="(onboarding)/step-7" options={{ headerShown: false }} />
           <Stack.Screen name="(onboarding)/step-8" options={{ headerShown: false }} />
+          <Stack.Screen name="(onboarding)/step-9" options={{ headerShown: false }} />
           <Stack.Screen name="(onboarding)/add-asset" options={{ headerShown: false, presentation: "modal", animation: "default", gestureEnabled: false }} />
         </Stack.Protected>
       </Stack>
