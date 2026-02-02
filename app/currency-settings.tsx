@@ -79,12 +79,12 @@ export default function CurrencySettingsScreen() {
 	return (
 		<View className="flex-1 mt-safe">
 			<View className="px-5 pt-5 pb-4 flex-row items-center justify-between">
-<Pressable className="w-[15%] py-1" onPress={() => router.back()}>
-				<Icon name="arrow-left-line" size="24" color={Colors.foreground} fallback={null} />
-			</Pressable>
-			<Text className="text-foreground text-2xl font-lausanne-regular leading-none">
-				Currency
-			</Text>
+				<Pressable className="w-[15%] py-1" onPress={() => router.back()}>
+					<Icon name="arrow-left-line" size="24" color={Colors.foreground} fallback={null} />
+				</Pressable>
+				<Text className="text-foreground text-2xl font-lausanne-regular leading-none">
+					Currency
+				</Text>
 				<View className="w-[15%] items-end">
 					{isSaving && <ActivityIndicator size="small" color={Colors.foreground} />}
 				</View>
