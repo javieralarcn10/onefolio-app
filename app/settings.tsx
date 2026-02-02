@@ -375,7 +375,7 @@ export default function SettingsScreen() {
 				</Pressable>
 				<Pressable
 					onPress={() => confirmLogout()}
-					className="flex-row items-center justify-between border-b-[1.1px] border-border  py-5 gap-1">
+					className="flex-row items-center justify-between py-5 gap-1">
 					<View className="flex-row items-center gap-4">
 						<Icon name="logout-box-line" size="22" color="#b91c1c" fallback={null} />
 						<Text className="text-red-700 text-lg font-lausanne-light leading-normal">Log out</Text>
