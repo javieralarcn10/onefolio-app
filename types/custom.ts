@@ -3,6 +3,7 @@ import { IconName } from "react-native-remix-icon";
 export type User = {
 	id: string;
 	accessToken: string;
+	notificationToken: string | null;
 	firstName: string;
 	email?: string;
 	timezone: string;

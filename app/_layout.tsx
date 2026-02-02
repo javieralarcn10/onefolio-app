@@ -206,6 +206,9 @@ function RootNavigator({ showBlur, setShowBlur }: { showBlur: boolean; setShowBl
           <Stack.Screen name="account-settings" options={{ headerShown: false }} />
           <Stack.Screen name="currency-settings" options={{ headerShown: false }} />
           <Stack.Screen name="settings" options={{ headerShown: false }} />
+          <Stack.Screen name="account-menu" options={{ headerShown: false }} />
+          <Stack.Screen name="risk-profile-settings" options={{ headerShown: false }} />
+          <Stack.Screen name="financial-plan-settings" options={{ headerShown: false }} />
         </Stack.Protected>
 
         <Stack.Protected guard={!session}>
