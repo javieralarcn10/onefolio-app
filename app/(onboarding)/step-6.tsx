@@ -18,18 +18,24 @@ import Animated, {
 	Easing,
 } from "react-native-reanimated";
 
-const STEP_NUMBER = 6;
-const TOTAL_STEPS = 8;
+const BASE_STEP_NUMBER = 6;
+const BASE_TOTAL_STEPS = 8;
 
 export default function Step6() {
-	const { name, email, googleId, appleId, profile, goals } = useLocalSearchParams<{
+	const { name, email, googleId, appleId, profile, goals, skippedNameStep } = useLocalSearchParams<{
 		name: string;
 		email?: string;
 		googleId?: string;
 		appleId?: string;
 		profile: string;
 		goals: string;
+		skippedNameStep?: string;
 	}>();
+
+	// Adjust step number and total based on whether name step was skipped
+	const didSkipNameStep = skippedNameStep === "true";
+	const stepNumber = didSkipNameStep ? BASE_STEP_NUMBER - 1 : BASE_STEP_NUMBER;
+	const totalSteps = didSkipNameStep ? BASE_TOTAL_STEPS - 1 : BASE_TOTAL_STEPS;
 
 	const [biometricType, setBiometricType] = useState<BiometricType>("none");
 	const [isAuthenticating, setIsAuthenticating] = useState(false);
@@ -139,7 +145,7 @@ export default function Step6() {
 			setIsAuthenticating(false);
 			router.push({
 				pathname: "/(onboarding)/step-7",
-				params: { name, email: email ?? null, googleId: googleId ?? null, appleId: appleId ?? null, profile, goals },
+				params: { name, email: email ?? null, googleId: googleId ?? null, appleId: appleId ?? null, profile, goals, skippedNameStep: skippedNameStep ?? null },
 			});
 		} else {
 			Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
@@ -151,7 +157,7 @@ export default function Step6() {
 		Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
 		router.push({
 			pathname: "/(onboarding)/step-7",
-			params: { name, email: email ?? null, googleId: googleId ?? null, appleId: appleId ?? null, profile, goals },
+			params: { name, email: email ?? null, googleId: googleId ?? null, appleId: appleId ?? null, profile, goals, skippedNameStep: skippedNameStep ?? null },
 		});
 	};
 
@@ -164,9 +170,9 @@ export default function Step6() {
 				<Pressable className="w-[15%] py-1" onPress={() => router.back()}>
 					<Icon name="arrow-left-line" size="24" color={Colors.foreground} fallback={null} />
 				</Pressable>
-				<Text className="text-muted-foreground text-sm text-center font-lausanne-regular leading-normal">
-					Step {STEP_NUMBER} of {TOTAL_STEPS}
-				</Text>
+		<Text className="text-muted-foreground text-sm text-center font-lausanne-regular leading-normal">
+				Step {stepNumber} of {totalSteps}
+			</Text>
 				<View className="w-[15%]" />
 			</View>
 

@@ -9,8 +9,8 @@ import { Pressable, ScrollView, Text, View } from "react-native";
 import Icon from "react-native-remix-icon";
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing } from "react-native-reanimated";
 
-const STEP_NUMBER = 1;
-const TOTAL_STEPS = 8;
+const BASE_STEP_NUMBER = 1;
+const BASE_TOTAL_STEPS = 8;
 
 
 const VALUE_PROPS = [
@@ -55,6 +55,11 @@ function ValueProp({ prop }: { prop: typeof VALUE_PROPS[0] }) {
 
 export default function Step1() {
   const { name, email, googleId, appleId } = useLocalSearchParams<{ name?: string; email?: string; googleId?: string; appleId?: string }>();
+  
+  // If name is provided, we'll skip step-2, so total steps is 7
+  const skippedNameStep = !!(name && email);
+  const totalSteps = skippedNameStep ? BASE_TOTAL_STEPS - 1 : BASE_TOTAL_STEPS;
+  
   const buttonScale = useSharedValue(1);
 
   const buttonAnimatedStyle = useAnimatedStyle(() => ({
@@ -85,7 +90,7 @@ export default function Step1() {
           <Icon name="arrow-left-line" size="24" color={Colors.foreground} fallback={null} />
         </Pressable>
         <Text className="text-muted-foreground text-sm text-center font-lausanne-regular leading-normal">
-          Step {STEP_NUMBER} of {TOTAL_STEPS}
+          Step {BASE_STEP_NUMBER} of {totalSteps}
         </Text>
         <View className="w-[15%]" />
       </View>
@@ -126,7 +131,7 @@ export default function Step1() {
             onPress={() => {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
               if (name && email) {
-                router.push({ pathname: "/(onboarding)/step-3", params: { name, email, googleId: googleId ?? null, appleId: appleId ?? null } });
+                router.push({ pathname: "/(onboarding)/step-3", params: { name, email, googleId: googleId ?? null, appleId: appleId ?? null, skippedNameStep: "true" } });
               } else if (email) {
                 router.push({ pathname: "/(onboarding)/step-2", params: { email, googleId: googleId ?? null, appleId: appleId ?? null } });
               } else {

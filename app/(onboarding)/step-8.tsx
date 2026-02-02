@@ -8,11 +8,11 @@ import { Linking, Pressable, ScrollView, Text, View } from "react-native";
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing } from "react-native-reanimated";
 import Icon from "react-native-remix-icon";
 
-const STEP_NUMBER = 8;
-const TOTAL_STEPS = 8;
+const BASE_STEP_NUMBER = 8;
+const BASE_TOTAL_STEPS = 8;
 
 export default function Step8() {
-	const { name, email, googleId, appleId, profile, goals, notificationToken } = useLocalSearchParams<{
+	const { name, email, googleId, appleId, profile, goals, notificationToken, skippedNameStep } = useLocalSearchParams<{
 		name: string;
 		email?: string;
 		googleId?: string;
@@ -20,7 +20,13 @@ export default function Step8() {
 		profile: string;
 		goals: string;
 		notificationToken: string;
+		skippedNameStep?: string;
 	}>();
+
+	// Adjust step number and total based on whether name step was skipped
+	const didSkipNameStep = skippedNameStep === "true";
+	const stepNumber = didSkipNameStep ? BASE_STEP_NUMBER - 1 : BASE_STEP_NUMBER;
+	const totalSteps = didSkipNameStep ? BASE_TOTAL_STEPS - 1 : BASE_TOTAL_STEPS;
 
 	const [hasAcceptedTerms, setHasAcceptedTerms] = useState(false);
 
@@ -90,9 +96,9 @@ export default function Step8() {
 				<Pressable className="w-[15%] py-1" onPress={() => router.back()}>
 					<Icon name="arrow-left-line" size="24" color={Colors.foreground} fallback={null} />
 				</Pressable>
-				<Text className="text-muted-foreground text-sm text-center font-lausanne-regular leading-normal">
-					Step {STEP_NUMBER} of {TOTAL_STEPS}
-				</Text>
+			<Text className="text-muted-foreground text-sm text-center font-lausanne-regular leading-normal">
+				Step {stepNumber} of {totalSteps}
+			</Text>
 				<View className="w-[15%]" />
 			</View>
 

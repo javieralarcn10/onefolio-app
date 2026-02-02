@@ -13,8 +13,8 @@ import { Pressable, ScrollView, Text, View } from "react-native";
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing } from "react-native-reanimated";
 import Icon from "react-native-remix-icon";
 
-const STEP_NUMBER = 5;
-const TOTAL_STEPS = 8;
+const BASE_STEP_NUMBER = 5;
+const BASE_TOTAL_STEPS = 8;
 
 export const ASSETS_OPTIONS: AssetOptionType[] = [
 	{
@@ -92,15 +92,21 @@ export const ASSETS_OPTIONS: AssetOptionType[] = [
 ];
 
 export default function Step5() {
-	const { name, email, googleId, appleId, profile, goals } = useLocalSearchParams<{
+	const { name, email, googleId, appleId, profile, goals, skippedNameStep } = useLocalSearchParams<{
 		name: string;
 		email?: string;
 		googleId?: string;
 		appleId?: string;
 		profile: string;
 		goals: string;
+		skippedNameStep?: string;
 	}>();
 	const { pendingAssets, getAssetsByType, clearPendingAssets } = useOnboarding();
+
+	// Adjust step number and total based on whether name step was skipped
+	const didSkipNameStep = skippedNameStep === "true";
+	const stepNumber = didSkipNameStep ? BASE_STEP_NUMBER - 1 : BASE_STEP_NUMBER;
+	const totalSteps = didSkipNameStep ? BASE_TOTAL_STEPS - 1 : BASE_TOTAL_STEPS;
 
 	const isNextButtonDisabled = pendingAssets.length < 2;
 	const buttonText = pendingAssets.length == 0 ? "Continue" : pendingAssets.length < 2 ? "Add at least 2 investments" : "Continue";
@@ -139,7 +145,7 @@ export default function Step5() {
 		// Navigate to next step
 		router.push({
 			pathname: "/(onboarding)/step-6",
-			params: { name, email: email ?? null, googleId: googleId ?? null, appleId: appleId ?? null, profile, goals },
+			params: { name, email: email ?? null, googleId: googleId ?? null, appleId: appleId ?? null, profile, goals, skippedNameStep: skippedNameStep ?? null },
 		});
 	};
 
@@ -152,9 +158,9 @@ export default function Step5() {
 				<Pressable className="w-[15%] py-1" onPress={() => router.back()}>
 					<Icon name="arrow-left-line" size="24" color={Colors.foreground} fallback={null} />
 				</Pressable>
-				<Text className="text-muted-foreground text-sm text-center font-lausanne-regular leading-normal">
-					Step {STEP_NUMBER} of {TOTAL_STEPS}
-				</Text>
+			<Text className="text-muted-foreground text-sm text-center font-lausanne-regular leading-normal">
+				Step {stepNumber} of {totalSteps}
+			</Text>
 				<View className="w-[15%]" />
 			</View>
 

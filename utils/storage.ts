@@ -51,15 +51,6 @@ export async function removeUser() {
 	await removeItem('user');
 }
 
-export async function getNotificationsPermission() {
-	const value = await getItem('notificationsPermission');
-	return value;
-}
-
-export async function setNotificationsPermission(notificationsPermission: boolean) {
-	await setItem('notificationsPermission', notificationsPermission);
-}
-
 export async function getHapticsPermission() {
 	const value = await getItem('hapticsPermission');
 	return value;

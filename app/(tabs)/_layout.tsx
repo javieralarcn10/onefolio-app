@@ -119,7 +119,7 @@ export default function TabLayout() {
             title: "Profile",
             tabBarIcon: ({ color, focused }) =>
               <View className="relative">
-                <Icon name="user-3-line" size="26" color={color} fallback={null} />
+                <Icon name="user-3-line" size="25" color={color} fallback={null} />
                 <View style={{
                   backgroundColor: Colors.accent,
                   width: 6.5,
@@ -129,7 +129,7 @@ export default function TabLayout() {
                   bottom: -11,
                   left: '50%',
                   opacity: focused ? 1 : 0,
-                  transform: [{ translateX: -5.5 }],
+                  transform: [{ translateX: -6 }],
                 }} />
               </View>,
             tabBarLabelStyle: {

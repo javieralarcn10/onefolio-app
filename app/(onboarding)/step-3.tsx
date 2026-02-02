@@ -10,8 +10,8 @@ import { Pressable, ScrollView, Text, View } from "react-native";
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing } from "react-native-reanimated";
 import Icon from "react-native-remix-icon";
 
-const STEP_NUMBER = 3;
-const TOTAL_STEPS = 8;
+const BASE_STEP_NUMBER = 3;
+const BASE_TOTAL_STEPS = 8;
 
 const INVESTMENT_OPTIONS = [
   {
@@ -29,7 +29,12 @@ const INVESTMENT_OPTIONS = [
 ] as const;
 
 export default function Step3() {
-  const { name, email, googleId, appleId } = useLocalSearchParams<{ name: string; email?: string; googleId?: string; appleId?: string }>();
+  const { name, email, googleId, appleId, skippedNameStep } = useLocalSearchParams<{ name: string; email?: string; googleId?: string; appleId?: string; skippedNameStep?: string }>();
+
+  // Adjust step number and total based on whether name step was skipped
+  const didSkipNameStep = skippedNameStep === "true";
+  const stepNumber = didSkipNameStep ? BASE_STEP_NUMBER - 1 : BASE_STEP_NUMBER;
+  const totalSteps = didSkipNameStep ? BASE_TOTAL_STEPS - 1 : BASE_TOTAL_STEPS;
 
   const [selectedId, setSelectedId] = useState<number | null>(null);
 
@@ -78,7 +83,7 @@ export default function Step3() {
           <Icon name="arrow-left-line" size="24" color={Colors.foreground} fallback={null} />
         </Pressable>
         <Text className="text-muted-foreground text-sm text-center font-lausanne-regular leading-normal">
-          Step {STEP_NUMBER} of {TOTAL_STEPS}
+          Step {stepNumber} of {totalSteps}
         </Text>
         <View className="w-[15%]" />
       </View>
@@ -104,7 +109,7 @@ export default function Step3() {
             onPressOut={handlePressOut}
             onPress={() => {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
-              router.push({ pathname: "/(onboarding)/step-4", params: { name, email: email ?? null, googleId: googleId ?? null, appleId: appleId ?? null, profile: selectedId !== null ? INVESTMENT_OPTIONS.find(option => option.id === selectedId)?.title : null } });
+              router.push({ pathname: "/(onboarding)/step-4", params: { name, email: email ?? null, googleId: googleId ?? null, appleId: appleId ?? null, profile: selectedId !== null ? INVESTMENT_OPTIONS.find(option => option.id === selectedId)?.title : null, skippedNameStep: skippedNameStep ?? null } });
             }}
             className={`bg-foreground flex-row items-center justify-center gap-3 py-4 border border-foreground ${isNextButtonDisabled ? "opacity-50" : ""
               }`}>

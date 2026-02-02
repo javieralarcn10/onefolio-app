@@ -10,8 +10,8 @@ import { Pressable, ScrollView, Text, View } from "react-native";
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing } from "react-native-reanimated";
 import Icon from "react-native-remix-icon";
 
-const STEP_NUMBER = 4;
-const TOTAL_STEPS = 8;
+const BASE_STEP_NUMBER = 4;
+const BASE_TOTAL_STEPS = 8;
 
 const GOAL_OPTIONS = [
 	{
@@ -37,7 +37,12 @@ const GOAL_OPTIONS = [
 ] as const;
 
 export default function Step4() {
-	const { name, email, googleId, appleId, profile } = useLocalSearchParams<{ name: string, email?: string, googleId?: string; appleId?: string, profile: string }>();
+	const { name, email, googleId, appleId, profile, skippedNameStep } = useLocalSearchParams<{ name: string, email?: string, googleId?: string; appleId?: string, profile: string, skippedNameStep?: string }>();
+
+	// Adjust step number and total based on whether name step was skipped
+	const didSkipNameStep = skippedNameStep === "true";
+	const stepNumber = didSkipNameStep ? BASE_STEP_NUMBER - 1 : BASE_STEP_NUMBER;
+	const totalSteps = didSkipNameStep ? BASE_TOTAL_STEPS - 1 : BASE_TOTAL_STEPS;
 
 	const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
 
@@ -90,9 +95,9 @@ export default function Step4() {
 				<Pressable className="w-[15%] py-1" onPress={() => router.back()}>
 					<Icon name="arrow-left-line" size="24" color={Colors.foreground} fallback={null} />
 				</Pressable>
-				<Text className="text-muted-foreground text-sm text-center font-lausanne-regular leading-normal">
-					Step {STEP_NUMBER} of {TOTAL_STEPS}
-				</Text>
+			<Text className="text-muted-foreground text-sm text-center font-lausanne-regular leading-normal">
+				Step {stepNumber} of {totalSteps}
+			</Text>
 				<View className="w-[15%]" />
 			</View>
 
@@ -120,7 +125,7 @@ export default function Step4() {
 							const selectedGoals = Array.from(selectedIds)
 								.map(id => GOAL_OPTIONS.find(opt => opt.id === id)?.title)
 								.filter(Boolean) as string[];
-							router.push({ pathname: "/(onboarding)/step-5", params: { name, email: email ?? null, googleId: googleId ?? null, appleId: appleId ?? null, profile, goals: selectedGoals } });
+							router.push({ pathname: "/(onboarding)/step-5", params: { name, email: email ?? null, googleId: googleId ?? null, appleId: appleId ?? null, profile, goals: selectedGoals, skippedNameStep: skippedNameStep ?? null } });
 						}}
 						className={`bg-foreground flex-row items-center justify-center gap-3 py-4 border border-foreground ${isNextButtonDisabled ? "opacity-50" : ""
 							}`}>

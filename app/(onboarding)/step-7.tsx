@@ -10,18 +10,24 @@ import { Pressable, Text, View } from "react-native";
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing } from "react-native-reanimated";
 import Icon from "react-native-remix-icon";
 
-const STEP_NUMBER = 7;
-const TOTAL_STEPS = 8;
+const BASE_STEP_NUMBER = 7;
+const BASE_TOTAL_STEPS = 8;
 
 export default function Step7() {
-	const { name, email, googleId, appleId, profile, goals } = useLocalSearchParams<{
+	const { name, email, googleId, appleId, profile, goals, skippedNameStep } = useLocalSearchParams<{
 		name: string;
 		email?: string;
 		googleId?: string;
 		appleId?: string;
 		profile: string;
 		goals: string;
+		skippedNameStep?: string;
 	}>();
+
+	// Adjust step number and total based on whether name step was skipped
+	const didSkipNameStep = skippedNameStep === "true";
+	const stepNumber = didSkipNameStep ? BASE_STEP_NUMBER - 1 : BASE_STEP_NUMBER;
+	const totalSteps = didSkipNameStep ? BASE_TOTAL_STEPS - 1 : BASE_TOTAL_STEPS;
 
 	const buttonScaleSkip = useSharedValue(1);
 	const buttonScaleEnable = useSharedValue(1);
@@ -67,9 +73,9 @@ export default function Step7() {
 		await requestNotificationPermissions();
 		const token = await registerForPushNotificationsAsync();
 		if (token) {
-			router.push({ pathname: "/(onboarding)/step-8", params: { name, email: email ?? null, googleId: googleId ?? null, appleId: appleId ?? null, profile, goals, notificationToken: token } });
+			router.push({ pathname: "/(onboarding)/step-8", params: { name, email: email ?? null, googleId: googleId ?? null, appleId: appleId ?? null, profile, goals, notificationToken: token ?? null, skippedNameStep: skippedNameStep ?? null } });
 		} else {
-			router.push({ pathname: "/(onboarding)/step-8", params: { name, email: email ?? null, googleId: googleId ?? null, appleId: appleId ?? null, profile, goals } });
+			router.push({ pathname: "/(onboarding)/step-8", params: { name, email: email ?? null, googleId: googleId ?? null, appleId: appleId ?? null, profile, goals, skippedNameStep: skippedNameStep ?? null } });
 		}
 	}
 
@@ -83,7 +89,7 @@ export default function Step7() {
 					<Icon name="arrow-left-line" size="24" color={Colors.foreground} fallback={null} />
 				</Pressable>
 				<Text className="text-muted-foreground text-sm text-center font-lausanne-regular leading-normal">
-					Step {STEP_NUMBER} of {TOTAL_STEPS}
+					Step {stepNumber} of {totalSteps}
 				</Text>
 				<View className="w-[15%]" />
 			</View>
@@ -137,7 +143,7 @@ export default function Step7() {
 						onPressOut={handlePressOutSkip}
 						onPress={() => {
 							Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
-							router.push({ pathname: "/(onboarding)/step-8", params: { name, email: email ?? null, googleId: googleId ?? null, appleId: appleId ?? null, profile, goals } });
+							router.push({ pathname: "/(onboarding)/step-8", params: { name, email: email ?? null, googleId: googleId ?? null, appleId: appleId ?? null, profile, goals, skippedNameStep: skippedNameStep ?? null } });
 						}}
 						className="bg-secondary flex-row items-center justify-center gap-3 py-4 border border-secondary">
 						<Text className="text-foreground font-lausanne-light text-xl">
