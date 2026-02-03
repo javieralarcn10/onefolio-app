@@ -1,5 +1,8 @@
 import Purchases, { LOG_LEVEL } from "react-native-purchases";
+import RevenueCatUI, { PAYWALL_RESULT } from "react-native-purchases-ui";
 import { Platform } from "react-native";
+
+export { PAYWALL_RESULT };
 
 // ============================================================================
 // Constants
@@ -164,6 +167,28 @@ export const isCurrentlyOnTrial = async (): Promise<boolean> => {
 };
 
 // ============================================================================
+// Paywall
+// ============================================================================
+
+/**
+ * Muestra el paywall de RevenueCat
+ * @returns PAYWALL_RESULT - el resultado de la interacción
+ */
+export const showPaywall = async (): Promise<PAYWALL_RESULT> => {
+	return await RevenueCatUI.presentPaywall();
+};
+
+/**
+ * Muestra el paywall solo si el usuario no tiene acceso Pro
+ * @returns PAYWALL_RESULT - el resultado de la interacción
+ */
+export const showPaywallIfNeeded = async (): Promise<PAYWALL_RESULT> => {
+	return await RevenueCatUI.presentPaywallIfNeeded({
+		requiredEntitlementIdentifier: PRO_ENTITLEMENT_ID,
+	});
+};
+
+// ============================================================================
 // Error Types
 // ============================================================================
 
@@ -227,44 +252,5 @@ export const getErrorMessage = (errorType: PurchaseErrorType): string => {
 			return "Invalid credentials. Please try again.";
 		default:
 			return "An error occurred. Please try again.";
-	}
-};
-
-/**
- * Determines paywall variant (A/B) based on RevenueCat ID using consistent hashing
- * @param rcId - The RevenueCat user ID (may include "RCAnonymousID:" prefix)
- * @returns "A" or "B" variant with 50/50 distribution, defaults to "A" on error
- */
-export const getPaywallVariant = (rcId: string): "A" | "B" => {
-	try {
-		// Validate input
-		if (!rcId || typeof rcId !== "string" || rcId.trim() === "") {
-			return "A";
-		}
-
-		// Remove RevenueCat prefix if present and normalize
-		const cleanId = rcId.replace(/^RCAnonymousID:/, "").toLowerCase();
-
-		// Validate cleaned ID has content
-		if (!cleanId || cleanId.length === 0) {
-			return "A";
-		}
-
-		// Sum hexadecimal character values for consistent hash
-		const hash = cleanId.split("").reduce((total, char) => {
-			const value = parseInt(char, 16);
-			return total + (isNaN(value) ? 0 : value);
-		}, 0);
-
-		// Validate hash is a valid number
-		if (isNaN(hash) || !isFinite(hash)) {
-			return "A";
-		}
-
-		// 50/50 split based on modulo
-		return hash % 100 < 50 ? "A" : "B";
-	} catch (error) {
-		console.error("[RevenueCat] Error determining paywall variant:", error);
-		return "A";
 	}
 };

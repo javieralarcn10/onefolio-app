@@ -2,7 +2,6 @@ import { Pressable, Text, View } from "react-native";
 import { Colors } from "@/constants/colors";
 import { OnboardingOption } from "@/types/custom";
 import { memo, useCallback } from "react";
-import { CheckIcon } from "phosphor-react-native";
 import Animated, { ZoomIn, ZoomOut, } from "react-native-reanimated";
 import Icon from "react-native-remix-icon";
 
