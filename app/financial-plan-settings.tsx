@@ -92,6 +92,12 @@ export default function GoalsSettingsScreen() {
 			const newSelectedIds = new Set(selectedIds);
 			const isCurrentlySelected = newSelectedIds.has(option.id);
 
+			// Prevent deselecting if it's the last selected option
+			if (isCurrentlySelected && newSelectedIds.size === 1) {
+				triggerHaptics("Error");
+				return;
+			}
+
 			if (isCurrentlySelected) {
 				newSelectedIds.delete(option.id);
 			} else {
