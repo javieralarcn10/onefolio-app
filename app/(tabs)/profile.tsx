@@ -11,10 +11,31 @@ import { PAYWALL_RESULT, showPaywallIfNeeded } from "@/utils/revenue-cat";
 import { QuickActions } from "@/components/profile/quick-actions";
 import { InvestmentProfile } from "@/components/profile/investment-profile";
 import { InviteFriends } from "@/components/profile/invite-friends";
+import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing } from "react-native-reanimated";
 
 export default function ProfileScreen() {
 	const { triggerHaptics } = useHaptics();
 	const [user, setUser] = useState<User>();
+
+	const upgradeButtonScale = useSharedValue(1);
+
+	const upgradeButtonAnimatedStyle = useAnimatedStyle(() => ({
+		transform: [{ scale: upgradeButtonScale.value }],
+	}));
+
+	const handleUpgradeButtonPressIn = () => {
+		upgradeButtonScale.value = withTiming(0.98, {
+			duration: 100,
+			easing: Easing.out(Easing.ease),
+		});
+	};
+
+	const handleUpgradeButtonPressOut = () => {
+		upgradeButtonScale.value = withTiming(1, {
+			duration: 150,
+			easing: Easing.out(Easing.ease),
+		});
+	};
 
 	const loadData = useCallback(async () => {
 		try {
@@ -39,6 +60,7 @@ export default function ProfileScreen() {
 	}, []);
 
 	const handleUpgradePress = useCallback(async () => {
+		triggerHaptics("Soft");
 		const result = await showPaywallIfNeeded();
 		if (result === PAYWALL_RESULT.PURCHASED || result === PAYWALL_RESULT.RESTORED) {
 			triggerHaptics("Success");
@@ -65,7 +87,10 @@ export default function ProfileScreen() {
 			<View className="pt-safe">
 				<View className="px-5 pt-5 pb-4 flex-row items-center justify-between">
 					<Text className="text-foreground text-2xl font-lausanne-medium">Profile</Text>
-					<Pressable onPress={handleSettingsPress} className="w-10 h-10 items-center justify-center">
+					<Pressable
+						onPress={handleSettingsPress}
+						hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+						className="w-8 h-8 items-center justify-center">
 						<Icon name="list-settings-line" size="24" color={Colors.foreground} fallback={null} />
 					</Pressable>
 				</View>
@@ -115,10 +140,17 @@ export default function ProfileScreen() {
 									</Text>
 								</View>
 								{!user?.isPremium && (
-									<Pressable onPress={handleUpgradePress} className="bg-accent px-3 py-1.5 flex-row items-center gap-1">
-										<Text className="text-foreground text-sm font-lausanne-medium">Upgrade</Text>
-										<Icon name="arrow-right-up-line" size="17" color={Colors.foreground} fallback={null} />
-									</Pressable>
+									<Animated.View style={[upgradeButtonAnimatedStyle]}>
+										<Pressable
+											onPress={handleUpgradePress}
+											onPressIn={handleUpgradeButtonPressIn}
+											onPressOut={handleUpgradeButtonPressOut}
+											hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+											className="bg-accent px-3 py-1.5 flex-row items-center gap-1">
+											<Text className="text-foreground text-sm font-lausanne-medium">Upgrade</Text>
+											<Icon name="arrow-right-up-line" size="17" color={Colors.foreground} fallback={null} />
+										</Pressable>
+									</Animated.View>
 								)}
 							</View>
 						</View>

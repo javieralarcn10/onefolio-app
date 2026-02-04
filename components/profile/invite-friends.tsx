@@ -3,10 +3,34 @@ import { Colors } from "@/constants/colors";
 import Icon from "react-native-remix-icon";
 import { User } from "@/types/custom";
 import { Image } from "expo-image";
+import { useHaptics } from "@/hooks/haptics";
+import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing } from "react-native-reanimated";
 
 export function InviteFriends({ user }: { user: User }) {
+	const { triggerHaptics } = useHaptics();
+
+	const shareButtonScale = useSharedValue(1);
+
+	const shareButtonAnimatedStyle = useAnimatedStyle(() => ({
+		transform: [{ scale: shareButtonScale.value }],
+	}));
+
+	const handleShareButtonPressIn = () => {
+		shareButtonScale.value = withTiming(0.98, {
+			duration: 100,
+			easing: Easing.out(Easing.ease),
+		});
+	};
+
+	const handleShareButtonPressOut = () => {
+		shareButtonScale.value = withTiming(1, {
+			duration: 150,
+			easing: Easing.out(Easing.ease),
+		});
+	};
 
 	const handleShare = async () => {
+		triggerHaptics("Soft");
 		try {
 			await Share.share({
 				message: "I use Onefolio to track my investments across markets and regions. Check it out if you want full visibility over your portfolio.",
@@ -89,13 +113,17 @@ export function InviteFriends({ user }: { user: User }) {
 				</View>
 
 				{/* Share Button */}
-				<Pressable
-					onPress={handleShare}
-					className="bg-foreground flex-row items-center justify-center gap-3 py-3 border border-foreground"
-				>
-					<Text className="text-background font-lausanne-light text-lg">Share invite link</Text>
-					<Icon name="link" size="18" color={Colors.accent} fallback={null} />
-				</Pressable>
+				<Animated.View style={[shareButtonAnimatedStyle]}>
+					<Pressable
+						onPress={handleShare}
+						onPressIn={handleShareButtonPressIn}
+						onPressOut={handleShareButtonPressOut}
+						className="bg-foreground flex-row items-center justify-center gap-3 py-3 border border-foreground"
+					>
+						<Text className="text-background font-lausanne-light text-lg">Share invite link</Text>
+						<Icon name="link" size="18" color={Colors.accent} fallback={null} />
+					</Pressable>
+				</Animated.View>
 
 			</View>
 		</View>

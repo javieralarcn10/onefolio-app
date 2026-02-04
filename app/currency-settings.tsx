@@ -91,7 +91,7 @@ export default function CurrencySettingsScreen() {
 			</View>
 			<ScrollView
 				showsVerticalScrollIndicator={false}
-				contentContainerClassName="py-5 flex-grow">
+				contentContainerClassName="pb-safe-offset-10 flex-grow">
 				<View className="mb-6 px-5">
 					<Text className="text-lg font-lausanne-light text-muted-foreground leading-normal">
 						Your base currency. Choose how to display your total wealth.

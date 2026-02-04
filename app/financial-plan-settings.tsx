@@ -129,7 +129,7 @@ export default function GoalsSettingsScreen() {
 					{isSaving && <ActivityIndicator size="small" color={Colors.foreground} />}
 				</View>
 			</View>
-			<ScrollView showsVerticalScrollIndicator={false} contentContainerClassName="py-5 flex-grow">
+			<ScrollView showsVerticalScrollIndicator={false} contentContainerClassName="pb-safe-offset-10 flex-grow">
 				<View className="mb-6 px-5">
 					<Text className="text-lg font-lausanne-light text-muted-foreground leading-normal">
 						Choose what matters to you. You can select multiple options, but we recommend focusing on 2 or 3.
