@@ -158,9 +158,9 @@ export default function Step5() {
 				<Pressable className="w-[15%] py-1" onPress={() => router.back()}>
 					<Icon name="arrow-left-line" size="24" color={Colors.foreground} fallback={null} />
 				</Pressable>
-			<Text className="text-muted-foreground text-sm text-center font-lausanne-regular leading-normal">
-				Step {stepNumber} of {totalSteps}
-			</Text>
+				<Text className="text-muted-foreground text-sm text-center font-lausanne-regular leading-normal">
+					Step {stepNumber} of {totalSteps}
+				</Text>
 				<View className="w-[15%]" />
 			</View>
 
@@ -168,7 +168,7 @@ export default function Step5() {
 			<ScrollView contentContainerClassName="flex-grow pt-6 pb-10">
 				<View className="mb-8 px-5">
 					<Text className="text-2xl font-lausanne-medium text-foreground leading-snug mb-2">
-						Add your first investments
+						Add your first assets
 					</Text>
 					<Text className="text-lg font-lausanne-light text-muted-foreground leading-normal">
 						Start with a few to see your global exposure. You can always add
