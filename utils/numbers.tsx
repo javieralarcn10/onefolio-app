@@ -9,6 +9,7 @@ export function formatNumber(number: number, currency?: string) {
 		maximumFractionDigits: 2,
 		style: currency ? "currency" : "decimal",
 		currency: currency || undefined,
+		currencyDisplay: currency ? "code" : undefined,
 		useGrouping: "always",
 	}).format(number);
 }

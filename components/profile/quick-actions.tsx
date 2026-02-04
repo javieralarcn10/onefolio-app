@@ -10,7 +10,7 @@ const QUICK_ACTIONS: { id: string; title: string; description: string; icon: Ico
 		description: "Stocks, bonds, real estate...",
 		icon: "add-circle-line",
 		onPress: () => {
-			router.push("/(tabs)/assets");
+			router.push("/select-asset-type");
 		}
 	},
 	{
