@@ -2,6 +2,7 @@ import { IconName } from "react-native-remix-icon";
 
 export type User = {
 	id: string;
+	referralCode: string;
 	accessToken: string;
 	notificationToken: string | null;
 	firstName: string;

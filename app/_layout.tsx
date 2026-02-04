@@ -18,6 +18,8 @@ import * as Haptics from "expo-haptics";
 import { clearBadgeCount } from "@/utils/notifications";
 import { initializeRevenueCat } from "@/utils/revenue-cat";
 
+//TODO WHEN APP PUBLISHED: https://docs.swmansion.com/detour/docs/SDK/sdk-usage
+
 // Time in seconds before requiring authentication after backgrounding
 const LOCK_TIMEOUT_SECONDS = 30;
 

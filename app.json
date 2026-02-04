@@ -16,7 +16,10 @@
             "infoPlist": {
                 "GIDClientID": "772253634590-f9oe48o7uded4a1ui5s3701hmr0q8cjn.apps.googleusercontent.com",
                 "ITSAppUsesNonExemptEncryption": false
-            }
+            },
+            "associatedDomains": [
+                "applinks:onefolio.godetour.link"
+            ]
         },
         "android": {
             "edgeToEdgeEnabled": true,
