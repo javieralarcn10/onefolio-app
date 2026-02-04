@@ -3,7 +3,7 @@ import { router } from "expo-router";
 import { Pressable, Text, View } from "react-native";
 import Icon, { IconName } from "react-native-remix-icon";
 
-const QUICK_ACTIONS: { id: string; title: string; description: string; icon: IconName, onPress: any }[] = [
+const QUICK_ACTIONS: { id: string; title: string; description: string; icon: IconName, onPress: () => void }[] = [
 	{
 		id: "add-asset",
 		title: "Add new asset",
@@ -19,6 +19,7 @@ const QUICK_ACTIONS: { id: string; title: string; description: string; icon: Ico
 		description: "Download as CSV",
 		icon: "file-excel-2-line",
 		onPress: () => {
+			//TODO: Implement export to csv
 			console.log('export to csv')
 		}
 	},
