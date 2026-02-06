@@ -28,18 +28,18 @@ function getAssetDisplayName(asset: Asset): string {
 function getAssetDisplayValue(asset: Asset): string {
 	switch (asset.type) {
 		case "stocks_etfs":
-			return `${formatNumber((asset as any).quantity || 0)} shares @ ${asset.currency} ${formatNumber(5800)}`;
+			return `${formatNumber((asset as any).quantity || 0)} shares @ ${formatNumber(5800, asset.currency)}`;
 		case "crypto":
-			return `${formatNumber((asset as any).quantity || 0)} @ ${asset.currency} ${formatNumber((asset as any).purchasePrice || 0)}`;
+			return `${formatNumber((asset as any).quantity || 0)} @ ${formatNumber((asset as any).purchasePrice || 0, asset.currency)}`;
 		case "bonds":
 		case "deposits":
 		case "private_investments":
 		case "cash":
-			return `${asset.currency} ${formatNumber((asset as any).amount || 0)}`;
+			return formatNumber((asset as any).amount || 0, asset.currency);
 		case "precious_metals":
 			return `${formatNumber((asset as any).quantity || 0)} ${(asset as any).quantityUnit || "units"}`;
 		case "real_estate":
-			return `${asset.currency} ${formatNumber((asset as any).estimatedValue || 0)}`;
+			return formatNumber((asset as any).estimatedValue || 0, asset.currency);
 		default:
 			return "";
 	}

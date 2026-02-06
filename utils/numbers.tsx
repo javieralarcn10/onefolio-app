@@ -1,7 +1,7 @@
 import { getLocales } from "expo-localization";
 
-const { languageCode } = getLocales()[0];
-const locale = languageCode || "en-US";
+const { languageTag } = getLocales()[0];
+const locale = languageTag || "en-US";
 
 export function formatNumber(number: number, currency?: string) {
 	return new Intl.NumberFormat(locale, {
@@ -10,6 +10,6 @@ export function formatNumber(number: number, currency?: string) {
 		style: currency ? "currency" : "decimal",
 		currency: currency || undefined,
 		currencyDisplay: currency ? "code" : undefined,
-		useGrouping: "always",
+		useGrouping: true,
 	}).format(number);
 }
