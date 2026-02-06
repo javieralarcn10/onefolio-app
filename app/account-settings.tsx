@@ -123,7 +123,7 @@ export default function AccountSettingsScreen() {
 				keyboardShouldPersistTaps="handled"
 				bottomOffset={40}
 				showsVerticalScrollIndicator={false}
-				contentContainerClassName="py-6 px-5 flex-grow">
+				contentContainerClassName="pb-safe-offset-10 px-5 pt-5 flex-grow">
 				<Text className="font-lausanne-regular text-foreground text-sm mb-0">First Name</Text>
 				<TextInput
 					autoCorrect={false}

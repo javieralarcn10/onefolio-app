@@ -17,6 +17,7 @@ import * as LocalAuthentication from "expo-local-authentication";
 import * as Haptics from "expo-haptics";
 import { clearBadgeCount } from "@/utils/notifications";
 import { initializeRevenueCat } from "@/utils/revenue-cat";
+import { SubscriptionProvider } from "@/utils/subscription-context";
 
 //TODO WHEN APP PUBLISHED: https://docs.swmansion.com/detour/docs/SDK/sdk-usage
 
@@ -60,14 +61,16 @@ export default function RootLayout() {
   return (
     <SessionProvider>
       <OnboardingProvider>
-        <GestureHandlerRootView>
-          <KeyboardProvider preload={false}>
-            <ThemeProvider value={DefaultTheme}>
-              <RootNavigator showBlur={showBlur} setShowBlur={setShowBlur} />
-              <StatusBar style="dark" />
-            </ThemeProvider>
-          </KeyboardProvider>
-        </GestureHandlerRootView>
+        <SubscriptionProvider>
+          <GestureHandlerRootView>
+            <KeyboardProvider preload={false}>
+              <ThemeProvider value={DefaultTheme}>
+                <RootNavigator showBlur={showBlur} setShowBlur={setShowBlur} />
+                <StatusBar style="dark" />
+              </ThemeProvider>
+            </KeyboardProvider>
+          </GestureHandlerRootView>
+        </SubscriptionProvider>
       </OnboardingProvider>
     </SessionProvider>
   );
@@ -211,6 +214,9 @@ function RootNavigator({ showBlur, setShowBlur }: { showBlur: boolean; setShowBl
           <Stack.Screen name="account-menu" options={{ headerShown: false }} />
           <Stack.Screen name="risk-profile-settings" options={{ headerShown: false }} />
           <Stack.Screen name="financial-plan-settings" options={{ headerShown: false }} />
+          <Stack.Screen name="asset-detail" options={{ headerShown: false }} />
+          <Stack.Screen name="select-asset-type" options={{ headerShown: false }} />
+          <Stack.Screen name="add-asset" options={{ headerShown: false, presentation: "modal", animation: "default", gestureEnabled: false }} />
         </Stack.Protected>
 
         <Stack.Protected guard={!session}>

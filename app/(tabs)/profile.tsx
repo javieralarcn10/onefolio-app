@@ -1,6 +1,6 @@
 import { Colors } from "@/constants/colors";
 import { User } from "@/types/custom";
-import { getUser, setUser as setUserStorage } from "@/utils/storage";
+import { getUser } from "@/utils/storage";
 import { router, useFocusEffect } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useCallback, useMemo, useState } from "react";
@@ -8,6 +8,7 @@ import { Pressable, ScrollView, Text, View } from "react-native";
 import Icon from "react-native-remix-icon";
 import { useHaptics } from "@/hooks/haptics";
 import { PAYWALL_RESULT, showPaywallIfNeeded } from "@/utils/revenue-cat";
+import { useSubscription } from "@/utils/subscription-context";
 import { QuickActions } from "@/components/profile/quick-actions";
 import { InvestmentProfile } from "@/components/profile/investment-profile";
 import { InviteFriends } from "@/components/profile/invite-friends";
@@ -15,6 +16,7 @@ import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing } from "
 
 export default function ProfileScreen() {
 	const { triggerHaptics } = useHaptics();
+	const { isPremium } = useSubscription();
 	const [user, setUser] = useState<User>();
 
 	const upgradeButtonScale = useSharedValue(1);
@@ -64,13 +66,8 @@ export default function ProfileScreen() {
 		const result = await showPaywallIfNeeded();
 		if (result === PAYWALL_RESULT.PURCHASED || result === PAYWALL_RESULT.RESTORED) {
 			triggerHaptics("Success");
-			if (user) {
-				const updatedUser = { ...user, isPremium: true };
-				await setUserStorage(updatedUser);
-				setUser(updatedUser);
-			}
 		}
-	}, [user, triggerHaptics]);
+	}, [triggerHaptics]);
 
 	const userInitials = useMemo(() => {
 		if (!user?.firstName) return "";
@@ -130,16 +127,16 @@ export default function ProfileScreen() {
 							<View className="flex-row items-center justify-between">
 								<View className="flex-row items-center gap-2">
 									<Icon
-										name={user?.isPremium ? "vip-crown-2-line" : "vip-crown-line"}
+										name={isPremium ? "vip-crown-2-line" : "vip-crown-line"}
 										size="18"
 										color={Colors.background}
 										fallback={null}
 									/>
 									<Text className="text-background text-sm font-lausanne-medium">
-										{user?.isPremium ? "Premium Plan" : "Free Plan"}
+										{isPremium ? "Premium Plan" : "Free Plan"}
 									</Text>
 								</View>
-								{!user?.isPremium && (
+								{!isPremium && (
 									<Animated.View style={[upgradeButtonAnimatedStyle]}>
 										<Pressable
 											onPress={handleUpgradePress}
