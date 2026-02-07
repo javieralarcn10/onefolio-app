@@ -128,3 +128,5 @@ export type Asset =
 	| PrivateInvestmentAsset
 	| CashAsset
 	| CryptoAsset;
+
+export type QuickAction = { id: string; title: string; description: string; icon: IconName; onPress: () => void };

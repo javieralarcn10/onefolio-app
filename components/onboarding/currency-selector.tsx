@@ -19,7 +19,7 @@ export function CurrencySelector({ selected, onSelect }: CurrencySelectorProps) 
 						Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 						onSelect(currency);
 					}}
-					className={`px-3 py-2 border ${selected === currency
+					className={`w-14 flex items-center justify-center py-2 border ${selected === currency
 						? "bg-foreground border-foreground"
 						: "bg-background border-border"
 						}`}

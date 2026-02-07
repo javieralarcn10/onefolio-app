@@ -1,39 +1,61 @@
 import { Colors } from "@/constants/colors";
+import { useHaptics } from "@/hooks/haptics";
+import { QuickAction } from "@/types/custom";
+import { showPaywall } from "@/utils/revenue-cat";
+import { useSubscription } from "@/utils/subscription-context";
 import { router } from "expo-router";
-import { Pressable, Text, View } from "react-native";
-import Icon, { IconName } from "react-native-remix-icon";
-
-const QUICK_ACTIONS: { id: string; title: string; description: string; icon: IconName, onPress: () => void }[] = [
-	{
-		id: "add-asset",
-		title: "Add new asset",
-		description: "Stocks, bonds, real estate...",
-		icon: "add-circle-line",
-		onPress: () => {
-			router.push("/select-asset-type");
-		}
-	},
-	{
-		id: "export",
-		title: "Export portfolio",
-		description: "Download as CSV",
-		icon: "file-excel-2-line",
-		onPress: () => {
-			//TODO: Implement export to csv
-			console.log('export to csv')
-		}
-	},
-];
+import { useCallback, useMemo } from "react";
+import { Alert, Pressable, Text, View } from "react-native";
+import Icon from "react-native-remix-icon";
 
 export function QuickActions() {
+	const { isPremium } = useSubscription();
+	const { triggerHaptics } = useHaptics();
+
+	const handleAddAsset = useCallback(() => {
+		router.push("/select-asset-type");
+	}, []);
+
+	const handleExport = useCallback(() => {
+		if (!isPremium) {
+			triggerHaptics("Error");
+			Alert.alert("Premium Feature",
+				"Export your portfolio as CSV. Upgrade to Premium to unlock this feature.",
+				[
+					{ text: "Cancel", style: "destructive" },
+					{ text: "Upgrade", style: "default", onPress: () => showPaywall() }
+				]);
+			return;
+		}
+		//TODO: Implement export to csv
+		console.log('export to csv')
+	}, [isPremium, triggerHaptics]);
+
+	const quickActions: QuickAction[] = useMemo(() => [
+		{
+			id: "add-asset",
+			title: "Add new asset",
+			description: "Stocks, bonds, real estate...",
+			icon: "add-circle-line",
+			onPress: handleAddAsset,
+		},
+		{
+			id: "export",
+			title: "Export portfolio",
+			description: "Download as CSV",
+			icon: "file-excel-2-line",
+			onPress: handleExport,
+		},
+	], [handleAddAsset, handleExport]);
+
 	return (
 		<View className="px-5 mb-4">
 			<Text className="text-foreground text-lg font-lausanne-medium -mb-1">Quick Actions</Text>
-			{QUICK_ACTIONS.map((action, index) => (
+			{quickActions.map((action, index) => (
 				<Pressable
 					key={action.id}
 					onPress={action.onPress}
-					className={`flex-row items-center justify-between py-4 ${index < QUICK_ACTIONS.length - 1 ? "border-b border-border" : ""}`}>
+					className={`flex-row items-center justify-between py-4 ${index < quickActions.length - 1 ? "border-b border-border" : ""}`}>
 					<View className="flex-row items-center justify-between gap-2 flex-1">
 						<View className="flex-row flex-grow items-center gap-3 flex-1">
 							<View className="aspect-square flex items-center justify-center w-12 bg-secondary">
