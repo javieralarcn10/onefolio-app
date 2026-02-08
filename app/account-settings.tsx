@@ -173,7 +173,7 @@ export default function AccountSettingsScreen() {
 						className={`flex-1 bg-secondary flex-row items-center justify-center gap-3 py-4 border border-secondary ${isLoading ? "opacity-50" : ""
 							}`}>
 						<View className="flex-row items-center justify-center gap-3">
-							<Text className="text-foreground font-lausanne-light text-xl">Cancel</Text>
+							<Text className="text-foreground font-lausanne-light text-lg">Cancel</Text>
 						</View>
 					</Pressable>
 					<Pressable
@@ -185,7 +185,7 @@ export default function AccountSettingsScreen() {
 							<ActivityIndicator size="small" className="my-[4]" color={Colors.background} />
 						) : (
 							<View className="flex-row items-center justify-center gap-3">
-								<Text className="text-background font-lausanne-light text-xl">Save</Text>
+								<Text className="text-background font-lausanne-light text-lg">Save</Text>
 								<Icon name="check-line" size={23} color={Colors.accent} fallback={null} />
 							</View>
 						)}
