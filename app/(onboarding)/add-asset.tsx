@@ -29,7 +29,7 @@ import { useOnboarding } from "@/utils/onboarding-context";
 import { generateAssetId } from "@/utils/storage";
 import * as Haptics from "expo-haptics";
 import { router, useLocalSearchParams } from "expo-router";
-import { XIcon } from "phosphor-react-native";
+import Icon from "react-native-remix-icon";
 import { useMemo, useState } from "react";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
@@ -65,7 +65,7 @@ export default function AddInvestment() {
 	const [bankName, setBankName] = useState("");
 
 	// Precious Metals
-	const [metalType, setMetalType] = useState<"gold" | "silver" | "platinum" | "palladium" | "other" | null>(null);
+	const [metalType, setMetalType] = useState<"gold" | "silver" | "platinum" | "palladium" | null>(null);
 	const [metalFormat, setMetalFormat] = useState<"physical" | "etf" | null>(null);
 	const [quantityUnit, setQuantityUnit] = useState<"oz" | "g" | null>(null);
 
@@ -863,7 +863,7 @@ export default function AddInvestment() {
 					</Text>
 				</View>
 				<Pressable className="p-2" onPress={() => router.back()}>
-					<XIcon color={Colors.background} size={24} />
+					<Icon name="close-line" size="25" color={Colors.background} fallback={null} />
 				</Pressable>
 			</View>
 
