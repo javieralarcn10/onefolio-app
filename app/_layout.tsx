@@ -4,6 +4,7 @@ import { SessionProvider, useSession } from "@/utils/auth-context";
 import { OnboardingProvider } from "@/utils/onboarding-context";
 import { getBiometricEnabled, hasCompletedOnboarding } from "@/utils/storage";
 import { DefaultTheme, ThemeProvider } from "@react-navigation/native";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BlurView } from "expo-blur";
 import { SplashScreen, Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
@@ -18,6 +19,8 @@ import * as Haptics from "expo-haptics";
 import { clearBadgeCount } from "@/utils/notifications";
 import { initializeRevenueCat } from "@/utils/revenue-cat";
 import { SubscriptionProvider } from "@/utils/subscription-context";
+
+const queryClient = new QueryClient();
 
 //TODO WHEN APP PUBLISHED: https://docs.swmansion.com/detour/docs/SDK/sdk-usage
 
@@ -59,20 +62,22 @@ export default function RootLayout() {
   }, []);
 
   return (
-    <SessionProvider>
-      <OnboardingProvider>
-        <SubscriptionProvider>
-          <GestureHandlerRootView>
-            <KeyboardProvider preload={false}>
-              <ThemeProvider value={DefaultTheme}>
-                <RootNavigator showBlur={showBlur} setShowBlur={setShowBlur} />
-                <StatusBar style="dark" />
-              </ThemeProvider>
-            </KeyboardProvider>
-          </GestureHandlerRootView>
-        </SubscriptionProvider>
-      </OnboardingProvider>
-    </SessionProvider>
+    <QueryClientProvider client={queryClient}>
+      <SessionProvider>
+        <OnboardingProvider>
+          <SubscriptionProvider>
+            <GestureHandlerRootView>
+              <KeyboardProvider preload={false}>
+                <ThemeProvider value={DefaultTheme}>
+                  <RootNavigator showBlur={showBlur} setShowBlur={setShowBlur} />
+                  <StatusBar style="dark" />
+                </ThemeProvider>
+              </KeyboardProvider>
+            </GestureHandlerRootView>
+          </SubscriptionProvider>
+        </OnboardingProvider>
+      </SessionProvider>
+    </QueryClientProvider>
   );
 }
 

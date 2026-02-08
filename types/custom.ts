@@ -62,6 +62,11 @@ export type StockAsset = BaseAsset & {
 	quantity: number;
 	purchasePrice: number;
 	purchaseDate: string;
+	tickerType: string;
+	sector?: string;
+	industry?: string;
+	country?: string;
+	exchange?: string;
 };
 
 export type BondAsset = BaseAsset & {
@@ -78,11 +83,12 @@ export type DepositAsset = BaseAsset & {
 	amount: number;
 	interestRate: number;
 	maturityDate?: string;
+	purchaseDate?: string;
 };
 
 export type PreciousMetalAsset = BaseAsset & {
 	type: 'precious_metals';
-	metalType: 'gold' | 'silver' | 'platinum' | 'palladium' | 'other';
+	metalType: 'gold' | 'silver' | 'platinum' | 'palladium';
 	format: 'physical' | 'etf';
 	quantity: number;
 	quantityUnit?: 'oz' | 'g'; // Only for physical
@@ -96,6 +102,7 @@ export type RealEstateAsset = BaseAsset & {
 	country: string;
 	city: string;
 	zip: string;
+	purchaseDate?: string;
 };
 
 export type PrivateInvestmentAsset = BaseAsset & {
@@ -104,6 +111,7 @@ export type PrivateInvestmentAsset = BaseAsset & {
 	amount: number;
 	expectedReturn?: number;
 	maturityDate?: string;
+	purchaseDate?: string;
 };
 
 export type CashAsset = BaseAsset & {

@@ -4,7 +4,7 @@ export const Colors = {
 	mutedForeground: "#07060599",
 	placeholder: "#c1c0be",
 	secondary: "#e6e6e6",
-	accent: "#f0fe56",
+	accent: "#f0ff31",
 	input: "#fafafa",
 	border: "#e4e4e4",
 };
