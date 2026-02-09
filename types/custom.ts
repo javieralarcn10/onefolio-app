@@ -54,6 +54,7 @@ export type BaseAsset = {
 	currency: string;
 	createdAt: string;
 	updatedAt: string;
+	transactions?: Transaction[];
 };
 
 export type StockAsset = BaseAsset & {
@@ -71,6 +72,8 @@ export type StockAsset = BaseAsset & {
 
 export type BondAsset = BaseAsset & {
 	type: 'bonds';
+	bondType: 'government' | 'corporate';
+	bondCountry?: string; // Required when bondType is 'government'
 	amount: number;
 	interestRate: number;
 	purchaseDate: string;
@@ -137,4 +140,18 @@ export type Asset =
 	| CashAsset
 	| CryptoAsset;
 
-export type QuickAction = { id: string; title: string; description: string; icon: IconName; onPress: () => void };
+export type QuickAction = { id: string; title: string; description: string; icon: IconName; disabled: boolean; onPress: () => void };
+
+// ── Transactions ──────────────────────────────────────────────────────────
+
+export type TransactionType = 'buy' | 'sell';
+
+export type Transaction = {
+	id: string;
+	type: TransactionType;
+	date: string;
+	quantity?: number;       // For quantity-based assets (stocks, crypto, metals)
+	pricePerUnit?: number;   // Price per unit at time of transaction
+	amount: number;          // Total value of the transaction
+	notes?: string;
+};

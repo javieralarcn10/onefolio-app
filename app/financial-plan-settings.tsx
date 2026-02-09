@@ -1,11 +1,12 @@
-import React, { useCallback, useLayoutEffect, useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { View, Text, Pressable, ScrollView, ActivityIndicator, Alert } from "react-native";
 import { router } from "expo-router";
 import { Colors } from "@/constants/colors";
 import { Option } from "@/components/onboarding/option";
-import { OnboardingOption, User } from "@/types/custom";
+import { OnboardingOption } from "@/types/custom";
 import { useHaptics } from "@/hooks/haptics";
-import { getUser, setUser } from "@/utils/storage";
+import { useSession } from "@/utils/auth-context";
+import { setUser } from "@/utils/storage";
 import { usersApi } from "@/utils/api/users";
 import Icon from "react-native-remix-icon";
 
@@ -34,33 +35,23 @@ const GOAL_OPTIONS = [
 
 const DEBOUNCE_MS = 500;
 
+function getInitialSelectedIds(investmentGoals?: string): Set<number> {
+	const ids = new Set<number>();
+	if (investmentGoals) {
+		investmentGoals.split(",").map((g) => g.trim()).forEach((goal) => {
+			const option = GOAL_OPTIONS.find((opt) => opt.title === goal);
+			if (option) ids.add(option.id);
+		});
+	}
+	return ids;
+}
+
 export default function GoalsSettingsScreen() {
 	const { triggerHaptics } = useHaptics();
-	const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
+	const { user, updateUser } = useSession();
+	const [selectedIds, setSelectedIds] = useState<Set<number>>(() => getInitialSelectedIds(user?.investmentGoals));
 	const [isSaving, setIsSaving] = useState(false);
-	const originalUser = useRef<User | null>(null);
 	const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-	const loadUser = async () => {
-		const user = await getUser();
-		originalUser.current = user;
-
-		if (user?.investmentGoals) {
-			const goalsArray = user.investmentGoals.split(",").map((g) => g.trim());
-			const matchingIds = new Set<number>();
-			goalsArray.forEach((goal: string) => {
-				const option = GOAL_OPTIONS.find((opt) => opt.title === goal);
-				if (option) {
-					matchingIds.add(option.id);
-				}
-			});
-			setSelectedIds(matchingIds);
-		}
-	};
-
-	useLayoutEffect(() => {
-		loadUser();
-	}, []);
 
 	const saveChanges = async (ids: Set<number>) => {
 		const newGoals = Array.from(ids)
@@ -72,12 +63,12 @@ export default function GoalsSettingsScreen() {
 		setIsSaving(true);
 		try {
 			const response = await usersApi.updateUserInfo({
-				userId: originalUser.current?.id,
+				userId: user?.id,
 				investmentGoals,
 			});
 			if (response.user) {
-				await setUser({ ...originalUser.current, ...response.user });
-				originalUser.current = { ...originalUser.current, ...response.user };
+				await setUser({ ...user, ...response.user });
+				await updateUser(response.user);
 			}
 		} catch (error) {
 			console.error(error);

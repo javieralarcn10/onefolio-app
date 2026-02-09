@@ -1,12 +1,12 @@
-import React, { useLayoutEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { View, Text, Pressable, ScrollView, ActivityIndicator, Alert } from "react-native";
 import Icon from "react-native-remix-icon";
 import { router } from "expo-router";
 import { Colors } from "@/constants/colors";
 import { useHaptics } from "@/hooks/haptics";
-import { getUser, setUser } from "@/utils/storage";
+import { useSession } from "@/utils/auth-context";
+import { setUser } from "@/utils/storage";
 import { usersApi } from "@/utils/api/users";
-import { User } from "@/types/custom";
 import { Option } from "@/components/onboarding/option";
 
 const CURRENCIES = [
@@ -25,35 +25,27 @@ const DEBOUNCE_MS = 300;
 
 export default function CurrencySettingsScreen() {
 	const { triggerHaptics } = useHaptics();
-	const [selectedCurrency, setSelectedCurrency] = useState("USD");
+	const { user, updateUser } = useSession();
 	const [isSaving, setIsSaving] = useState(false);
-	const originalUser = useRef<User | null>(null);
 	const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-	const loadUser = async () => {
-		const user = await getUser();
-		const currency = user?.currency ?? "USD";
-		setSelectedCurrency(currency);
-		originalUser.current = user;
-	};
-
-	useLayoutEffect(() => {
-		loadUser();
-	}, []);
+	const selectedCurrency = user?.currency ?? "USD";
 
 	const saveChanges = async (currency: string) => {
 		setIsSaving(true);
 		try {
 			const response = await usersApi.updateUserInfo({
-				userId: originalUser.current?.id,
+				userId: user?.id,
 				currency,
 			});
 			if (response.user) {
-				await setUser({ ...originalUser.current, ...response.user });
-				originalUser.current = { ...originalUser.current, ...response.user };
+				await setUser({ ...user, ...response.user });
+				await updateUser(response.user);
 			}
 		} catch (error) {
 			console.error(error);
+			// Revert optimistic update
+			await updateUser({ currency: selectedCurrency });
 			Alert.alert("Error", "Failed to save changes, please try again later", [{ text: "OK" }]);
 		} finally {
 			setIsSaving(false);
@@ -64,7 +56,8 @@ export default function CurrencySettingsScreen() {
 		if (selectedCurrency === currency.title) {
 			return;
 		}
-		setSelectedCurrency(currency.title);
+		// Optimistic update — context + screens update immediately
+		updateUser({ currency: currency.title });
 		triggerHaptics("Success");
 
 		if (debounceRef.current) {

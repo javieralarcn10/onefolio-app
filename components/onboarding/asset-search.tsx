@@ -1,48 +1,29 @@
 import { Colors } from "@/constants/colors";
-import { EraserIcon, } from "phosphor-react-native";
-import { useState } from "react";
-import { Pressable, Text, TextInput, View } from "react-native";
+import { useAssetSearch, SearchResult } from "@/utils/api/finance";
+import { formatNumber } from "@/utils/numbers";
+import { EraserIcon } from "phosphor-react-native";
+import { useEffect, useRef, useState } from "react";
+import { ActivityIndicator, Pressable, Text, TextInput, View } from "react-native";
 import Icon from "react-native-remix-icon";
-
-// Mock data for stocks - in production this would come from an API
-const MOCK_STOCKS = [
-	{ ticker: "AAPL", name: "Apple Inc." },
-	{ ticker: "MSFT", name: "Microsoft Corporation" },
-	{ ticker: "GOOGL", name: "Alphabet Inc." },
-	{ ticker: "AMZN", name: "Amazon.com Inc." },
-	{ ticker: "NVDA", name: "NVIDIA Corporation" },
-	{ ticker: "META", name: "Meta Platforms Inc." },
-	{ ticker: "TSLA", name: "Tesla Inc." },
-	{ ticker: "VOO", name: "Vanguard S&P 500 ETF" },
-	{ ticker: "VTI", name: "Vanguard Total Stock Market ETF" },
-	{ ticker: "SPY", name: "SPDR S&P 500 ETF Trust" },
-	{ ticker: "QQQ", name: "Invesco QQQ Trust" },
-	{ ticker: "NFLX", name: "Netflix Inc." },
-];
-
-// Mock data for crypto
-const MOCK_CRYPTO = [
-	{ symbol: "BTC", name: "Bitcoin" },
-	{ symbol: "ETH", name: "Ethereum" },
-	{ symbol: "SOL", name: "Solana" },
-	{ symbol: "BNB", name: "Binance Coin" },
-	{ symbol: "XRP", name: "Ripple" },
-	{ symbol: "ADA", name: "Cardano" },
-	{ symbol: "DOGE", name: "Dogecoin" },
-	{ symbol: "DOT", name: "Polkadot" },
-	{ symbol: "AVAX", name: "Avalanche" },
-	{ symbol: "MATIC", name: "Polygon" },
-	{ symbol: "LINK", name: "Chainlink" },
-	{ symbol: "UNI", name: "Uniswap" },
-];
 
 type AssetSearchProps = {
 	type: "stock" | "crypto";
 	selectedSymbol: string | null;
 	selectedName: string | null;
-	onSelect: (symbol: string, name: string) => void;
+	onSelect: (
+		symbol: string, 
+		name: string, 
+		tickerType: string | null,
+		sector?: string,
+		industry?: string,
+		country?: string,
+		exchange?: string
+	) => void;
 	onClear: () => void;
+	disabled?: boolean;
 };
+
+const DEBOUNCE_MS = 350;
 
 export function AssetSearch({
 	type,
@@ -50,25 +31,50 @@ export function AssetSearch({
 	selectedName,
 	onSelect,
 	onClear,
+	disabled = false,
 }: AssetSearchProps) {
 	const [searchQuery, setSearchQuery] = useState("");
+	const [debouncedQuery, setDebouncedQuery] = useState("");
 	const [isFocused, setIsFocused] = useState(false);
+	const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-	const data = type === "stock" ? MOCK_STOCKS : MOCK_CRYPTO;
-	const symbolKey = type === "stock" ? "ticker" : "symbol";
+	const apiType = type === "stock" ? "stocks" as const : "crypto" as const;
+	const { data: results = [], isFetching, isError, error } = useAssetSearch(debouncedQuery, apiType);
 
-	const filteredResults = searchQuery.trim()
-		? data.filter(
-			(item) =>
-				(item as any)[symbolKey].toLowerCase().includes(searchQuery.toLowerCase()) ||
-				item.name.toLowerCase().includes(searchQuery.toLowerCase())
-		)
-		: [];
+	// Debounce the search query
+	useEffect(() => {
+		if (debounceRef.current) {
+			clearTimeout(debounceRef.current);
+		}
 
-	const handleSelect = (item: { ticker?: string; symbol?: string; name: string }) => {
-		const sym = type === "stock" ? (item as any).ticker : (item as any).symbol;
-		onSelect(sym, item.name);
+		if (!searchQuery.trim()) {
+			setDebouncedQuery("");
+			return;
+		}
+
+		debounceRef.current = setTimeout(() => {
+			setDebouncedQuery(searchQuery);
+		}, DEBOUNCE_MS);
+
+		return () => {
+			if (debounceRef.current) {
+				clearTimeout(debounceRef.current);
+			}
+		};
+	}, [searchQuery]);
+
+	const handleSelect = (item: SearchResult) => {
+		onSelect(
+			item.symbol, 
+			item.name, 
+			item.type === 'Equity' ? 'Stock' : item.type,
+			item.sector,
+			item.industry,
+			item.country,
+			item.exchange
+		);
 		setSearchQuery("");
+		setDebouncedQuery("");
 		setIsFocused(false);
 	};
 
@@ -89,13 +95,15 @@ export function AssetSearch({
 							{selectedName}
 						</Text>
 					</View>
-					<Pressable
-						onPress={onClear}
-						className="p-2"
-						hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-					>
-						<EraserIcon color={Colors.foreground} weight="duotone" size={20} />
-					</Pressable>
+					{!disabled && (
+						<Pressable
+							onPress={onClear}
+							className="p-2"
+							hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+						>
+							<EraserIcon color={Colors.foreground} weight="duotone" size={20} />
+						</Pressable>
+					)}
 				</View>
 			</View>
 		);
@@ -124,33 +132,50 @@ export function AssetSearch({
 					className="flex-grow text-foreground font-lausanne-light"
 					style={{ fontSize: 17, height: 40, textAlignVertical: "bottom" }}
 				/>
+				{isFetching && (
+					<ActivityIndicator size="small" color={Colors.foreground} />
+				)}
 			</View>
 
 			{/* Results */}
-			{isFocused && filteredResults.length > 0 && (
+			{isFocused && results.length > 0 && (
 				<View className="border border-border border-t-0 border-b-0 bg-[#f2f2f2] absolute top-full left-0 right-0 z-10">
-					{filteredResults.map((item) => {
-						const sym = type === "stock" ? (item as any).ticker : (item as any).symbol;
-						return (
-							<Pressable
-								key={sym}
-								onPress={() => handleSelect(item)}
-								className="flex-row items-center justify-between px-3 py-3 border-b border-border"
-							>
+					{results.map((item) => (
+						<Pressable
+							key={item.symbol}
+							onPress={() => handleSelect(item)}
+							className="flex-row items-center justify-between gap-6 px-3 py-3 border-b border-border"
+						>
+							<View className="flex-1">
 								<Text className="font-lausanne-medium text-foreground text-base">
-									{sym}
+									{item.symbol}
 								</Text>
-								<Text className="font-lausanne-light text-muted-foreground text-sm flex-1 text-right">
+								<Text
+									className="font-lausanne-light text-muted-foreground text-sm"
+									numberOfLines={1}
+								>
 									{item.name}
 								</Text>
-							</Pressable>
-						);
-					})}
+							</View>
+							<Text className="font-lausanne-medium text-foreground text-base">
+								{formatNumber(item.price, item.currency)}
+							</Text>
+						</Pressable>
+					))}
+				</View>
+			)}
+
+			{/* Error message */}
+			{isFocused && isError && !isFetching && (
+				<View className="border border-border border-t-0 px-3 py-4 bg-[#f2f2f2]">
+					<Text className="font-lausanne-light text-red-600 text-sm text-center">
+						{error instanceof Error ? error.message : "Search failed"}
+					</Text>
 				</View>
 			)}
 
 			{/* No results message */}
-			{isFocused && searchQuery.trim() && filteredResults.length === 0 && (
+			{isFocused && debouncedQuery && !isFetching && !isError && results.length === 0 && (
 				<View className="border border-border border-t-0 px-3 py-4 bg-[#f2f2f2]">
 					<Text className="font-lausanne-light text-muted-foreground text-sm text-center">
 						No results found for "{searchQuery}"

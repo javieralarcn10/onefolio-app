@@ -22,6 +22,8 @@ import { SubscriptionProvider } from "@/utils/subscription-context";
 
 const queryClient = new QueryClient();
 
+initializeRevenueCat();
+
 //TODO WHEN APP PUBLISHED: https://docs.swmansion.com/detour/docs/SDK/sdk-usage
 
 // Time in seconds before requiring authentication after backgrounding
@@ -44,10 +46,6 @@ export default function RootLayout() {
     return () => {
       responseListener.remove();
     };
-  }, []);
-
-  useEffect(() => {
-    initializeRevenueCat();
   }, []);
 
   // Immediate blur when app loses focus (for multitasking)

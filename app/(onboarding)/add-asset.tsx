@@ -7,6 +7,7 @@ import { InlineInputField } from "@/components/onboarding/inline-input-field";
 import { InputField } from "@/components/onboarding/input-field";
 import { SectionLabel } from "@/components/onboarding/section-label";
 import {
+	BOND_TYPES,
 	INVESTMENT_TYPES,
 	METAL_FORMATS,
 	METAL_TYPES,
@@ -47,6 +48,11 @@ export default function AddInvestment() {
 	// Common fields
 	const [name, setName] = useState("");
 	const [currency, setCurrency] = useState("USD");
+	const [tickerType, setTickerType] = useState<string | null>(null);
+	const [sector, setSector] = useState<string | undefined>(undefined);
+	const [industry, setIndustry] = useState<string | undefined>(undefined);
+	const [stockCountry, setStockCountry] = useState<string | undefined>(undefined);
+	const [exchange, setExchange] = useState<string | undefined>(undefined);
 	const [isSaving, setIsSaving] = useState(false);
 
 	// Stocks & ETFs (now with search)
@@ -57,6 +63,8 @@ export default function AddInvestment() {
 	const [purchaseDate, setPurchaseDate] = useState<Date | null>(null);
 
 	// Bonds
+	const [bondType, setBondType] = useState<"government" | "corporate" | null>(null);
+	const [bondCountry, setBondCountry] = useState("");
 	const [amount, setAmount] = useState("");
 	const [interestRate, setInterestRate] = useState("");
 	const [maturityDate, setMaturityDate] = useState<Date | null>(null);
@@ -68,6 +76,7 @@ export default function AddInvestment() {
 	const [metalType, setMetalType] = useState<"gold" | "silver" | "platinum" | "palladium" | null>(null);
 	const [metalFormat, setMetalFormat] = useState<"physical" | "etf" | null>(null);
 	const [quantityUnit, setQuantityUnit] = useState<"oz" | "g" | null>(null);
+	const [totalPrice, setTotalPrice] = useState("");
 
 	// Real Estate
 	const [propertyType, setPropertyType] = useState<"residential" | "commercial" | "land" | "reit" | "crowdfunding" | "other" | null>(null);
@@ -165,6 +174,8 @@ export default function AddInvestment() {
 			case "bonds":
 				return (
 					name.trim() !== "" &&
+					bondType !== null &&
+					(bondType !== "government" || bondCountry.trim() !== "") &&
 					amount !== "" && isValidNumber(amount) &&
 					maturityDate !== null
 				);
@@ -176,24 +187,25 @@ export default function AddInvestment() {
 					amount !== "" && isValidNumber(amount)
 				);
 
-			case "precious_metals":
-				if (metalFormat === "physical") {
-					return (
-						name.trim() !== "" &&
-						metalType !== null &&
-						metalFormat !== null &&
-						quantity !== "" && isValidNumber(quantity) &&
-						quantityUnit !== null
-					);
-				}
-				// ETF requires purchase price for profitability calculation
+		case "precious_metals":
+			if (metalFormat === "physical") {
 				return (
 					name.trim() !== "" &&
 					metalType !== null &&
 					metalFormat !== null &&
 					quantity !== "" && isValidNumber(quantity) &&
-					purchasePrice !== "" && isValidNumber(purchasePrice)
+					quantityUnit !== null &&
+					totalPrice !== "" && isValidNumber(totalPrice)
 				);
+			}
+			// ETF requires purchase price for profitability calculation
+			return (
+				name.trim() !== "" &&
+				metalType !== null &&
+				metalFormat !== null &&
+				quantity !== "" && isValidNumber(quantity) &&
+				purchasePrice !== "" && isValidNumber(purchasePrice)
+			);
 
 			case "real_estate":
 				return (
@@ -231,8 +243,8 @@ export default function AddInvestment() {
 				return false;
 		}
 	}, [
-		assetType, selectedStockTicker, selectedStockName, quantity, purchasePrice,
-		name, amount, maturityDate, bankName, metalType, metalFormat, quantityUnit,
+		assetType, selectedStockTicker, selectedStockName, quantity, purchasePrice, totalPrice,
+		name, amount, maturityDate, bondType, bondCountry, bankName, metalType, metalFormat, quantityUnit,
 		propertyType, estimatedValue, country, city, zip, investmentType, accountName,
 		selectedCryptoSymbol, selectedCryptoName, errors
 	]);
@@ -260,6 +272,11 @@ export default function AddInvestment() {
 						updatedAt: now,
 						type: "stocks_etfs",
 						ticker: selectedStockTicker!,
+						tickerType: tickerType!,
+						sector: sector,
+						industry: industry,
+						country: stockCountry,
+						exchange: exchange,
 						quantity: parseFloat(quantity),
 						purchasePrice: parseFloat(purchasePrice),
 						purchaseDate: purchaseDate?.toISOString() || now,
@@ -274,6 +291,8 @@ export default function AddInvestment() {
 						createdAt: now,
 						updatedAt: now,
 						type: "bonds",
+						bondType: bondType!,
+						bondCountry: bondType === "government" ? bondCountry.trim() : undefined,
 						amount: parseFloat(amount),
 						interestRate: interestRate ? parseFloat(interestRate) : 0,
 						purchaseDate: purchaseDate?.toISOString() || now,
@@ -292,25 +311,31 @@ export default function AddInvestment() {
 						bankName: bankName.trim(),
 						amount: parseFloat(amount),
 						interestRate: interestRate ? parseFloat(interestRate) : 0,
+						purchaseDate: purchaseDate?.toISOString(),
 						maturityDate: maturityDate?.toISOString(),
 					} as DepositAsset;
 					break;
 
-				case "precious_metals":
-					asset = {
-						id: generateAssetId(),
-						name: name.trim(),
-						currency,
-						createdAt: now,
-						updatedAt: now,
-						type: "precious_metals",
-						metalType: metalType!,
-						format: metalFormat!,
-						quantity: parseFloat(quantity),
-						quantityUnit: metalFormat === "physical" ? quantityUnit! : undefined,
-						purchasePrice: purchasePrice ? parseFloat(purchasePrice) : 0,
-					} as PreciousMetalAsset;
-					break;
+			case "precious_metals": {
+				const qty = parseFloat(quantity);
+				const pricePerUnit = metalFormat === "physical"
+					? parseFloat(totalPrice) / qty
+					: parseFloat(purchasePrice);
+				asset = {
+					id: generateAssetId(),
+					name: name.trim(),
+					currency,
+					createdAt: now,
+					updatedAt: now,
+					type: "precious_metals",
+					metalType: metalType!,
+					format: metalFormat!,
+					quantity: qty,
+					quantityUnit: metalFormat === "physical" ? quantityUnit! : undefined,
+					purchasePrice: pricePerUnit || 0,
+				} as PreciousMetalAsset;
+				break;
+			}
 
 				case "real_estate":
 					asset = {
@@ -325,6 +350,7 @@ export default function AddInvestment() {
 						country: country.trim(),
 						city: city.trim(),
 						zip: zip.trim(),
+						purchaseDate: purchaseDate?.toISOString(),
 					} as RealEstateAsset;
 					break;
 
@@ -339,6 +365,7 @@ export default function AddInvestment() {
 						investmentType: investmentType!,
 						amount: parseFloat(amount),
 						expectedReturn: expectedReturn ? parseFloat(expectedReturn) : undefined,
+						purchaseDate: purchaseDate?.toISOString(),
 						maturityDate: maturityDate?.toISOString(),
 					} as PrivateInvestmentAsset;
 					break;
@@ -392,13 +419,23 @@ export default function AddInvestment() {
 				type="stock"
 				selectedSymbol={selectedStockTicker}
 				selectedName={selectedStockName}
-				onSelect={(ticker, stockName) => {
+				onSelect={(ticker, stockName, tickerType, sector, industry, country, exchange) => {
 					setSelectedStockTicker(ticker);
 					setSelectedStockName(stockName);
+					setTickerType(tickerType);
+					setSector(sector);
+					setIndustry(industry);
+					setStockCountry(country);
+					setExchange(exchange);
 				}}
 				onClear={() => {
 					setSelectedStockTicker(null);
 					setSelectedStockName(null);
+					setTickerType(null);
+					setSector(undefined);
+					setIndustry(undefined);
+					setStockCountry(undefined);
+					setExchange(undefined);
 				}}
 			/>
 			<InputField
@@ -449,6 +486,28 @@ export default function AddInvestment() {
 				placeholder="e.g., US Treasury 10Y"
 				required
 			/>
+			<View className="mb-7">
+				<SectionLabel required>Bond Type</SectionLabel>
+				<ChipSelector
+					options={BOND_TYPES}
+					selected={bondType}
+					onSelect={(type) => {
+						setBondType(type as "government" | "corporate" | null);
+						// Clear country when switching away from government
+						if (type !== "government") {
+							setBondCountry("");
+						}
+					}}
+				/>
+			</View>
+			{bondType === "government" && (
+				<CountryField
+					label="Country"
+					value={bondCountry}
+					onChange={setBondCountry}
+					required
+				/>
+			)}
 			<InputField
 				label="Amount Invested"
 				value={amount}
@@ -535,6 +594,14 @@ export default function AddInvestment() {
 				optional
 			/>
 			<DateField
+				label="Opening Date"
+				value={purchaseDate}
+				onChange={setPurchaseDate}
+				optional
+				minimumDate={MIN_DATE}
+				maximumDate={MAX_DATE}
+			/>
+			<DateField
 				label="Maturity Date"
 				value={maturityDate}
 				onChange={setMaturityDate}
@@ -571,13 +638,16 @@ export default function AddInvestment() {
 					<ChipSelector
 						options={METAL_FORMATS}
 						selected={metalFormat}
-						onSelect={(format) => {
-							setMetalFormat(format);
-							// Reset physical-specific fields when switching to ETF
-							if (format === "etf") {
-								setQuantityUnit(null);
-							}
-						}}
+					onSelect={(format) => {
+						setMetalFormat(format);
+						// Reset format-specific fields when switching
+						if (format === "etf") {
+							setQuantityUnit(null);
+							setTotalPrice("");
+						} else {
+							setPurchasePrice("");
+						}
+					}}
 					/>
 				</View>
 				{/* Show quantity unit selector only for physical */}
@@ -610,21 +680,37 @@ export default function AddInvestment() {
 				error={errors.quantity}
 			/>
 
-			{/* Only show purchase price for ETF - physical value is calculated from spot price */}
-			{metalFormat === "etf" && (
-				<InputField
-					label="Purchase Price (per unit)"
-					value={purchasePrice}
-					onChangeText={(text) => {
-						setPurchasePrice(text);
-						validateField("purchasePrice", text, "price");
-					}}
-					placeholder="e.g., 180.00"
-					keyboardType="decimal-pad"
-					error={errors.purchasePrice}
-					required
-				/>
-			)}
+		{/* Physical: ask for total price paid */}
+		{metalFormat === "physical" && (
+			<InputField
+				label="Total Price Paid"
+				value={totalPrice}
+				onChangeText={(text) => {
+					setTotalPrice(text);
+					validateField("totalPrice", text, "price");
+				}}
+				placeholder="e.g., 5000"
+				keyboardType="decimal-pad"
+				error={errors.totalPrice}
+				required
+			/>
+		)}
+
+		{/* ETF: ask for purchase price per unit */}
+		{metalFormat === "etf" && (
+			<InputField
+				label="Purchase Price (per unit)"
+				value={purchasePrice}
+				onChangeText={(text) => {
+					setPurchasePrice(text);
+					validateField("purchasePrice", text, "price");
+				}}
+				placeholder="e.g., 180.00"
+				keyboardType="decimal-pad"
+				error={errors.purchasePrice}
+				required
+			/>
+		)}
 
 			<View className="mb-7">
 				<SectionLabel>Currency</SectionLabel>
@@ -647,7 +733,7 @@ export default function AddInvestment() {
 				<ChipSelector
 					options={PROPERTY_TYPES}
 					selected={propertyType}
-					onSelect={setPropertyType}
+					onSelect={(type) => setPropertyType(type as "residential" | "commercial" | "land" | "reit" | "crowdfunding" | "other" | null)}
 				/>
 			</View>
 			<InputField
@@ -661,6 +747,14 @@ export default function AddInvestment() {
 				keyboardType="decimal-pad"
 				required
 				error={errors.estimatedValue}
+			/>
+			<DateField
+				label="Purchase Date"
+				value={purchaseDate}
+				onChange={setPurchaseDate}
+				optional
+				minimumDate={MIN_DATE}
+				maximumDate={MAX_DATE}
 			/>
 			<CountryField
 				label="Country"
@@ -732,6 +826,14 @@ export default function AddInvestment() {
 				keyboardType="decimal-pad"
 				error={errors.expectedReturn}
 				optional
+			/>
+			<DateField
+				label="Purchase Date"
+				value={purchaseDate}
+				onChange={setPurchaseDate}
+				optional
+				minimumDate={MIN_DATE}
+				maximumDate={MAX_DATE}
 			/>
 			<DateField
 				label="Maturity Date"

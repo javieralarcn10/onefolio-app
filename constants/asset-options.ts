@@ -1,10 +1,15 @@
+// Bond types
+export const BOND_TYPES = [
+	{ id: "government", label: "Government" },
+	{ id: "corporate", label: "Corporate" },
+] as const;
+
 // Metal types
 export const METAL_TYPES = [
 	{ id: "gold", label: "Gold" },
 	{ id: "silver", label: "Silver" },
 	{ id: "platinum", label: "Platinum" },
-	{ id: "palladium", label: "Palladium" },
-	{ id: "other", label: "Other" },
+	{ id: "palladium", label: "Palladium" }
 ] as const;
 
 // Metal formats
@@ -21,7 +26,7 @@ export const QUANTITY_UNITS = [
 
 // Property types
 export const PROPERTY_TYPES = [
-	{ id: "residential", label: "Residential" },
+	{ id: "Residential", label: "Residential" },
 	{ id: "commercial", label: "Commercial" },
 	{ id: "land", label: "Land" },
 	{ id: "reit", label: "REIT" },

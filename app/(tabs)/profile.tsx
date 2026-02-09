@@ -1,12 +1,11 @@
 import { Colors } from "@/constants/colors";
-import { User } from "@/types/custom";
-import { getUser } from "@/utils/storage";
-import { router, useFocusEffect } from "expo-router";
+import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo } from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
 import Icon from "react-native-remix-icon";
 import { useHaptics } from "@/hooks/haptics";
+import { useSession } from "@/utils/auth-context";
 import { PAYWALL_RESULT, showPaywallIfNeeded } from "@/utils/revenue-cat";
 import { useSubscription } from "@/utils/subscription-context";
 import { QuickActions } from "@/components/profile/quick-actions";
@@ -17,7 +16,7 @@ import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing } from "
 export default function ProfileScreen() {
 	const { triggerHaptics } = useHaptics();
 	const { isPremium } = useSubscription();
-	const [user, setUser] = useState<User>();
+	const { user } = useSession();
 
 	const upgradeButtonScale = useSharedValue(1);
 
@@ -39,20 +38,6 @@ export default function ProfileScreen() {
 		});
 	};
 
-	const loadData = useCallback(async () => {
-		try {
-			const userData = await getUser();
-			setUser(userData as User);
-		} catch (error) {
-			console.error("Error loading profile data:", error);
-		}
-	}, []);
-
-	useFocusEffect(
-		useCallback(() => {
-			loadData();
-		}, [])
-	);
 	const handleSettingsPress = useCallback(() => {
 		router.push("/settings");
 	}, []);

@@ -1,11 +1,12 @@
-import React, { useCallback, useLayoutEffect, useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { View, Text, Pressable, ActivityIndicator, Alert } from "react-native";
 import { router } from "expo-router";
 import { Colors } from "@/constants/colors";
 import { Option } from "@/components/onboarding/option";
-import { OnboardingOption, User } from "@/types/custom";
+import { OnboardingOption } from "@/types/custom";
 import { useHaptics } from "@/hooks/haptics";
-import { getUser, setUser } from "@/utils/storage";
+import { useSession } from "@/utils/auth-context";
+import { setUser } from "@/utils/storage";
 import { usersApi } from "@/utils/api/users";
 import Icon from "react-native-remix-icon";
 import { ScrollView } from "react-native";
@@ -29,26 +30,13 @@ const DEBOUNCE_MS = 300;
 
 export default function InvestorProfileSettingsScreen() {
 	const { triggerHaptics } = useHaptics();
-	const [selectedId, setSelectedId] = useState<number | null>(null);
+	const { user, updateUser } = useSession();
+	const initialOptionId = user?.investorProfile
+		? INVESTMENT_OPTIONS.find((opt) => opt.title === user.investorProfile)?.id ?? null
+		: null;
+	const [selectedId, setSelectedId] = useState<number | null>(initialOptionId);
 	const [isSaving, setIsSaving] = useState(false);
-	const originalUser = useRef<User | null>(null);
 	const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-	const loadUser = async () => {
-		const user = await getUser();
-		originalUser.current = user;
-
-		if (user?.investorProfile) {
-			const option = INVESTMENT_OPTIONS.find((opt) => opt.title === user.investorProfile);
-			if (option) {
-				setSelectedId(option.id);
-			}
-		}
-	};
-
-	useLayoutEffect(() => {
-		loadUser();
-	}, []);
 
 	const saveChanges = async (newSelectedId: number | null) => {
 		const newProfile = newSelectedId !== null
@@ -58,12 +46,12 @@ export default function InvestorProfileSettingsScreen() {
 		setIsSaving(true);
 		try {
 			const response = await usersApi.updateUserInfo({
-				userId: originalUser.current?.id,
+				userId: user?.id,
 				investorProfile: newProfile ?? null,
 			});
 			if (response.user) {
-				await setUser({ ...originalUser.current, ...response.user });
-				originalUser.current = { ...originalUser.current, ...response.user };
+				await setUser({ ...user, ...response.user });
+				await updateUser(response.user);
 			}
 		} catch (error) {
 			console.error(error);

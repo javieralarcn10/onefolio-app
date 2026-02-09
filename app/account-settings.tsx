@@ -1,13 +1,13 @@
-import React, { useLayoutEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { View, Text, Pressable, TextInput, ActivityIndicator, Alert } from "react-native";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import { router } from "expo-router";
 import { Colors } from "@/constants/colors";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { useHaptics } from "@/hooks/haptics";
-import { getUser, setUser } from "@/utils/storage";
+import { useSession } from "@/utils/auth-context";
+import { setUser } from "@/utils/storage";
 import { usersApi } from "@/utils/api/users";
-import { User } from "@/types/custom";
 import Icon from "react-native-remix-icon";
 
 const URL_PATTERN = /^https?:\/\/|www\.|\.(?:com|net|org|edu|gov|io|co|es|mx|app|dev)\b/i;
@@ -16,24 +16,13 @@ const MIN_LENGTH_DEBOUNCE_MS = 500;
 
 export default function AccountSettingsScreen() {
 	const { triggerHaptics } = useHaptics();
+	const { user, updateUser } = useSession();
 	const [isLoading, setIsLoading] = useState(false);
-	const [name, setName] = useState("");
+	const [name, setName] = useState(user?.firstName ?? "");
 	const [nameError, setNameError] = useState("");
-	const [email, setEmail] = useState("");
-	const originalUser = useRef<User | null>(null);
+	const [email, setEmail] = useState(user?.email ?? "");
 	const emailInput = useRef<TextInput>(null);
 	const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-	const loadUser = async () => {
-		const user = await getUser();
-		setName(user?.firstName ?? "");
-		setEmail(user?.email ?? "");
-		originalUser.current = user;
-	};
-
-	useLayoutEffect(() => {
-		loadUser();
-	}, []);
 
 	const validateImmediate = (value: string): string | null => {
 		const trimmed = value.trim();
@@ -82,19 +71,20 @@ export default function AccountSettingsScreen() {
 	};
 
 	const hasChanges = () => {
-		return name !== originalUser.current?.firstName || email !== originalUser.current?.email;
+		return name !== user?.firstName || email !== user?.email;
 	};
 
 	const handleSaveChanges = async () => {
 		setIsLoading(true);
 		try {
 			const response = await usersApi.updateUserInfo({
-				userId: originalUser.current?.id,
+				userId: user?.id,
 				firstName: name?.trim(),
 				email: email?.trim() || null,
 			});
 			if (response.user) {
-				await setUser({ ...originalUser.current, ...response.user });
+				await setUser({ ...user, ...response.user });
+				await updateUser(response.user);
 				triggerHaptics("Success");
 				router.back();
 			} else {
