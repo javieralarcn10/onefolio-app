@@ -1,7 +1,7 @@
 import { Asset } from "@/types/custom";
 import React from "react";
 import { Text, View } from "react-native";
-import { getAssetDetails, getMockSectorInfo } from "./asset-detail-helpers";
+import { getAssetDetails, getSectorInfo } from "./asset-detail-helpers";
 import { COUNTRIES } from "@/utils/countries";
 import CountryFlag from "react-native-country-flag-icon";
 
@@ -43,7 +43,7 @@ export function DetailsSection({ asset }: { asset: Asset }) {
 }
 
 export function InformationSection({ asset }: { asset: Asset }) {
-	const sectorInfo = getMockSectorInfo(asset);
+	const sectorInfo = getSectorInfo(asset);
 
 	if (!sectorInfo) return null;
 

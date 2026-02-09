@@ -250,45 +250,7 @@ export function generateTransactionId(): string {
 	return `tx_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 }
 
-export function generateMockPriceHistory(asset: Asset, months: number = 12) {
-	const history = [];
-	const now = new Date();
-	// Compute base value inline to avoid circular import with asset-config
-	let baseValue = 0;
-	switch (asset.type) {
-		case "stocks_etfs":
-		case "crypto":
-		case "precious_metals":
-			baseValue = getNetQuantity(asset) * getAvgPurchasePrice(asset);
-			break;
-		case "bonds":
-		case "deposits":
-		case "private_investments":
-		case "cash":
-			baseValue = getNetAmount(asset);
-			break;
-		case "real_estate":
-			baseValue = (asset as any).estimatedValue || 0;
-			break;
-	}
-
-	for (let i = months; i >= 0; i--) {
-		const date = new Date(now);
-		date.setMonth(date.getMonth() - i);
-
-		const variation = (Math.random() - 0.5) * 0.4;
-		const value = baseValue * (1 + variation);
-
-		history.push({
-			date: date.toISOString(),
-			value: Math.max(0, value),
-		});
-	}
-
-	return history;
-}
-
-export function getMockSectorInfo(asset: Asset) {
+export function getSectorInfo(asset: Asset) {
 	switch (asset.type) {
 		case "stocks_etfs":
 			const data: { sector?: string; industry?: string; country?: string; exchange?: string } = {};
