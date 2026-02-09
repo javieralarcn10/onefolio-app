@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { ActivityIndicator, Dimensions, Text, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Icon from "react-native-remix-icon";
-import Animated, { useAnimatedReaction, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
+import Animated, { useAnimatedReaction, useAnimatedStyle, useSharedValue, withDelay, withTiming } from "react-native-reanimated";
 import { runOnJS } from "react-native-worklets";
 import { useHaptics } from "@/hooks/haptics";
 // @ts-ignore
@@ -108,12 +108,12 @@ export function AssetPriceChart({ data, isLoading, chartCurrency, currentValue, 
 	// 2) Once the target is rendered, kick off the slide animation
 	useEffect(() => {
 		if (slideTarget) {
-			slideProgress.value = withTiming(1, { duration: 450 }, (finished) => {
+			slideProgress.value = withDelay(150, withTiming(1, { duration: 400 }, (finished) => {
 				"worklet";
 				if (finished) {
 					runOnJS(commitSlide)(slideTarget);
 				}
-			});
+			}));
 		}
 	}, [slideTarget, commitSlide]);
 
