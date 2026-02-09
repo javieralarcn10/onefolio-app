@@ -1,4 +1,5 @@
-import { Asset, User } from '@/types/custom';
+import { buildInitialTransaction } from '@/components/assets/asset-detail-helpers';
+import { Asset, Transaction, User } from '@/types/custom';
 import Storage from 'expo-sqlite/kv-store';
 
 async function setItem(key: string, value: any) {
@@ -87,12 +88,58 @@ export async function removeAsset(assetId: string): Promise<void> {
 	await setItem('assets', filteredAssets);
 }
 
+export async function addTransactionToAsset(assetId: string, transaction: Transaction): Promise<void> {
+	const assets = await getAssets();
+	const index = assets.findIndex(a => a.id === assetId);
+	if (index !== -1) {
+		const asset = assets[index];
+		if (!asset.transactions || asset.transactions.length === 0) {
+			// First real transaction: migrate legacy purchase data as the initial buy
+			asset.transactions = [buildInitialTransaction(asset)];
+		}
+		asset.transactions.push(transaction);
+		asset.updatedAt = new Date().toISOString();
+		assets[index] = asset;
+		await setItem('assets', assets);
+	}
+}
+
 export async function clearAssets(): Promise<void> {
 	await removeItem('assets');
 }
 
 export function generateAssetId(): string {
 	return `asset_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+}
+
+// Exchange Rates Cache
+export type CachedExchangeRates = {
+	data: {
+		success: boolean;
+		date: string;
+		base: string;
+		rates: Record<string, number>;
+	};
+	timestamp: number;
+};
+
+export async function getExchangeRatesCache(): Promise<CachedExchangeRates | null> {
+	const raw = await Storage.getItem('exchangeRates');
+	if (!raw) return null;
+	try {
+		return JSON.parse(raw);
+	} catch {
+		return null;
+	}
+}
+
+export async function setExchangeRatesCache(data: CachedExchangeRates['data']): Promise<void> {
+	const entry: CachedExchangeRates = { data, timestamp: Date.now() };
+	await setItem('exchangeRates', entry);
+}
+
+export async function removeExchangeRatesCache(): Promise<void> {
+	await removeItem('exchangeRates');
 }
 
 // Security Settings
