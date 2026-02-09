@@ -37,6 +37,7 @@ export function QuickActions() {
 			title: "Add new asset",
 			description: "Stocks, bonds, real estate...",
 			icon: "add-circle-line",
+			disabled: false,
 			onPress: handleAddAsset,
 		},
 		{
@@ -44,6 +45,7 @@ export function QuickActions() {
 			title: "Export portfolio",
 			description: "Download as CSV",
 			icon: "file-excel-2-line",
+			disabled: !isPremium,
 			onPress: handleExport,
 		},
 	], [handleAddAsset, handleExport]);
@@ -62,10 +64,11 @@ export function QuickActions() {
 								<Icon name={action.icon} size="20" color={Colors.foreground} fallback={null} />
 							</View>
 							<View className="flex-1">
-								<View className="flex-row items-center gap-2">
+								<View className="flex-row items-center gap-1">
 									<Text className="font-lausanne-regular text-foreground text-base">
 										{action.title}
 									</Text>
+									{action.disabled && <Text className="text-foreground text-xs font-lausanne-regular bg-accent px-1.5 py-0.5">Premium</Text>}
 								</View>
 								<Text className="font-lausanne-light text-muted-foreground text-sm">
 									{action.description}
