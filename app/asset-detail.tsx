@@ -20,6 +20,7 @@ import { TransactionsSection } from "@/components/assets/transactions-section";
 import { AnalystRatingSection } from "@/components/assets/analyst-section";
 import { useSession } from "@/utils/auth-context";
 import { transformNumberToUserCurrency } from "@/utils/exchange-rates";
+import { formatNumber } from "@/utils/numbers";
 
 // Period options for chart
 const PERIOD_OPTIONS: PeriodOption[] = [
@@ -315,6 +316,7 @@ export default function AssetDetailScreen() {
 				) : (
 					/* Simple value display for asset types without chart */
 					<View className="mt-4 mb-6">
+						<Text className="text-muted-foreground text-sm font-lausanne-medium">Current Total Value</Text>
 						<Text className="text-foreground text-3xl font-lausanne-bold leading-tight">
 							{formattedValue}
 						</Text>
@@ -322,7 +324,7 @@ export default function AssetDetailScreen() {
 				)}
 
 				{/* Sections */}
-				<DetailsSection asset={asset} />
+				<DetailsSection asset={asset} currentValue={currentPriceQuery.data ? formatNumber(currentPriceQuery.data.current_price, currentPriceQuery.data.currency) : undefined} />
 				<InformationSection asset={asset} />
 				{analystRating.data && <AnalystRatingSection analystRating={analystRating.data} />}
 				<TransactionsSection

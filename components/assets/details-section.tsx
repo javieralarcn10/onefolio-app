@@ -22,8 +22,11 @@ function DetailRow({ label, value, isLast }: { label: string; value: string; isL
 	);
 }
 
-export function DetailsSection({ asset }: { asset: Asset }) {
+export function DetailsSection({ asset, currentValue }: { asset: Asset; currentValue: string | undefined }) {
 	const details = getAssetDetails(asset);
+	if (currentValue) {
+		details.push({ label: "Current Value", value: currentValue });
+	}
 
 	return (
 		<View className="mb-6">

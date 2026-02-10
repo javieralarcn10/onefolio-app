@@ -268,6 +268,7 @@ export function AssetPriceChart({ data, isLoading, chartCurrency, currentValue, 
 		<View>
 			{/* Value and Change — fixed height to prevent layout jumps */}
 			<View className="mb-2">
+				<Text className="text-muted-foreground text-sm font-lausanne-medium">{selectedPoint ? "Point Value" : "Current Total Value"}</Text>
 				<View style={{ height: SLIDE_DISTANCE, overflow: "hidden", justifyContent: "center" }}>
 					{slideTarget != null ? (
 						<>
