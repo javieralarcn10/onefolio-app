@@ -37,6 +37,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { ActivityIndicator, Alert, Pressable, Text, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing } from "react-native-reanimated";
+import { useSubscription } from "@/utils/subscription-context";
+import { showPaywallIfNeeded } from "@/utils/revenue-cat";
 
 // Local copy of asset options for when used from onboarding (type param is an id number)
 const LOCAL_ASSETS_OPTIONS: AssetOptionType[] = [
@@ -116,6 +118,7 @@ const LOCAL_ASSETS_OPTIONS: AssetOptionType[] = [
 
 export default function AddAssetScreen() {
 	const { triggerHaptics } = useHaptics();
+	const { isPremium } = useSubscription();
 	const { type, id } = useLocalSearchParams<{ type?: string; id?: string }>();
 
 	// Determine if we're in edit mode
@@ -653,6 +656,22 @@ export default function AddAssetScreen() {
 		if (!isFormValid || !hasChanges) {
 			triggerHaptics("Error");
 			return;
+		}
+
+		if (!isEditMode && !isPremium) {
+			const existingAssets = await getAssets();
+			if (existingAssets.length >= 10) {
+				Alert.alert(
+					"Premium Feature",
+					"You've reached the limit of 10 assets. Upgrade to Premium to add unlimited assets.",
+					[
+						{ text: "Cancel", style: "destructive" },
+						{ text: "Upgrade", style: "default", onPress: () => showPaywallIfNeeded() },
+					]
+				);
+				triggerHaptics("Error");
+				return;
+			}
 		}
 
 		setIsSaving(true);
