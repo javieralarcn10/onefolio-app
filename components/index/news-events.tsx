@@ -94,7 +94,6 @@ export function NewsEvents({ assets }: NewsEventsProps) {
 
 			<FlatList
 				showsVerticalScrollIndicator={false}
-				nestedScrollEnabled={false}
 				data={news.slice(0, 10)}
 				keyExtractor={(item: APINewsItem) => item.link}
 				renderItem={({ item, index }: { item: APINewsItem; index: number }) => (
