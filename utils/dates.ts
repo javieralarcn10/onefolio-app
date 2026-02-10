@@ -57,13 +57,29 @@ export function formatDateTime(date: string | Date): string {
 export function formatRelative(date: string | Date): string {
 	const d = typeof date === "string" ? new Date(date) : date;
 	const now = new Date();
-	const diffMs = d.getTime() - now.getTime();
-	const diffDays = Math.round(diffMs / (1000 * 60 * 60 * 24));
+	const diffMs = now.getTime() - d.getTime();
+	const absMs = Math.abs(diffMs);
+	const absSeconds = Math.floor(absMs / 1000);
+	const absMinutes = Math.floor(absSeconds / 60);
+	const absHours = Math.floor(absMinutes / 60);
+	const absDays = Math.floor(absHours / 24);
+	const absWeeks = Math.floor(absDays / 7);
+	const absMonths = Math.floor(absDays / 30);
+	const absYears = Math.floor(absDays / 365);
 
-	const rtf = new Intl.RelativeTimeFormat(locale, { numeric: "auto" });
+	const isFuture = diffMs < 0;
+	const suffix = (value: number, unit: string) => {
+		const plural = value !== 1 ? "s" : "";
+		return isFuture
+			? `in ${value} ${unit}${plural}`
+			: `${value} ${unit}${plural} ago`;
+	};
 
-	if (Math.abs(diffDays) < 1) return rtf.format(0, "day");
-	if (Math.abs(diffDays) < 30) return rtf.format(diffDays, "day");
-	if (Math.abs(diffDays) < 365) return rtf.format(Math.round(diffDays / 30), "month");
-	return rtf.format(Math.round(diffDays / 365), "year");
+	if (absSeconds < 60) return isFuture ? "soon" : "just now";
+	if (absMinutes < 60) return suffix(absMinutes, "minute");
+	if (absHours < 24) return suffix(absHours, "hour");
+	if (absDays < 7) return suffix(absDays, "day");
+	if (absWeeks < 5) return suffix(absWeeks, "week");
+	if (absMonths < 12) return suffix(Math.max(absMonths, 1), "month");
+	return suffix(Math.max(absYears, 1), "year");
 }

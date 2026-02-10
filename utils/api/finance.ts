@@ -85,6 +85,20 @@ export type AnalystRatingResponse = {
 	recommendation_trends: AnalystRatingTrend[];
 };
 
+export type NewsItem = {
+	title: string;
+	publisher: string;
+	link: string;
+	date: string;
+	summary: string;
+};
+
+export type NewsResponse = {
+	symbol: string;
+	total: number;
+	news: NewsItem[];
+};
+
 export type HistoryPeriod = "1d" | "5d" | "1mo" | "6mo" | "1y" | "5y";
 export type HistoryInterval = "5m" | "1h" | "90m" | "1d" | "1wk" | "1mo";
 
@@ -126,7 +140,7 @@ export function usePriceHistory(symbol: string, uiPeriod: string, enabled: boole
 	});
 }
 
-async function fetchCurrentPrice(
+export async function fetchCurrentPrice(
 	symbol: string
 ): Promise<CurrentPriceResponse> {
 	const response = await axios.get<CurrentPriceResponse>(
@@ -165,6 +179,29 @@ export function useAnalystRating(symbol: string, enabled: boolean = true) {
 	return useQuery<AnalystRatingResponse>({
 		queryKey: ["analyst-rating", symbol],
 		queryFn: () => fetchAnalystRating(symbol),
+		enabled: enabled && symbol.length > 0,
+		staleTime: 24 * 60 * 60 * 1000,
+		gcTime: 24 * 60 * 60 * 1000,
+		retry: 1,
+	});
+}
+
+export async function fetchNews(
+	symbol: string
+): Promise<NewsResponse> {
+	const response = await axios.get<NewsResponse>(
+		`${API_URL}/finance/news/${symbol}`,
+		{
+			headers: { Accept: "application/json" },
+		},
+	);
+	return response.data;
+}
+
+export function useNews(symbol: string, enabled: boolean = true) {
+	return useQuery<NewsResponse>({
+		queryKey: ["news", symbol],
+		queryFn: () => fetchNews(symbol),
 		enabled: enabled && symbol.length > 0,
 		staleTime: 24 * 60 * 60 * 1000,
 		gcTime: 24 * 60 * 60 * 1000,
