@@ -215,7 +215,7 @@ function computeLiquidityScore(assets: Asset[], currentPrices: Record<string, Pr
 
 // ── Main component ───────────────────────────────────────────────────────
 
-export const RiskScores = React.memo(function RiskScores({ assets, currentPrices }: Props) {
+export const PortfolioHealth = React.memo(function PortfolioHealth({ assets, currentPrices }: Props) {
 	const { categories, overallScore, overallLevel } = useMemo(() => {
 		const geo = computeGeographicScore(assets, currentPrices);
 		const cur = computeCurrencyScore(assets, currentPrices);

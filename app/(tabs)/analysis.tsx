@@ -10,7 +10,7 @@ import React, { useCallback, useMemo, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
 import Icon from "react-native-remix-icon";
 import { useSubscription } from "@/utils/subscription-context";
-import { RiskScores } from "@/components/analysis/risk-scores";
+import { PortfolioHealth } from "@/components/analysis/portfolio-health";
 import { GeographicExposure } from "@/components/analysis/geographic-exposure";
 import { CurrencyExposure } from "@/components/analysis/currency-exposure";
 import { SectorTreemap } from "@/components/analysis/sector-treemap";
@@ -147,21 +147,13 @@ export default function AnalysisScreen() {
 				showsVerticalScrollIndicator={false}
 				contentContainerClassName="px-5 pb-10"
 			>
-				{/* Risk Scores */}
-				<RiskScores
-					assets={assets}
-					currentPrices={currentPrices}
-				/>
+				<PortfolioHealth assets={assets} currentPrices={currentPrices} />
 
-				{/* Geographic Exposure */}
 				<GeographicExposure assets={assets} isPremium={isPremium} userCurrency={user?.currency ?? 'USD'} currentPrices={currentPrices} />
 
-				{/* Currency Exposure */}
 				<CurrencyExposure assets={assets} isPremium={isPremium} currentPrices={currentPrices} />
 
-				{/* Sector Treemap (Premium) */}
 				<SectorTreemap assets={assets} isPremium={isPremium} currentPrices={currentPrices} userCurrency={user?.currency ?? 'USD'} />
-
 
 			</ScrollView>
 		</View>
