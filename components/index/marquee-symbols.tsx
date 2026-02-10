@@ -57,12 +57,17 @@ export function MarqueeSymbols({ assets }: MarqueeSymbolsProps) {
 		})),
 	});
 
+	// Wait until every query has settled (success or error) so the marquee
+	// doesn't re-measure mid-animation when late responses arrive.
+	const allSettled = queries.every((q) => !q.isLoading);
+
 	// Only render items that have loaded successfully
 	const items = useMemo(() => {
+		if (!allSettled) return [];
 		return queries
 			.filter((q) => q.isSuccess && q.data)
 			.map((q) => q.data as CurrentPriceResponse);
-	}, [queries]);
+	}, [queries, allSettled]);
 
 	if (items.length === 0) return null;
 
