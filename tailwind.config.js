@@ -27,7 +27,7 @@ module.exports = {
         "4xl": "2.5rem",
       },
       borderWidth: {
-        DEFAULT: "1.4px",
+        DEFAULT: "1.49px",
       },
       fontSize: {
         xs: ["12px", { lineHeight: "16px" }],
