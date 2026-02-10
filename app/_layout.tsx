@@ -40,7 +40,7 @@ export default function RootLayout() {
     const responseListener = Notifications.addNotificationResponseReceivedListener(response => {
       const { content } = response.notification.request;
       const { data = null } = content;
-      console.log('data:', data);
+      console.log('notification data:', data);
     });
 
     return () => {
