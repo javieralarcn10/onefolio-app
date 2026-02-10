@@ -1,16 +1,18 @@
-import { isFullySold } from "@/components/assets/asset-detail-helpers";
+import { isFullySold, getNetQuantity } from "@/components/assets/asset-detail-helpers";
 import { getAssetValue } from "@/components/assets/asset-config";
 import { Asset } from "@/types/custom";
 import { formatNumber } from "@/utils/numbers";
 import { formatDateShort } from "@/utils/dates";
 import { getAssets } from "@/utils/storage";
+import { fetchCurrentPrice } from "@/utils/api/finance";
+import { useQueries } from "@tanstack/react-query";
 import { useFocusEffect } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
 import { PeriodSelector, PeriodOption } from "@/components/assets/period-selector";
 import { PortfolioChart } from "@/components/index/portfolio-chart";
-import { AssetAllocation } from "@/components/index/asset-allocation";
+import { AssetDistribution } from "@/components/index/asset-distribution";
 import { NewsEvents } from "@/components/index/news-events";
 import { useHaptics } from "@/hooks/haptics";
 import { useSession } from "@/utils/auth-context";
@@ -29,26 +31,78 @@ const PERIOD_OPTIONS: PeriodOption[] = [
 
 type DisplayMode = "value" | "performance";
 
+/** Asset types that support live price fetching */
+const LIVE_PRICE_TYPES = new Set(["stocks_etfs", "crypto", "precious_metals"]);
+
+/** Get the ticker/symbol used to fetch the current price for an asset */
+function getAssetSymbol(asset: Asset): string {
+	switch (asset.type) {
+		case "stocks_etfs":
+			return asset.ticker;
+		case "crypto":
+			return asset.symbol;
+		case "precious_metals":
+			switch (asset.metalType) {
+				case "gold": return "GC=F";
+				case "silver": return "SI=F";
+				case "platinum": return "PL=F";
+				case "palladium": return "PA=F";
+				default: return "";
+			}
+		default:
+			return "";
+	}
+}
+
+type PriceData = { price: number; currency: string };
+
+/** Get the current value of an asset using live prices when available */
+function getAssetCurrentValue(asset: Asset, currentPrices: Record<string, PriceData>): number {
+	if (LIVE_PRICE_TYPES.has(asset.type)) {
+		const symbol = getAssetSymbol(asset);
+		if (symbol && currentPrices[symbol]) {
+			return getNetQuantity(asset) * currentPrices[symbol].price;
+		}
+	}
+	return getAssetValue(asset);
+}
+
 function calculatePortfolioValue(assets: Asset[]): number {
 	return assets.reduce((total, asset) => total + getAssetValue(asset), 0);
 }
 
-function getAssetTypeDistribution(assets: Asset[]): { type: string; value: number; currency: string; percentage: number }[] {
-	const totalValue = calculatePortfolioValue(assets);
-	const distribution: Record<string, { value: number; currency: string }> = {};
+function getAssetTypeDistribution(
+	assets: Asset[],
+	currentPrices: Record<string, PriceData>,
+): { type: string; value: number; costBasis: number; currency: string; percentage: number }[] {
+	const totalValue = assets.reduce((sum, a) => sum + getAssetCurrentValue(a, currentPrices), 0);
+	const distribution: Record<string, { value: number; costBasis: number; currency: string }> = {};
 
 	assets.forEach((asset) => {
-		const value = getAssetValue(asset);
-		if (!distribution[asset.type]) {
-			distribution[asset.type] = { value: 0, currency: asset.currency || "USD" };
+		const currentValue = getAssetCurrentValue(asset, currentPrices);
+		const costBasis = getAssetValue(asset);
+
+		// Use API currency for live-price types, otherwise asset's stored currency
+		let currency = asset.currency || "USD";
+		if (LIVE_PRICE_TYPES.has(asset.type)) {
+			const symbol = getAssetSymbol(asset);
+			if (symbol && currentPrices[symbol]) {
+				currency = currentPrices[symbol].currency;
+			}
 		}
-		distribution[asset.type].value += value;
+
+		if (!distribution[asset.type]) {
+			distribution[asset.type] = { value: 0, costBasis: 0, currency };
+		}
+		distribution[asset.type].value += currentValue;
+		distribution[asset.type].costBasis += costBasis;
 	});
 
 	return Object.entries(distribution)
-		.map(([type, { value, currency }]) => ({
+		.map(([type, { value, costBasis, currency }]) => ({
 			type,
 			value,
+			costBasis,
 			currency,
 			percentage: totalValue > 0 ? parseFloat(((value / totalValue) * 100).toFixed(1)) : 0,
 		}))
@@ -123,7 +177,6 @@ export default function HomeScreen() {
 	const [isLoading, setIsLoading] = useState(true);
 	const [selectedPeriod, setSelectedPeriod] = useState("1M");
 	const [formattedValue, setFormattedValue] = useState("");
-
 	useFocusEffect(
 		useCallback(() => {
 			loadAssets();
@@ -142,8 +195,43 @@ export default function HomeScreen() {
 		}
 	};
 
+	// Collect unique symbols for live-price assets
+	const liveSymbols = useMemo(() => {
+		const symbols = new Set<string>();
+		assets.forEach((asset) => {
+			if (LIVE_PRICE_TYPES.has(asset.type)) {
+				const symbol = getAssetSymbol(asset);
+				if (symbol) symbols.add(symbol);
+			}
+		});
+		return Array.from(symbols);
+	}, [assets]);
+
+	// Fetch current prices via react-query (shares cache with useCurrentPrice)
+	const priceQueries = useQueries({
+		queries: liveSymbols.map((symbol) => ({
+			queryKey: ["current-price", symbol],
+			queryFn: () => fetchCurrentPrice(symbol),
+			enabled: symbol.length > 0,
+			staleTime: 15 * 60 * 1000,
+			gcTime: 15 * 60 * 1000,
+			retry: 1,
+		})),
+	});
+
+	const currentPrices = useMemo(() => {
+		const prices: Record<string, PriceData> = {};
+		liveSymbols.forEach((symbol, i) => {
+			const data = priceQueries[i]?.data;
+			if (data) {
+				prices[symbol] = { price: data.current_price, currency: data.currency };
+			}
+		});
+		return prices;
+	}, [liveSymbols, priceQueries]);
+
 	const portfolioValue = useMemo(() => calculatePortfolioValue(assets), [assets]);
-	const assetDistribution = useMemo(() => getAssetTypeDistribution(assets), [assets]);
+	const assetDistribution = useMemo(() => getAssetTypeDistribution(assets, currentPrices), [assets, currentPrices]);
 
 	// Format value to user's currency
 	useEffect(() => {
@@ -209,7 +297,7 @@ export default function HomeScreen() {
 
 				{/* Asset Allocation */}
 				{assetDistribution.length > 0 && (
-					<AssetAllocation
+					<AssetDistribution
 						distribution={assetDistribution}
 					/>
 				)}

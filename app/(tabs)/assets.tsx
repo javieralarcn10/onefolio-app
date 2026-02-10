@@ -1,10 +1,12 @@
 import { ASSETS_OPTIONS, getAssetValue } from "@/components/assets/asset-config";
 import { AssetTypeSection } from "@/components/assets/asset-type-section";
 import { EmptyState } from "@/components/assets/empty-state";
-import { isFullySold } from "@/components/assets/asset-detail-helpers";
+import { isFullySold, getNetQuantity } from "@/components/assets/asset-detail-helpers";
 import { Colors } from "@/constants/colors";
 import { Asset, AssetType } from "@/types/custom";
 import { getAssets } from "@/utils/storage";
+import { fetchCurrentPrice } from "@/utils/api/finance";
+import { useQueries } from "@tanstack/react-query";
 import { router, useFocusEffect } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
@@ -13,11 +15,40 @@ import Icon from "react-native-remix-icon";
 import { transformNumberToUserCurrency } from "@/utils/exchange-rates";
 import { useSession } from "@/utils/auth-context";
 
+const LIVE_PRICE_TYPES = new Set(["stocks_etfs", "crypto", "precious_metals"]);
+
+function getAssetSymbol(asset: Asset): string {
+	switch (asset.type) {
+		case "stocks_etfs": return asset.ticker;
+		case "crypto": return asset.symbol;
+		case "precious_metals":
+			switch (asset.metalType) {
+				case "gold": return "GC=F";
+				case "silver": return "SI=F";
+				case "platinum": return "PL=F";
+				case "palladium": return "PA=F";
+				default: return "";
+			}
+		default: return "";
+	}
+}
+
+type PriceData = { price: number; currency: string };
+
+function getAssetCurrentValue(asset: Asset, currentPrices: Record<string, PriceData>): number {
+	if (LIVE_PRICE_TYPES.has(asset.type)) {
+		const symbol = getAssetSymbol(asset);
+		if (symbol && currentPrices[symbol]) {
+			return getNetQuantity(asset) * currentPrices[symbol].price;
+		}
+	}
+	return getAssetValue(asset);
+}
+
 export default function AssetsScreen() {
 	const { user } = useSession();
 	const [assets, setAssets] = useState<Asset[]>([]);
 	const [formattedTotal, setFormattedTotal] = useState("");
-
 	useFocusEffect(
 		useCallback(() => {
 			loadAssets();
@@ -60,6 +91,41 @@ export default function AssetsScreen() {
 		[assets],
 	);
 
+	// Collect unique symbols for live-price assets
+	const liveSymbols = useMemo(() => {
+		const symbols = new Set<string>();
+		activeAssets.forEach((asset) => {
+			if (LIVE_PRICE_TYPES.has(asset.type)) {
+				const symbol = getAssetSymbol(asset);
+				if (symbol) symbols.add(symbol);
+			}
+		});
+		return Array.from(symbols);
+	}, [activeAssets]);
+
+	// Fetch current prices via react-query (shares cache with useCurrentPrice)
+	const priceQueries = useQueries({
+		queries: liveSymbols.map((symbol) => ({
+			queryKey: ["current-price", symbol],
+			queryFn: () => fetchCurrentPrice(symbol),
+			enabled: symbol.length > 0,
+			staleTime: 15 * 60 * 1000,
+			gcTime: 15 * 60 * 1000,
+			retry: 1,
+		})),
+	});
+
+	const currentPrices = useMemo(() => {
+		const prices: Record<string, PriceData> = {};
+		liveSymbols.forEach((symbol, i) => {
+			const data = priceQueries[i]?.data;
+			if (data) {
+				prices[symbol] = { price: data.current_price, currency: data.currency };
+			}
+		});
+		return prices;
+	}, [liveSymbols, priceQueries]);
+
 	// Group active assets by type
 	const groupedAssets = activeAssets.reduce((acc, asset) => {
 		if (!acc[asset.type]) {
@@ -69,7 +135,7 @@ export default function AssetsScreen() {
 		return acc;
 	}, {} as Record<AssetType, Asset[]>);
 
-	const totalValue = activeAssets.reduce((sum, asset) => sum + getAssetValue(asset), 0);
+	const totalValue = activeAssets.reduce((sum, asset) => sum + getAssetCurrentValue(asset, currentPrices), 0);
 
 	useEffect(() => {
 		transformNumberToUserCurrency(totalValue).then(setFormattedTotal);
@@ -77,8 +143,8 @@ export default function AssetsScreen() {
 
 	// Calculate total value per asset type and sort by value (highest to lowest)
 	const assetTypes = (Object.keys(groupedAssets) as AssetType[]).sort((a, b) => {
-		const valueA = groupedAssets[a].reduce((sum, asset) => sum + getAssetValue(asset), 0);
-		const valueB = groupedAssets[b].reduce((sum, asset) => sum + getAssetValue(asset), 0);
+		const valueA = groupedAssets[a].reduce((sum, asset) => sum + getAssetCurrentValue(asset, currentPrices), 0);
+		const valueB = groupedAssets[b].reduce((sum, asset) => sum + getAssetCurrentValue(asset, currentPrices), 0);
 		return valueB - valueA;
 	});
 
@@ -111,16 +177,34 @@ export default function AssetsScreen() {
 					showsVerticalScrollIndicator={false}
 					contentContainerClassName="px-5 pt-2 pb-10 flex-grow"
 				>
-					{assetTypes.map((type) => (
-						<AssetTypeSection
-							key={type}
-							type={type}
-							assets={groupedAssets[type]}
-							userCurrency={user?.currency}
-							onAssetPress={handleAssetPress}
-							onAddPress={() => handleAddToType(type)}
-						/>
-					))}
+					{assetTypes.map((type) => {
+						const typeAssets = groupedAssets[type];
+						const costBasis = typeAssets.reduce((sum, a) => sum + getAssetValue(a), 0);
+						const currentValue = typeAssets.reduce((sum, a) => sum + getAssetCurrentValue(a, currentPrices), 0);
+
+						// Use API currency for live-price types
+						let valueCurrency: string | undefined;
+						if (LIVE_PRICE_TYPES.has(type)) {
+							const firstSymbol = getAssetSymbol(typeAssets[0]);
+							if (firstSymbol && currentPrices[firstSymbol]) {
+								valueCurrency = currentPrices[firstSymbol].currency;
+							}
+						}
+
+						return (
+							<AssetTypeSection
+								key={type}
+								type={type}
+								assets={typeAssets}
+								userCurrency={user?.currency}
+								currentValue={currentValue}
+								costBasis={costBasis}
+								valueCurrency={valueCurrency}
+								onAssetPress={handleAssetPress}
+								onAddPress={() => handleAddToType(type)}
+							/>
+						);
+					})}
 				</ScrollView>
 			)}
 		</View>

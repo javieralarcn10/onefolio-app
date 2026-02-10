@@ -8,6 +8,7 @@ import Icon from "react-native-remix-icon";
 type AssetDistributionItem = {
 	type: string;
 	value: number;
+	costBasis: number;
 	currency: string;
 	percentage: number;
 };
@@ -16,7 +17,7 @@ type Props = {
 	distribution: AssetDistributionItem[];
 };
 
-export function AssetAllocation({ distribution }: Props) {
+export function AssetDistribution({ distribution }: Props) {
 	const [formattedValues, setFormattedValues] = useState<Record<string, string>>({});
 
 	useEffect(() => {
@@ -51,9 +52,22 @@ export function AssetAllocation({ distribution }: Props) {
 							</View>
 							<View className="flex-1">
 								<View className="flex-row items-center justify-between mb-0.5">
-									<Text className="text-foreground text-sm font-lausanne-medium">
-										{config.title}
-									</Text>
+									<View className="flex-row items-center gap-2">
+										<Text className="text-foreground text-sm font-lausanne-medium">
+											{config.title}
+										</Text>
+										{item.costBasis > 0 && Math.abs(item.value - item.costBasis) > 0.01 && (() => {
+											const changePercent = ((item.value - item.costBasis) / item.costBasis) * 100;
+											const isPositive = changePercent >= 0;
+											return (
+												<Text
+													className={`text-xs font-lausanne-medium ${isPositive ? "text-green-700" : "text-red-700"}`}
+												>
+													{isPositive ? "+" : ""}{changePercent.toFixed(1)}%
+												</Text>
+											);
+										})()}
+									</View>
 									<Text className="text-foreground text-sm font-lausanne-semibold">
 										{item.percentage}%
 									</Text>
@@ -68,9 +82,12 @@ export function AssetAllocation({ distribution }: Props) {
 											}}
 										/>
 									</View>
-									<Text className="text-muted-foreground text-xs font-lausanne-light">
-										{formattedValues[item.type] ?? ""}
-									</Text>
+									<View className="flex-row items-center gap-1.5">
+										<Text className="text-muted-foreground text-xs font-lausanne-light">
+											{formattedValues[item.type] ?? ""}
+										</Text>
+
+									</View>
 								</View>
 							</View>
 						</View>

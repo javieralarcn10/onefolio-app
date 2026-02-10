@@ -12,19 +12,29 @@ type AssetTypeSectionProps = {
 	type: AssetType;
 	assets: Asset[];
 	userCurrency?: string;
+	currentValue?: number;
+	costBasis?: number;
+	valueCurrency?: string;
 	onAssetPress: (asset: Asset) => void;
 	onAddPress: () => void;
 };
 
-export function AssetTypeSection({ type, assets, userCurrency, onAssetPress, onAddPress }: AssetTypeSectionProps) {
+export function AssetTypeSection({ type, assets, userCurrency, currentValue, costBasis, valueCurrency, onAssetPress, onAddPress }: AssetTypeSectionProps) {
 	const config = getAssetTypeConfig(type);
-	const totalValue = assets.reduce((sum, asset) => sum + getAssetValue(asset), 0);
-	const displayCurrency = assets[0]?.currency || "USD";
-	const [formattedTotal, setFormattedTotal] = useState(formatNumber(totalValue, displayCurrency));
+	const fallbackValue = assets.reduce((sum, asset) => sum + getAssetValue(asset), 0);
+	const displayValue = currentValue ?? fallbackValue;
+
+	// Use API currency when provided (for live-price types), otherwise fall back to asset currency
+	const displayCurrency = valueCurrency ?? assets[0]?.currency ?? "USD";
+	const [formattedTotal, setFormattedTotal] = useState(formatNumber(displayValue, displayCurrency));
+
+	const changePercent = costBasis && costBasis > 0 && Math.abs(displayValue - costBasis) > 0.01
+		? ((displayValue - costBasis) / costBasis) * 100
+		: null;
 
 	useEffect(() => {
-		transformNumberToUserCurrency(totalValue, displayCurrency).then(setFormattedTotal);
-	}, [totalValue, userCurrency]);
+		transformNumberToUserCurrency(displayValue, displayCurrency).then(setFormattedTotal);
+	}, [displayValue, displayCurrency, userCurrency]);
 
 	return (
 		<View className="mb-4 border border-foreground">
@@ -51,9 +61,18 @@ export function AssetTypeSection({ type, assets, userCurrency, onAssetPress, onA
 								</Text>
 							</View>
 						</View>
-						<Text className="font-lausanne-light text-muted-foreground text-sm">
-							{formattedTotal}
-						</Text>
+						<View className="flex-row items-center gap-1.5">
+							<Text className="font-lausanne-light text-muted-foreground text-sm">
+								{formattedTotal}
+							</Text>
+							{changePercent !== null && (
+								<Text
+									className={`text-xs font-lausanne-medium ${changePercent >= 0 ? "text-green-700" : "text-red-700"}`}
+								>
+									{changePercent >= 0 ? "+" : ""}{changePercent.toFixed(1)}%
+								</Text>
+							)}
+						</View>
 					</View>
 				</View>
 				<Icon name="add-line" size="20" color={Colors.foreground} fallback={null} />
