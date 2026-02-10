@@ -82,7 +82,8 @@ export function NewsEvents({ assets }: NewsEventsProps) {
 			seen.add(item.link);
 			return true;
 		});
-		return unique.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+		// return unique.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 10);
+		return EXAMPLE_YOUTUBE_NEWS.concat(unique.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 10));
 	}, [queries]);
 
 	if (news.length === 0) return null;
@@ -94,7 +95,7 @@ export function NewsEvents({ assets }: NewsEventsProps) {
 			<FlatList
 				showsVerticalScrollIndicator={false}
 				nestedScrollEnabled={false}
-				data={EXAMPLE_YOUTUBE_NEWS.concat(news.slice(0, 10))}
+				data={news.slice(0, 10)}
 				keyExtractor={(item: APINewsItem) => item.link}
 				renderItem={({ item, index }: { item: APINewsItem; index: number }) => (
 					<NewsItemRow
