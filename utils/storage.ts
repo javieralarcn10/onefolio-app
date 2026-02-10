@@ -67,6 +67,17 @@ export async function getAssets(): Promise<Asset[]> {
 	return value || [];
 }
 
+/** Synchronous version – avoids async flash on first render */
+export function getAssetsSync(): Asset[] {
+	try {
+		const raw = Storage.getItemSync('assets');
+		if (!raw) return [];
+		return JSON.parse(raw) as Asset[];
+	} catch {
+		return [];
+	}
+}
+
 export async function addAsset(asset: Asset): Promise<void> {
 	const assets = await getAssets();
 	assets.push(asset);
