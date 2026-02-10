@@ -27,12 +27,14 @@ import {
 	StockAsset,
 } from "@/types/custom";
 import { useOnboarding } from "@/utils/onboarding-context";
+import { showPaywallIfNeeded } from "@/utils/revenue-cat";
 import { generateAssetId } from "@/utils/storage";
+import { useSubscription } from "@/utils/subscription-context";
 import * as Haptics from "expo-haptics";
 import { router, useLocalSearchParams } from "expo-router";
 import Icon from "react-native-remix-icon";
 import { useMemo, useState } from "react";
-import { ActivityIndicator, Pressable, Text, View } from "react-native";
+import { ActivityIndicator, Alert, Pressable, Text, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { ASSETS_OPTIONS } from "./step-5";
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing } from "react-native-reanimated";
@@ -43,7 +45,8 @@ export default function AddInvestment() {
 	const assetOption = ASSETS_OPTIONS.find((option) => option.id === assetTypeId);
 	const assetType = assetOption?.assetType;
 
-	const { addPendingAsset } = useOnboarding();
+	const { addPendingAsset, pendingAssets } = useOnboarding();
+	const { isPremium } = useSubscription();
 
 	// Common fields
 	const [name, setName] = useState("");
@@ -251,6 +254,19 @@ export default function AddInvestment() {
 
 	const handleSave = async () => {
 		if (!isFormValid) {
+			Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+			return;
+		}
+
+		if (!isPremium && pendingAssets.length >= 10) {
+			Alert.alert(
+				"Premium Feature",
+				"You've reached the limit of 10 assets. Upgrade to Premium to add unlimited assets.",
+				[
+					{ text: "Cancel", style: "destructive" },
+					{ text: "Upgrade", style: "default", onPress: () => showPaywallIfNeeded() },
+				]
+			);
 			Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
 			return;
 		}
