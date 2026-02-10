@@ -105,17 +105,20 @@ export const Marquee = React.memo(
 
 			const frameRateMs = frameRate ? 1000 / frameRate : null;
 
-			const frameCallback = useFrameCallback((frameInfo) => {
-				if (frameInfo.timeSincePreviousFrame === null) return;
+		const frameCallback = useFrameCallback((frameInfo) => {
+			if (frameInfo.timeSincePreviousFrame === null) return;
 
-				const frameDelta = frameRateMs ? frameInfo.timeSincePreviousFrame / frameRateMs : 1;
+			// Always normalise to ~60 fps (16.667 ms per frame) so the
+			// marquee moves at a consistent speed regardless of the
+			// device's current refresh rate (e.g. ProMotion 120 Hz).
+			const frameDelta = frameInfo.timeSincePreviousFrame / (frameRateMs ?? 16.667);
 
-				if (reverse) {
-					anim.value -= speed * frameDelta;
-				} else {
-					anim.value += speed * frameDelta;
-				}
-			}, true);
+			if (reverse) {
+				anim.value -= speed * frameDelta;
+			} else {
+				anim.value += speed * frameDelta;
+			}
+		}, true);
 
 			useDerivedValue(() => {
 				if (position) {

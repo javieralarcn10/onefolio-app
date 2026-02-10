@@ -2,7 +2,6 @@ import { Colors } from "@/constants/colors";
 import { formatNumber } from "@/utils/numbers";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ActivityIndicator, Dimensions, Text, View } from "react-native";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Icon from "react-native-remix-icon";
 import Animated, { useAnimatedReaction, useAnimatedStyle, useSharedValue, withDelay, withTiming } from "react-native-reanimated";
 import { runOnJS } from "react-native-worklets";
@@ -55,7 +54,7 @@ const MemoizedChart = React.memo(
 		height: number;
 		activePointSharedValue: any;
 	}) => (
-		<GestureHandlerRootView style={{ height }}>
+		<View style={{ height }}>
 			<LineChart
 				lines={lines}
 				width={width}
@@ -63,7 +62,7 @@ const MemoizedChart = React.memo(
 				activePointSharedValue={activePointSharedValue}
 				activeLineIndex={1}
 			/>
-		</GestureHandlerRootView>
+		</View>
 	),
 );
 

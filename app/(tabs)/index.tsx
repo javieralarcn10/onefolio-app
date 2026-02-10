@@ -22,8 +22,8 @@ const PERIOD_OPTIONS: PeriodOption[] = [
 	{ id: "1W", label: "1W" },
 	{ id: "1M", label: "1M" },
 	{ id: "3M", label: "3M" },
-	{ id: "AAF", label: "AAF" },
-	{ id: "1A", label: "1A" },
+	{ id: "YTD", label: "YTD" },
+	{ id: "1Y", label: "1Y" },
 	{ id: "ALL", label: "ALL" },
 ];
 

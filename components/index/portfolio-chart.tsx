@@ -3,7 +3,6 @@ import { formatNumber } from "@/utils/numbers";
 import { useHaptics } from "@/hooks/haptics";
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import { ActivityIndicator, Dimensions, Text, View } from "react-native";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Icon from "react-native-remix-icon";
 import { useAnimatedReaction, useSharedValue } from "react-native-reanimated";
 import { runOnJS } from "react-native-worklets";
@@ -23,11 +22,11 @@ type Props = {
 
 /** Human-readable labels for each period */
 const PERIOD_LABELS: Record<string, string> = {
-	"1W": "This week",
+	"1W": "Last week",
 	"1M": "Last month",
 	"3M": "Last 3 months",
-	"AAF": "Year to date",
-	"1A": "Last year",
+	"YTD": "Year to date",
+	"1Y": "Last year",
 	"ALL": "All time",
 };
 
@@ -50,7 +49,7 @@ const MemoizedChart = React.memo(
 		height: number;
 		activePointSharedValue: any;
 	}) => (
-		<GestureHandlerRootView style={{ height }}>
+		<View style={{ height }}>
 			<LineChart
 				lines={lines}
 				width={width}
@@ -58,7 +57,7 @@ const MemoizedChart = React.memo(
 				activePointSharedValue={activePointSharedValue}
 				activeLineIndex={1}
 			/>
-		</GestureHandlerRootView>
+		</View>
 	),
 );
 
