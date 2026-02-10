@@ -141,9 +141,9 @@ export default function ProfileScreen() {
 
 				{user && <InvestmentProfile user={user} />}
 
-				<QuickActions />
+				<QuickActions isPremium={isPremium} />
 
-				{user && <InviteFriends user={user} />}
+				{user && <InviteFriends user={user} isPremium={isPremium} />}
 
 			</ScrollView>
 		</View>

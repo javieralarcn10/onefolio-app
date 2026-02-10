@@ -1,15 +1,14 @@
 import { Colors } from "@/constants/colors";
 import { useHaptics } from "@/hooks/haptics";
 import { QuickAction } from "@/types/custom";
+import { createPortfolioCsvFile } from "@/utils/export-assets-csv";
 import { showPaywall } from "@/utils/revenue-cat";
-import { useSubscription } from "@/utils/subscription-context";
 import { router } from "expo-router";
 import { useCallback, useMemo } from "react";
-import { Alert, Pressable, Text, View } from "react-native";
+import { Alert, Pressable, Share, Text, View } from "react-native";
 import Icon from "react-native-remix-icon";
 
-export function QuickActions() {
-	const { isPremium } = useSubscription();
+export function QuickActions({ isPremium }: { isPremium: boolean }) {
 	const { triggerHaptics } = useHaptics();
 
 	const handleAddAsset = useCallback(() => {
@@ -27,8 +26,29 @@ export function QuickActions() {
 				]);
 			return;
 		}
-		//TODO: Implement export to csv
-		console.log('export to csv')
+		void (async () => {
+			try {
+				const fileUri = await createPortfolioCsvFile();
+				if (!fileUri) {
+					triggerHaptics("Warning");
+					Alert.alert("No assets to export", "You need at least one asset with value greater than 0.");
+					return;
+				}
+
+				await Share.share({
+					title: "Onefolio Portfolio CSV",
+					message: "Your portfolio CSV is ready.",
+					url: fileUri,
+				});
+			} catch (error) {
+				console.error("Error exporting portfolio to CSV:", error);
+				triggerHaptics("Error");
+				Alert.alert(
+					"Export failed",
+					"We couldn't create your CSV file. Please try again.",
+				);
+			}
+		})();
 	}, [isPremium, triggerHaptics]);
 
 	const quickActions: QuickAction[] = useMemo(() => [

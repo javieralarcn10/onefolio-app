@@ -6,7 +6,7 @@ import { Image } from "expo-image";
 import { useHaptics } from "@/hooks/haptics";
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing } from "react-native-reanimated";
 
-export function InviteFriends({ user }: { user: User }) {
+export function InviteFriends({ user, isPremium }: { user: User; isPremium: boolean }) {
 	const { triggerHaptics } = useHaptics();
 
 	const shareButtonScale = useSharedValue(1);
@@ -54,12 +54,12 @@ export function InviteFriends({ user }: { user: User }) {
 				</View>
 				<View className="mt-4 mb-6">
 					<Text className="text-foreground text-xl text-center font-lausanne-semibold">
-						{user.isPremium ? "Help your friends invest smarter" : "Earn Premium by inviting friends"}
+						{isPremium ? "Help your friends invest smarter" : "Earn Premium by inviting friends"}
 					</Text>
 				</View>
 
 				<View className="mb-6">
-					{user.isPremium ? (
+					{isPremium ? (
 						<>
 							<View className="flex-row items-center gap-4 mb-4">
 								<View className="aspect-square flex items-center justify-center w-12 bg-foreground">
