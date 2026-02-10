@@ -9,9 +9,10 @@ type AssetItemProps = {
 	asset: Asset;
 	userCurrency?: string;
 	onPress: () => void;
+	isLast: boolean;
 };
 
-export function AssetItem({ asset, userCurrency, onPress }: AssetItemProps) {
+export function AssetItem({ asset, userCurrency, isLast, onPress }: AssetItemProps) {
 	const value = getAssetValue(asset);
 	const [formattedValue, setFormattedValue] = useState(formatNumber(value, asset.currency));
 
@@ -22,7 +23,7 @@ export function AssetItem({ asset, userCurrency, onPress }: AssetItemProps) {
 	return (
 		<Pressable
 			onPress={onPress}
-			className="flex-row items-center justify-between px-3 py-2.5 border-b border-border"
+			className={`flex-row items-center justify-between px-3 py-2.5 ${isLast ? "" : "border-b border-border"}`}
 		>
 			<View className="flex-1 mr-3">
 				<Text className="font-lausanne-regular text-foreground text-sm" numberOfLines={1}>

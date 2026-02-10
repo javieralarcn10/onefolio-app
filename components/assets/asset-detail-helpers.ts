@@ -11,12 +11,14 @@ export function getAssetDetails(asset: Asset): { label: string; value: string }[
 			details.push({ label: "Type", value: asset.tickerType ?? 'Unknown' });
 			details.push({ label: "Quantity", value: formatNumber(getNetQuantity(asset)) });
 			details.push({ label: "Avg. Purchase Price", value: formatNumber(getAvgPurchasePrice(asset), asset.currency) });
+			details.push({ label: "Current Price", value: '' });
 			break;
 		case "crypto":
 			details.push({ label: "Symbol", value: asset.symbol });
 			details.push({ label: "Type", value: 'Cryptocurrency' });
 			details.push({ label: "Quantity", value: formatNumber(getNetQuantity(asset)) });
 			details.push({ label: "Avg. Purchase Price", value: formatNumber(getAvgPurchasePrice(asset), asset.currency) });
+			details.push({ label: "Current Price", value: '' });
 			break;
 		case "bonds":
 			details.push({ label: "Amount", value: formatNumber(getNetAmount(asset), asset.currency) });
@@ -44,6 +46,7 @@ export function getAssetDetails(asset: Asset): { label: string; value: string }[
 			if (asset.format === "etf") {
 				details.push({ label: "Avg. Purchase Price", value: formatNumber(getAvgPurchasePrice(asset), asset.currency) });
 			}
+			details.push({ label: "Current Price", value: '' });
 			break;
 		case "real_estate":
 			details.push({ label: "Property Type", value: asset.propertyType.charAt(0).toUpperCase() + asset.propertyType.slice(1) });

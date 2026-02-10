@@ -80,11 +80,12 @@ export function AssetTypeSection({ type, assets, userCurrency, currentValue, cos
 
 			{/* Assets list */}
 			<View className="border-t border-border bg-[#f2f2f2]">
-				{assets.map((asset) => (
+				{assets.map((asset, index) => (
 					<AssetItem
 						key={asset.id}
 						asset={asset}
 						userCurrency={userCurrency}
+						isLast={index === assets.length - 1}
 						onPress={() => onAssetPress(asset)}
 					/>
 				))}
