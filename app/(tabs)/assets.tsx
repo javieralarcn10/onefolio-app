@@ -4,7 +4,6 @@ import { EmptyState } from "@/components/assets/empty-state";
 import { isFullySold } from "@/components/assets/asset-detail-helpers";
 import { Colors } from "@/constants/colors";
 import { Asset, AssetType } from "@/types/custom";
-import { formatNumber } from "@/utils/numbers";
 import { getAssets } from "@/utils/storage";
 import { router, useFocusEffect } from "expo-router";
 import { StatusBar } from "expo-status-bar";
