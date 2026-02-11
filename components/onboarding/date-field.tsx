@@ -87,6 +87,7 @@ export function DateField({
 				<DateTimePicker
 					value={tempDate}
 					mode="date"
+					themeVariant="light"
 					display="default"
 					locale={locale}
 					onChange={handleChange}
@@ -133,6 +134,7 @@ export function DateField({
 								<DateTimePicker
 									value={tempDate}
 									mode="date"
+									themeVariant="light"
 									display="spinner"
 									locale={locale}
 									onChange={handleChange}
