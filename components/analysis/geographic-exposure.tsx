@@ -203,7 +203,7 @@ export const GeographicExposure = React.memo(function GeographicExposure({ asset
 									<View className="flex-row items-center justify-between">
 										<View className="flex-row items-center gap-2">
 											{item.code ? (
-												<Image source={{ uri: `https://flagcdn.com/w80/${item.code.toLowerCase()}.png` }} style={{ width: 26, height: 16 }} />
+												<Image source={{ uri: item.code }} style={{ width: 26, height: 16 }} />
 											) : (
 												<View className="bg-indigo-600 flex-row items-center justify-center" style={{ width: 27, height: 18 }}>
 													<Icon name="global-line" size="13" color={Colors.background} fallback={null} />
