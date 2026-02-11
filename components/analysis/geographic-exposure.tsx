@@ -7,9 +7,8 @@ import { useHaptics } from "@/hooks/haptics";
 import { PAYWALL_RESULT, showPaywallIfNeeded } from "@/utils/revenue-cat";
 import React, { useCallback, useMemo } from "react";
 import { Pressable, Text, View } from "react-native";
+import { Image } from "expo-image";
 import Icon from "react-native-remix-icon";
-import CountryFlag from "react-native-country-flag-icon";
-import { transformNumberToUserCurrency } from "@/utils/exchange-rates";
 import { formatNumber } from "@/utils/numbers";
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing } from "react-native-reanimated";
 import { BlurView } from "expo-blur";
@@ -204,7 +203,7 @@ export const GeographicExposure = React.memo(function GeographicExposure({ asset
 									<View className="flex-row items-center justify-between">
 										<View className="flex-row items-center gap-2">
 											{item.code ? (
-												<CountryFlag isoCode={item.code} size={16} />
+												<Image source={{ uri: `https://flagcdn.com/w80/${item.code.toLowerCase()}.png` }} style={{ width: 26, height: 16 }} />
 											) : (
 												<View className="bg-indigo-600 flex-row items-center justify-center" style={{ width: 27, height: 18 }}>
 													<Icon name="global-line" size="13" color={Colors.background} fallback={null} />
@@ -215,7 +214,7 @@ export const GeographicExposure = React.memo(function GeographicExposure({ asset
 											</Text>
 										</View>
 										<Text className="text-muted-foreground text-sm font-lausanne-medium">
-											{transformNumberToUserCurrency(item.value, userCurrency)}
+											{formatNumber(item.value, userCurrency)}
 										</Text>
 									</View>
 

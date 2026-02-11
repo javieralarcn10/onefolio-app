@@ -122,6 +122,7 @@ const STOCK_SECTOR_COLORS = [
 const CONTAINER_WIDTH = Dimensions.get("window").width - 36;
 const TARGET_HEIGHT = 370;
 const MIN_ROW_HEIGHT = 58;
+const MIN_CELL_WIDTH = 90; // Minimum width for cells to keep text readable
 const GRID_GAP = 2; // px between cells
 
 /**
@@ -186,13 +187,39 @@ function computeTreemapLayout(
 		const weights = rowItems.map((item) => Math.max(MIN_WEIGHT, item.percentage));
 		const totalWeight = weights.reduce((s, w) => s + w, 0);
 
+		// First pass: compute proportional widths
+		const rawWidths = rowItems.map((_, i) =>
+			Math.round((weights[i] / totalWeight) * usableWidth),
+		);
+
+		// Second pass: enforce MIN_CELL_WIDTH on all cells, redistributing space
+		let deficit = 0;
+		let surplusTotal = 0;
+		for (let i = 0; i < rawWidths.length; i++) {
+			if (rawWidths[i] < MIN_CELL_WIDTH) {
+				deficit += MIN_CELL_WIDTH - rawWidths[i];
+			} else {
+				surplusTotal += rawWidths[i] - MIN_CELL_WIDTH;
+			}
+		}
+
+		const finalWidths = rawWidths.map((w) => {
+			if (w < MIN_CELL_WIDTH) return MIN_CELL_WIDTH;
+			if (surplusTotal > 0 && deficit > 0) {
+				const surplus = w - MIN_CELL_WIDTH;
+				const reduction = Math.round((surplus / surplusTotal) * deficit);
+				return Math.max(MIN_CELL_WIDTH, w - reduction);
+			}
+			return w;
+		});
+
+		// Place cells; last cell fills to the edge but also respects minimum
 		let x = 0;
 		for (let i = 0; i < rowItems.length; i++) {
 			const isLast = i === rowItems.length - 1;
-			// Last cell fills to the edge to avoid rounding gaps
 			const cellW = isLast
-				? containerWidth - x
-				: Math.round((weights[i] / totalWeight) * usableWidth);
+				? Math.max(MIN_CELL_WIDTH, containerWidth - x)
+				: finalWidths[i];
 
 			cells.push({ x, y, w: cellW, h: rowH, item: rowItems[i] });
 			x += cellW + GRID_GAP;
@@ -311,7 +338,7 @@ export const SectorTreemap = React.memo(function SectorTreemap({ assets, isPremi
 									</Text>
 									<View>
 										<Text className="text-white/90 font-lausanne-bold" style={{ fontSize: 20 }}>
-											{Math.round(cell.item.percentage)}%
+											{cell.item.percentage.toFixed(1)}%
 										</Text>
 										<Text
 											className="text-white/60 font-lausanne-light"
@@ -333,7 +360,7 @@ export const SectorTreemap = React.memo(function SectorTreemap({ assets, isPremi
 									</Text>
 									<View>
 										<Text className="text-white/90 font-lausanne-bold" style={{ fontSize: 13 }}>
-											{Math.round(cell.item.percentage)}%
+											{cell.item.percentage.toFixed(1)}%
 										</Text>
 										<Text
 											className="text-white/50 font-lausanne-light"

@@ -1,9 +1,9 @@
 import { Asset } from "@/types/custom";
 import React from "react";
 import { Text, View } from "react-native";
+import { Image } from "expo-image";
 import { getAssetDetails, getSectorInfo } from "./asset-detail-helpers";
 import { COUNTRIES } from "@/utils/countries";
-import CountryFlag from "react-native-country-flag-icon";
 
 function DetailRow({ label, value, isLast }: { label: string; value: string; isLast?: boolean }) {
 	const isCountry = label.toLowerCase().includes("country")
@@ -15,7 +15,7 @@ function DetailRow({ label, value, isLast }: { label: string; value: string; isL
 		<View className={`flex-row items-center justify-between py-3 ${isLast ? "" : "border-b border-border"}`}>
 			<Text className="text-muted-foreground text-sm font-lausanne-regular flex-1">{label}</Text>
 			<View className="flex-1 flex-row items-center gap-2.5 justify-end">
-				{countryCode && <CountryFlag isoCode={countryCode} size={16} />}
+				{countryCode && <Image source={{ uri: `https://flagcdn.com/w80/${countryCode.toLowerCase()}.png` }} style={{ width: 26, height: 16 }} />}
 				<Text className="text-foreground text-sm font-lausanne-medium text-right">{value}</Text>
 			</View>
 		</View>
