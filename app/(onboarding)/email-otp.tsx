@@ -141,7 +141,7 @@ export default function EmailOTP() {
       }
     } catch (error) {
       triggerHaptics("Error");
-      console.error("Error handleSignIn: ", error);
+      console.error("Error handleSignIn with email: ", error);
       Alert.alert("Error", "An error occurred while verifying your code. Please try again.", [{ text: "OK" }]);
     } finally {
       setIsLoading(false);

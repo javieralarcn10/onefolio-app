@@ -71,13 +71,13 @@ export default function Step8() {
 			if (customerInfo && customerInfo.originalAppUserId) {
 				user.revenueCatId = customerInfo.originalAppUserId;
 			}
-			if (email !== null) {
+			if (email !== undefined) {
 				user.email = email;
 			}
-			if (googleId !== null) {
+			if (googleId !== undefined) {
 				user.googleId = googleId;
 			}
-			if (appleId !== null) {
+			if (appleId !== undefined) {
 				user.appleId = appleId;
 			}
 			if (timeZone !== undefined) {
@@ -92,7 +92,7 @@ export default function Step8() {
 				apiResponse = await usersApi.signInWithGoogle(user);
 			} else if (appleId) {
 				apiResponse = await usersApi.signInWithApple(user);
-			} else if (email !== null) {
+			} else if (email !== undefined) {
 				apiResponse = await usersApi.signIn(user);
 			} else {
 				apiResponse = await usersApi.signInWithoutEmail(user);
@@ -111,7 +111,7 @@ export default function Step8() {
 			}
 		} catch (error) {
 			Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
-			console.error("Error handleSignIn: ", error);
+			console.error("Error handleSignIn without email: ", error);
 			Alert.alert("Error", "An error occurred while trying to sign in. Please try again in a few minutes.", [{ text: "OK" }]);
 		} finally {
 			setIsLoading(false);

@@ -8,7 +8,7 @@ import { formatNumber } from "@/utils/numbers";
 import Animated, { FadeIn } from "react-native-reanimated";
 
 /** Default tickers shown when the user has no chartable assets */
-const DEFAULT_TICKERS = ["AAPL", "MSFT", "NVDA", "AMZN", "TSLA", "BTC-USD", "GC=F"];
+const DEFAULT_TICKERS = ["BTC-USD", "AAPL", "MSFT", "NVDA", "AMZN", "TSLA", "GC=F"];
 
 /** Extract the ticker / symbol used by the finance API */
 function getAssetTicker(asset: Asset): string {
@@ -41,6 +41,13 @@ export function MarqueeSymbols({ assets }: MarqueeSymbolsProps) {
 			(a) => a.type === "stocks_etfs" || a.type === "crypto" || a.type === "precious_metals",
 		);
 		const unique = [...new Set(chartable.map(getAssetTicker).filter(Boolean))];
+
+		// If we have fewer than 7 unique tickers, fill with defaults
+		if (unique.length < 7) {
+			const remaining = DEFAULT_TICKERS.filter(ticker => !unique.includes(ticker));
+			return [...unique, ...remaining].slice(0, 7);
+		}
+
 		return unique.length > 0 ? unique : DEFAULT_TICKERS;
 	}, [assets]);
 

@@ -74,7 +74,7 @@ export default function AuthScreen() {
 			}
 		} catch (error) {
 			triggerHaptics("Error");
-			console.error("Error handleSignIn: ", error);
+			console.error("Error sendEmailOTP: ", error);
 			Alert.alert("Error", "An error occurred while trying to sign in. Please try again in a few minutes.", [{ text: "OK" }]);
 		} finally {
 			setIsLoading(false);
