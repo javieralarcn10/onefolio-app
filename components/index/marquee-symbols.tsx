@@ -1,9 +1,8 @@
 import { useMemo } from "react";
 import { Text, View } from "react-native";
-import { useQueries } from "@tanstack/react-query";
 import Icon from "react-native-remix-icon";
 import { Marquee } from "../marquee";
-import { fetchCurrentPrice, CurrentPriceResponse } from "@/utils/api/finance";
+import { useCurrentPriceBulk, CurrentPriceResponse } from "@/utils/api/finance";
 import { Asset } from "@/types/custom";
 import { formatNumber } from "@/utils/numbers";
 import Animated, { FadeIn } from "react-native-reanimated";
@@ -45,29 +44,17 @@ export function MarqueeSymbols({ assets }: MarqueeSymbolsProps) {
 		return unique.length > 0 ? unique : DEFAULT_TICKERS;
 	}, [assets]);
 
-	// Fire all price requests in parallel — shares cache with useCurrentPrice
-	const queries = useQueries({
-		queries: tickers.map((symbol) => ({
-			queryKey: ["current-price", symbol],
-			queryFn: () => fetchCurrentPrice(symbol),
-			staleTime: 15 * 60 * 1000,
-			gcTime: 15 * 60 * 1000,
-			retry: 1,
-			enabled: symbol.length > 0,
-		})),
-	});
-
-	// Wait until every query has settled (success or error) so the marquee
-	// doesn't re-measure mid-animation when late responses arrive.
-	const allSettled = queries.every((q) => !q.isLoading);
+	// Fetch all prices in a single bulk request
+	const symbolsParam = useMemo(() => tickers.join(","), [tickers]);
+	const { data: bulkPrices, isLoading } = useCurrentPriceBulk(symbolsParam, tickers.length > 0);
 
 	// Only render items that have loaded successfully
 	const items = useMemo(() => {
-		if (!allSettled) return [];
-		return queries
-			.filter((q) => q.isSuccess && q.data)
-			.map((q) => q.data as CurrentPriceResponse);
-	}, [queries, allSettled]);
+		if (isLoading || !bulkPrices) return [];
+		return tickers
+			.map((ticker) => bulkPrices[ticker])
+			.filter((data): data is CurrentPriceResponse => data != null);
+	}, [bulkPrices, isLoading, tickers]);
 
 	if (items.length === 0) return null;
 

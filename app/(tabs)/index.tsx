@@ -4,8 +4,7 @@ import { Asset } from "@/types/custom";
 import { formatNumber } from "@/utils/numbers";
 import { formatDateShort } from "@/utils/dates";
 import { getAssets } from "@/utils/storage";
-import { fetchCurrentPrice } from "@/utils/api/finance";
-import { useQueries } from "@tanstack/react-query";
+import { useCurrentPriceBulk } from "@/utils/api/finance";
 import { useFocusEffect } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
@@ -207,28 +206,22 @@ export default function HomeScreen() {
 		return Array.from(symbols);
 	}, [assets]);
 
-	// Fetch current prices via react-query (shares cache with useCurrentPrice)
-	const priceQueries = useQueries({
-		queries: liveSymbols.map((symbol) => ({
-			queryKey: ["current-price", symbol],
-			queryFn: () => fetchCurrentPrice(symbol),
-			enabled: symbol.length > 0,
-			staleTime: 15 * 60 * 1000,
-			gcTime: 15 * 60 * 1000,
-			retry: 1,
-		})),
-	});
+	// Fetch current prices via bulk endpoint (single request for all symbols)
+	const symbolsParam = useMemo(() => liveSymbols.join(","), [liveSymbols]);
+	const { data: bulkPrices } = useCurrentPriceBulk(symbolsParam, liveSymbols.length > 0);
 
 	const currentPrices = useMemo(() => {
 		const prices: Record<string, PriceData> = {};
-		liveSymbols.forEach((symbol, i) => {
-			const data = priceQueries[i]?.data;
-			if (data) {
-				prices[symbol] = { price: data.current_price, currency: data.currency };
-			}
-		});
+		if (bulkPrices) {
+			liveSymbols.forEach((symbol) => {
+				const data = bulkPrices[symbol];
+				if (data) {
+					prices[symbol] = { price: data.current_price, currency: data.currency };
+				}
+			});
+		}
 		return prices;
-	}, [liveSymbols, priceQueries]);
+	}, [bulkPrices, liveSymbols]);
 
 	const portfolioValue = useMemo(() => calculatePortfolioValue(assets), [assets]);
 	const assetDistribution = useMemo(() => getAssetTypeDistribution(assets, currentPrices), [assets, currentPrices]);

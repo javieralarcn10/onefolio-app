@@ -1,11 +1,10 @@
 import { Colors } from "@/constants/colors";
 import { formatRelative } from "@/utils/dates";
-import { fetchNews, NewsItem as APINewsItem, NewsResponse } from "@/utils/api/finance";
+import { useNewsBulk, NewsItem as APINewsItem } from "@/utils/api/finance";
 import { Asset } from "@/types/custom";
 import { Image } from "expo-image";
 import React, { useMemo } from "react";
 import { FlatList, Linking, Pressable, Text, View } from "react-native";
-import { useQueries } from "@tanstack/react-query";
 import Icon from "react-native-remix-icon";
 
 /** Default tickers used when the user has no chartable assets */
@@ -55,24 +54,18 @@ export function NewsEvents({ assets }: NewsEventsProps) {
 		return unique.length > 0 ? unique : DEFAULT_TICKERS;
 	}, [assets]);
 
-	// Fire all news requests in parallel — shares cache with useNews
-	const queries = useQueries({
-		queries: tickers.map((symbol) => ({
-			queryKey: ["news", symbol],
-			queryFn: () => fetchNews(symbol),
-			staleTime: 24 * 60 * 60 * 1000,
-			gcTime: 24 * 60 * 60 * 1000,
-			retry: 1,
-			enabled: symbol.length > 0,
-		})),
-	});
+	// Fetch all news in a single bulk request
+	const symbolsParam = useMemo(() => tickers.join(","), [tickers]);
+	const { data: bulkNews } = useNewsBulk(symbolsParam, tickers.length > 0);
 
 	// Merge, deduplicate by link, and sort by date (newest first)
 	const news = useMemo(() => {
+		if (!bulkNews) return [];
 		const all: APINewsItem[] = [];
-		for (const q of queries) {
-			if (q.isSuccess && q.data) {
-				all.push(...(q.data as NewsResponse).news.slice(0, 3));
+		for (const symbol of tickers) {
+			const data = bulkNews[symbol];
+			if (data) {
+				all.push(...data.news.slice(0, 3));
 			}
 		}
 		// Deduplicate by link
@@ -84,7 +77,7 @@ export function NewsEvents({ assets }: NewsEventsProps) {
 		});
 		// return unique.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 10);
 		return EXAMPLE_YOUTUBE_NEWS.concat(unique.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 10));
-	}, [queries]);
+	}, [bulkNews, tickers]);
 
 	if (news.length === 0) return null;
 

@@ -70,6 +70,10 @@ export type CurrentPriceResponse = {
 	timestamp: string;
 };
 
+export type CurrentPriceBulkResponse = {
+	[symbol: string]: CurrentPriceResponse | null;
+};
+
 export type AnalystRatingTrend = {
 	period: string;
 	total_analysts: number;
@@ -97,6 +101,10 @@ export type NewsResponse = {
 	symbol: string;
 	total: number;
 	news: NewsItem[];
+};
+
+export type NewsBulkResponse = {
+	[symbol: string]: NewsResponse | null;
 };
 
 export type HistoryPeriod = "1d" | "5d" | "1mo" | "6mo" | "1y" | "5y";
@@ -203,8 +211,55 @@ export function useNews(symbol: string, enabled: boolean = true) {
 		queryKey: ["news", symbol],
 		queryFn: () => fetchNews(symbol),
 		enabled: enabled && symbol.length > 0,
-		staleTime: 24 * 60 * 60 * 1000,
-		gcTime: 24 * 60 * 60 * 1000,
+		staleTime: 2 * 60 * 60 * 1000,
+		gcTime: 2 * 60 * 60 * 1000,
+		retry: 1,
+	});
+}
+
+
+async function fetchCurrentPriceBulk(
+	symbols: string
+): Promise<CurrentPriceBulkResponse> {
+	const response = await axios.get<CurrentPriceBulkResponse>(
+		`${API_URL}/finance/prices-bulk?symbols=${symbols}`,
+		{
+			headers: { Accept: "application/json" },
+		},
+	);
+	return response.data;
+}
+
+export function useCurrentPriceBulk(symbols: string, enabled: boolean = true) {
+	return useQuery<CurrentPriceBulkResponse>({
+		queryKey: ["current-price-bulk", symbols],
+		queryFn: () => fetchCurrentPriceBulk(symbols),
+		enabled: enabled && symbols.length > 0,
+		staleTime: 15 * 60 * 1000,
+		gcTime: 15 * 60 * 1000,
+		retry: 1,
+	});
+}
+
+async function fetchNewsBulk(
+	symbols: string
+): Promise<NewsBulkResponse> {
+	const response = await axios.get<NewsBulkResponse>(
+		`${API_URL}/finance/news-bulk?symbols=${symbols}`,
+		{
+			headers: { Accept: "application/json" },
+		},
+	);
+	return response.data;
+}
+
+export function useNewsBulk(symbols: string, enabled: boolean = true) {
+	return useQuery<NewsBulkResponse>({
+		queryKey: ["news-bulk", symbols],
+		queryFn: () => fetchNewsBulk(symbols),
+		enabled: enabled && symbols.length > 0,
+		staleTime: 6 * 60 * 60 * 1000,
+		gcTime: 6 * 60 * 60 * 1000,
 		retry: 1,
 	});
 }
