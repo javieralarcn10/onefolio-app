@@ -2,6 +2,102 @@ import { Asset, BondAsset, DepositAsset, Transaction } from "@/types/custom";
 import { formatNumber } from "@/utils/numbers";
 import { formatDate } from "@/utils/dates";
 
+// ── Precious metals price conversion ─────────────────────────────────────
+
+/** 1 troy ounce = 31.1035 grams */
+const TROY_OZ_IN_GRAMS = 31.1035;
+
+/** 1 avoirdupois (regular) ounce = 28.3495 grams */
+const REGULAR_OZ_IN_GRAMS = 28.3495;
+
+// ── Shared live-price helpers ────────────────────────────────────────────
+
+export type PriceData = { price: number; currency: string };
+
+/** Asset types that support live price fetching */
+export const LIVE_PRICE_TYPES = new Set(["stocks_etfs", "crypto", "precious_metals"]);
+
+/** Get the ticker/symbol used to fetch the current price for an asset */
+export function getAssetSymbol(asset: Asset): string {
+	switch (asset.type) {
+		case "stocks_etfs":
+			return asset.ticker;
+		case "crypto":
+			return asset.symbol;
+		case "precious_metals":
+			switch (asset.metalType) {
+				case "gold": return "GC=F";
+				case "silver": return "SI=F";
+				case "platinum": return "PL=F";
+				case "palladium": return "PA=F";
+				default: return "";
+			}
+		default:
+			return "";
+	}
+}
+
+/**
+ * Convert a futures price (per troy ounce) to the correct price per unit
+ * for a physical precious metal based on the asset's quantityUnit.
+ *
+ * The API tickers (GC=F, SI=F, PL=F, PA=F) return prices per **troy ounce**.
+ * Users enter physical metals in either:
+ *   - 'oz'  → regular (avoirdupois) ounces — 1 troy oz ≈ 1.097 regular oz
+ *   - 'g'   → grams                        — 1 troy oz = 31.1035 g
+ *
+ * For ETF-format metals and all other asset types the price is returned as-is.
+ */
+export function getMetalPricePerUnit(asset: Asset, pricePerTroyOz: number): number {
+	if (asset.type !== "precious_metals" || asset.format !== "physical") {
+		return pricePerTroyOz;
+	}
+
+	switch (asset.quantityUnit) {
+		case "g":
+			// price per gram = price per troy oz / grams in a troy oz
+			return pricePerTroyOz / TROY_OZ_IN_GRAMS;
+		case "oz":
+			// price per regular oz = price per troy oz × (regular oz weight / troy oz weight)
+			return pricePerTroyOz * (REGULAR_OZ_IN_GRAMS / TROY_OZ_IN_GRAMS);
+		default:
+			return pricePerTroyOz;
+	}
+}
+
+/** Cost basis value of an asset (quantity × avg purchase price, or net amount) */
+export function getAssetValue(asset: Asset): number {
+	switch (asset.type) {
+		case "stocks_etfs":
+			return getNetQuantity(asset) * getAvgPurchasePrice(asset);
+		case "bonds":
+		case "deposits":
+		case "private_investments":
+		case "cash":
+			return getNetAmount(asset);
+		case "precious_metals":
+			return getNetQuantity(asset) * getAvgPurchasePrice(asset);
+		case "real_estate":
+			return asset.estimatedValue;
+		case "crypto":
+			return getNetQuantity(asset) * getAvgPurchasePrice(asset);
+		default:
+			return 0;
+	}
+}
+
+/** Get the current value of an asset using live prices when available */
+export function getAssetCurrentValue(asset: Asset, currentPrices: Record<string, PriceData>): number {
+	if (LIVE_PRICE_TYPES.has(asset.type)) {
+		const symbol = getAssetSymbol(asset);
+		if (symbol && currentPrices[symbol]) {
+			const pricePerUnit = getMetalPricePerUnit(asset, currentPrices[symbol].price);
+			return getNetQuantity(asset) * pricePerUnit;
+		}
+	}
+	return getAssetValue(asset);
+}
+
 export function getAssetDetails(asset: Asset): { label: string; value: string }[] {
 	const details: { label: string; value: string }[] = [];
 

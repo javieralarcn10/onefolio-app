@@ -1,21 +1,5 @@
 export const COUNTRIES = [
 	{
-		"code": "AD",
-		"name": "Andorra",
-		"currency": "EUR",
-		"population": "84000",
-		"capital": "Andorra la Vella",
-		"continent": "Europe"
-	},
-	{
-		"code": "AE",
-		"name": "United Arab Emirates",
-		"currency": "AED",
-		"population": "4975593",
-		"capital": "Abu Dhabi",
-		"continent": "Asia"
-	},
-	{
 		"code": "AF",
 		"name": "Afghanistan",
 		"currency": "AFN",
@@ -24,20 +8,12 @@ export const COUNTRIES = [
 		"continent": "Asia"
 	},
 	{
-		"code": "AG",
-		"name": "Antigua and Barbuda",
-		"currency": "XCD",
-		"population": "86754",
-		"capital": "St. John's",
-		"continent": "North America"
-	},
-	{
-		"code": "AI",
-		"name": "Anguilla",
-		"currency": "XCD",
-		"population": "13254",
-		"capital": "The Valley",
-		"continent": "North America"
+		"code": "AX",
+		"name": "Åland",
+		"currency": "EUR",
+		"population": "26711",
+		"capital": "Mariehamn",
+		"continent": "Europe"
 	},
 	{
 		"code": "AL",
@@ -48,12 +24,28 @@ export const COUNTRIES = [
 		"continent": "Europe"
 	},
 	{
-		"code": "AM",
-		"name": "Armenia",
-		"currency": "AMD",
-		"population": "2968000",
-		"capital": "Yerevan",
-		"continent": "Asia"
+		"code": "DZ",
+		"name": "Algeria",
+		"currency": "DZD",
+		"population": "34586184",
+		"capital": "Algiers",
+		"continent": "Africa"
+	},
+	{
+		"code": "AS",
+		"name": "American Samoa",
+		"currency": "USD",
+		"population": "57881",
+		"capital": "Pago Pago",
+		"continent": "Oceania"
+	},
+	{
+		"code": "AD",
+		"name": "Andorra",
+		"currency": "EUR",
+		"population": "84000",
+		"capital": "Andorra la Vella",
+		"continent": "Europe"
 	},
 	{
 		"code": "AO",
@@ -64,12 +56,28 @@ export const COUNTRIES = [
 		"continent": "Africa"
 	},
 	{
+		"code": "AI",
+		"name": "Anguilla",
+		"currency": "XCD",
+		"population": "13254",
+		"capital": "The Valley",
+		"continent": "North America"
+	},
+	{
 		"code": "AQ",
 		"name": "Antarctica",
 		"currency": "",
 		"population": "0",
 		"capital": "",
 		"continent": "Antarctica"
+	},
+	{
+		"code": "AG",
+		"name": "Antigua and Barbuda",
+		"currency": "XCD",
+		"population": "86754",
+		"capital": "St. John's",
+		"continent": "North America"
 	},
 	{
 		"code": "AR",
@@ -80,11 +88,27 @@ export const COUNTRIES = [
 		"continent": "South America"
 	},
 	{
-		"code": "AS",
-		"name": "American Samoa",
-		"currency": "USD",
-		"population": "57881",
-		"capital": "Pago Pago",
+		"code": "AM",
+		"name": "Armenia",
+		"currency": "AMD",
+		"population": "2968000",
+		"capital": "Yerevan",
+		"continent": "Asia"
+	},
+	{
+		"code": "AW",
+		"name": "Aruba",
+		"currency": "AWG",
+		"population": "71566",
+		"capital": "Oranjestad",
+		"continent": "North America"
+	},
+	{
+		"code": "AU",
+		"name": "Australia",
+		"currency": "AUD",
+		"population": "21515754",
+		"capital": "Canberra",
 		"continent": "Oceania"
 	},
 	{
@@ -96,30 +120,6 @@ export const COUNTRIES = [
 		"continent": "Europe"
 	},
 	{
-		"code": "AU",
-		"name": "Australia",
-		"currency": "AUD",
-		"population": "21515754",
-		"capital": "Canberra",
-		"continent": "Oceania"
-	},
-	{
-		"code": "AW",
-		"name": "Aruba",
-		"currency": "AWG",
-		"population": "71566",
-		"capital": "Oranjestad",
-		"continent": "North America"
-	},
-	{
-		"code": "AX",
-		"name": "Åland",
-		"currency": "EUR",
-		"population": "26711",
-		"capital": "Mariehamn",
-		"continent": "Europe"
-	},
-	{
 		"code": "AZ",
 		"name": "Azerbaijan",
 		"currency": "AZN",
@@ -128,52 +128,12 @@ export const COUNTRIES = [
 		"continent": "Asia"
 	},
 	{
-		"code": "BA",
-		"name": "Bosnia and Herzegovina",
-		"currency": "BAM",
-		"population": "4590000",
-		"capital": "Sarajevo",
-		"continent": "Europe"
-	},
-	{
-		"code": "BB",
-		"name": "Barbados",
-		"currency": "BBD",
-		"population": "285653",
-		"capital": "Bridgetown",
+		"code": "BS",
+		"name": "Bahamas",
+		"currency": "BSD",
+		"population": "301790",
+		"capital": "Nassau",
 		"continent": "North America"
-	},
-	{
-		"code": "BD",
-		"name": "Bangladesh",
-		"currency": "BDT",
-		"population": "156118464",
-		"capital": "Dhaka",
-		"continent": "Asia"
-	},
-	{
-		"code": "BE",
-		"name": "Belgium",
-		"currency": "EUR",
-		"population": "10403000",
-		"capital": "Brussels",
-		"continent": "Europe"
-	},
-	{
-		"code": "BF",
-		"name": "Burkina Faso",
-		"currency": "XOF",
-		"population": "16241811",
-		"capital": "Ouagadougou",
-		"continent": "Africa"
-	},
-	{
-		"code": "BG",
-		"name": "Bulgaria",
-		"currency": "BGN",
-		"population": "7148785",
-		"capital": "Sofia",
-		"continent": "Europe"
 	},
 	{
 		"code": "BH",
@@ -184,12 +144,44 @@ export const COUNTRIES = [
 		"continent": "Asia"
 	},
 	{
-		"code": "BI",
-		"name": "Burundi",
-		"currency": "BIF",
-		"population": "9863117",
-		"capital": "Bujumbura",
-		"continent": "Africa"
+		"code": "BD",
+		"name": "Bangladesh",
+		"currency": "BDT",
+		"population": "156118464",
+		"capital": "Dhaka",
+		"continent": "Asia"
+	},
+	{
+		"code": "BB",
+		"name": "Barbados",
+		"currency": "BBD",
+		"population": "285653",
+		"capital": "Bridgetown",
+		"continent": "North America"
+	},
+	{
+		"code": "BY",
+		"name": "Belarus",
+		"currency": "BYR",
+		"population": "9685000",
+		"capital": "Minsk",
+		"continent": "Europe"
+	},
+	{
+		"code": "BE",
+		"name": "Belgium",
+		"currency": "EUR",
+		"population": "10403000",
+		"capital": "Brussels",
+		"continent": "Europe"
+	},
+	{
+		"code": "BZ",
+		"name": "Belize",
+		"currency": "BZD",
+		"population": "314522",
+		"capital": "Belmopan",
+		"continent": "North America"
 	},
 	{
 		"code": "BJ",
@@ -200,14 +192,6 @@ export const COUNTRIES = [
 		"continent": "Africa"
 	},
 	{
-		"code": "BL",
-		"name": "Saint Barthélemy",
-		"currency": "EUR",
-		"population": "8450",
-		"capital": "Gustavia",
-		"continent": "North America"
-	},
-	{
 		"code": "BM",
 		"name": "Bermuda",
 		"currency": "BMD",
@@ -216,11 +200,11 @@ export const COUNTRIES = [
 		"continent": "North America"
 	},
 	{
-		"code": "BN",
-		"name": "Brunei",
-		"currency": "BND",
-		"population": "395027",
-		"capital": "Bandar Seri Begawan",
+		"code": "BT",
+		"name": "Bhutan",
+		"currency": "BTN",
+		"population": "699847",
+		"capital": "Thimphu",
 		"continent": "Asia"
 	},
 	{
@@ -240,36 +224,12 @@ export const COUNTRIES = [
 		"continent": "North America"
 	},
 	{
-		"code": "BR",
-		"name": "Brazil",
-		"currency": "BRL",
-		"population": "201103330",
-		"capital": "Brasília",
-		"continent": "South America"
-	},
-	{
-		"code": "BS",
-		"name": "Bahamas",
-		"currency": "BSD",
-		"population": "301790",
-		"capital": "Nassau",
-		"continent": "North America"
-	},
-	{
-		"code": "BT",
-		"name": "Bhutan",
-		"currency": "BTN",
-		"population": "699847",
-		"capital": "Thimphu",
-		"continent": "Asia"
-	},
-	{
-		"code": "BV",
-		"name": "Bouvet Island",
-		"currency": "NOK",
-		"population": "0",
-		"capital": "",
-		"continent": "Antarctica"
+		"code": "BA",
+		"name": "Bosnia and Herzegovina",
+		"currency": "BAM",
+		"population": "4590000",
+		"capital": "Sarajevo",
+		"continent": "Europe"
 	},
 	{
 		"code": "BW",
@@ -280,92 +240,76 @@ export const COUNTRIES = [
 		"continent": "Africa"
 	},
 	{
-		"code": "BY",
-		"name": "Belarus",
-		"currency": "BYR",
-		"population": "9685000",
-		"capital": "Minsk",
-		"continent": "Europe"
+		"code": "BV",
+		"name": "Bouvet Island",
+		"currency": "NOK",
+		"population": "0",
+		"capital": "",
+		"continent": "Antarctica"
 	},
 	{
-		"code": "BZ",
-		"name": "Belize",
-		"currency": "BZD",
-		"population": "314522",
-		"capital": "Belmopan",
-		"continent": "North America"
+		"code": "BR",
+		"name": "Brazil",
+		"currency": "BRL",
+		"population": "201103330",
+		"capital": "Brasília",
+		"continent": "South America"
 	},
 	{
-		"code": "CA",
-		"name": "Canada",
-		"currency": "CAD",
-		"population": "33679000",
-		"capital": "Ottawa",
-		"continent": "North America"
-	},
-	{
-		"code": "CC",
-		"name": "Cocos [Keeling] Islands",
-		"currency": "AUD",
-		"population": "628",
-		"capital": "West Island",
+		"code": "IO",
+		"name": "British Indian Ocean Territory",
+		"currency": "USD",
+		"population": "4000",
+		"capital": "",
 		"continent": "Asia"
 	},
 	{
-		"code": "CD",
-		"name": "Democratic Republic of the Congo",
-		"currency": "CDF",
-		"population": "70916439",
-		"capital": "Kinshasa",
-		"continent": "Africa"
+		"code": "VG",
+		"name": "British Virgin Islands",
+		"currency": "USD",
+		"population": "21730",
+		"capital": "Road Town",
+		"continent": "North America"
 	},
 	{
-		"code": "CF",
-		"name": "Central African Republic",
-		"currency": "XAF",
-		"population": "4844927",
-		"capital": "Bangui",
-		"continent": "Africa"
+		"code": "BN",
+		"name": "Brunei",
+		"currency": "BND",
+		"population": "395027",
+		"capital": "Bandar Seri Begawan",
+		"continent": "Asia"
 	},
 	{
-		"code": "CG",
-		"name": "Republic of the Congo",
-		"currency": "XAF",
-		"population": "3039126",
-		"capital": "Brazzaville",
-		"continent": "Africa"
-	},
-	{
-		"code": "CH",
-		"name": "Switzerland",
-		"currency": "CHF",
-		"population": "7581000",
-		"capital": "Bern",
+		"code": "BG",
+		"name": "Bulgaria",
+		"currency": "BGN",
+		"population": "7148785",
+		"capital": "Sofia",
 		"continent": "Europe"
 	},
 	{
-		"code": "CI",
-		"name": "Ivory Coast",
+		"code": "BF",
+		"name": "Burkina Faso",
 		"currency": "XOF",
-		"population": "21058798",
-		"capital": "Yamoussoukro",
+		"population": "16241811",
+		"capital": "Ouagadougou",
 		"continent": "Africa"
 	},
 	{
-		"code": "CK",
-		"name": "Cook Islands",
-		"currency": "NZD",
-		"population": "21388",
-		"capital": "Avarua",
-		"continent": "Oceania"
+		"code": "BI",
+		"name": "Burundi",
+		"currency": "BIF",
+		"population": "9863117",
+		"capital": "Bujumbura",
+		"continent": "Africa"
 	},
 	{
-		"code": "CL",
-		"name": "Chile",
-		"currency": "CLP",
-		"population": "16746491",
-		"capital": "Santiago",
-		"continent": "South America"
+		"code": "KH",
+		"name": "Cambodia",
+		"currency": "KHR",
+		"population": "14453680",
+		"capital": "Phnom Penh",
+		"continent": "Asia"
 	},
 	{
 		"code": "CM",
@@ -376,35 +320,11 @@ export const COUNTRIES = [
 		"continent": "Africa"
 	},
 	{
-		"code": "CN",
-		"name": "China",
-		"currency": "CNY",
-		"population": "1330044000",
-		"capital": "Beijing",
-		"continent": "Asia"
-	},
-	{
-		"code": "CO",
-		"name": "Colombia",
-		"currency": "COP",
-		"population": "47790000",
-		"capital": "Bogotá",
-		"continent": "South America"
-	},
-	{
-		"code": "CR",
-		"name": "Costa Rica",
-		"currency": "CRC",
-		"population": "4516220",
-		"capital": "San José",
-		"continent": "North America"
-	},
-	{
-		"code": "CU",
-		"name": "Cuba",
-		"currency": "CUP",
-		"population": "11423000",
-		"capital": "Havana",
+		"code": "CA",
+		"name": "Canada",
+		"currency": "CAD",
+		"population": "33679000",
+		"capital": "Ottawa",
 		"continent": "North America"
 	},
 	{
@@ -416,12 +336,44 @@ export const COUNTRIES = [
 		"continent": "Africa"
 	},
 	{
-		"code": "CW",
-		"name": "Curacao",
-		"currency": "ANG",
-		"population": "141766",
-		"capital": "Willemstad",
+		"code": "KY",
+		"name": "Cayman Islands",
+		"currency": "KYD",
+		"population": "44270",
+		"capital": "George Town",
 		"continent": "North America"
+	},
+	{
+		"code": "CF",
+		"name": "Central African Republic",
+		"currency": "XAF",
+		"population": "4844927",
+		"capital": "Bangui",
+		"continent": "Africa"
+	},
+	{
+		"code": "TD",
+		"name": "Chad",
+		"currency": "XAF",
+		"population": "10543464",
+		"capital": "N'Djamena",
+		"continent": "Africa"
+	},
+	{
+		"code": "CL",
+		"name": "Chile",
+		"currency": "CLP",
+		"population": "16746491",
+		"capital": "Santiago",
+		"continent": "South America"
+	},
+	{
+		"code": "CN",
+		"name": "China",
+		"currency": "CNY",
+		"population": "1330044000",
+		"capital": "Beijing",
+		"continent": "Asia"
 	},
 	{
 		"code": "CX",
@@ -430,6 +382,70 @@ export const COUNTRIES = [
 		"population": "1500",
 		"capital": "Flying Fish Cove",
 		"continent": "Asia"
+	},
+	{
+		"code": "CC",
+		"name": "Cocos [Keeling] Islands",
+		"currency": "AUD",
+		"population": "628",
+		"capital": "West Island",
+		"continent": "Asia"
+	},
+	{
+		"code": "CO",
+		"name": "Colombia",
+		"currency": "COP",
+		"population": "47790000",
+		"capital": "Bogotá",
+		"continent": "South America"
+	},
+	{
+		"code": "KM",
+		"name": "Comoros",
+		"currency": "KMF",
+		"population": "773407",
+		"capital": "Moroni",
+		"continent": "Africa"
+	},
+	{
+		"code": "CK",
+		"name": "Cook Islands",
+		"currency": "NZD",
+		"population": "21388",
+		"capital": "Avarua",
+		"continent": "Oceania"
+	},
+	{
+		"code": "CR",
+		"name": "Costa Rica",
+		"currency": "CRC",
+		"population": "4516220",
+		"capital": "San José",
+		"continent": "North America"
+	},
+	{
+		"code": "HR",
+		"name": "Croatia",
+		"currency": "HRK",
+		"population": "4284889",
+		"capital": "Zagreb",
+		"continent": "Europe"
+	},
+	{
+		"code": "CU",
+		"name": "Cuba",
+		"currency": "CUP",
+		"population": "11423000",
+		"capital": "Havana",
+		"continent": "North America"
+	},
+	{
+		"code": "CW",
+		"name": "Curacao",
+		"currency": "ANG",
+		"population": "141766",
+		"capital": "Willemstad",
+		"continent": "North America"
 	},
 	{
 		"code": "CY",
@@ -448,19 +464,11 @@ export const COUNTRIES = [
 		"continent": "Europe"
 	},
 	{
-		"code": "DE",
-		"name": "Germany",
-		"currency": "EUR",
-		"population": "81802257",
-		"capital": "Berlin",
-		"continent": "Europe"
-	},
-	{
-		"code": "DJ",
-		"name": "Djibouti",
-		"currency": "DJF",
-		"population": "740528",
-		"capital": "Djibouti",
+		"code": "CD",
+		"name": "Democratic Republic of the Congo",
+		"currency": "CDF",
+		"population": "70916439",
+		"capital": "Kinshasa",
 		"continent": "Africa"
 	},
 	{
@@ -470,6 +478,14 @@ export const COUNTRIES = [
 		"population": "5484000",
 		"capital": "Copenhagen",
 		"continent": "Europe"
+	},
+	{
+		"code": "DJ",
+		"name": "Djibouti",
+		"currency": "DJF",
+		"population": "740528",
+		"capital": "Djibouti",
+		"continent": "Africa"
 	},
 	{
 		"code": "DM",
@@ -488,12 +504,12 @@ export const COUNTRIES = [
 		"continent": "North America"
 	},
 	{
-		"code": "DZ",
-		"name": "Algeria",
-		"currency": "DZD",
-		"population": "34586184",
-		"capital": "Algiers",
-		"continent": "Africa"
+		"code": "TL",
+		"name": "East Timor",
+		"currency": "USD",
+		"population": "1154625",
+		"capital": "Dili",
+		"continent": "Oceania"
 	},
 	{
 		"code": "EC",
@@ -504,14 +520,6 @@ export const COUNTRIES = [
 		"continent": "South America"
 	},
 	{
-		"code": "EE",
-		"name": "Estonia",
-		"currency": "EUR",
-		"population": "1291170",
-		"capital": "Tallinn",
-		"continent": "Europe"
-	},
-	{
 		"code": "EG",
 		"name": "Egypt",
 		"currency": "EGP",
@@ -520,11 +528,19 @@ export const COUNTRIES = [
 		"continent": "Africa"
 	},
 	{
-		"code": "EH",
-		"name": "Western Sahara",
-		"currency": "MAD",
-		"population": "273008",
-		"capital": "Laâyoune / El Aaiún",
+		"code": "SV",
+		"name": "El Salvador",
+		"currency": "USD",
+		"population": "6052064",
+		"capital": "San Salvador",
+		"continent": "North America"
+	},
+	{
+		"code": "GQ",
+		"name": "Equatorial Guinea",
+		"currency": "XAF",
+		"population": "1014999",
+		"capital": "Malabo",
 		"continent": "Africa"
 	},
 	{
@@ -536,11 +552,11 @@ export const COUNTRIES = [
 		"continent": "Africa"
 	},
 	{
-		"code": "ES",
-		"name": "Spain",
+		"code": "EE",
+		"name": "Estonia",
 		"currency": "EUR",
-		"population": "46505963",
-		"capital": "Madrid",
+		"population": "1291170",
+		"capital": "Tallinn",
 		"continent": "Europe"
 	},
 	{
@@ -552,11 +568,19 @@ export const COUNTRIES = [
 		"continent": "Africa"
 	},
 	{
-		"code": "FI",
-		"name": "Finland",
-		"currency": "EUR",
-		"population": "5244000",
-		"capital": "Helsinki",
+		"code": "FK",
+		"name": "Falkland Islands",
+		"currency": "FKP",
+		"population": "2638",
+		"capital": "Stanley",
+		"continent": "South America"
+	},
+	{
+		"code": "FO",
+		"name": "Faroe Islands",
+		"currency": "DKK",
+		"population": "48228",
+		"capital": "Tórshavn",
 		"continent": "Europe"
 	},
 	{
@@ -568,27 +592,11 @@ export const COUNTRIES = [
 		"continent": "Oceania"
 	},
 	{
-		"code": "FK",
-		"name": "Falkland Islands",
-		"currency": "FKP",
-		"population": "2638",
-		"capital": "Stanley",
-		"continent": "South America"
-	},
-	{
-		"code": "FM",
-		"name": "Micronesia",
-		"currency": "USD",
-		"population": "107708",
-		"capital": "Palikir",
-		"continent": "Oceania"
-	},
-	{
-		"code": "FO",
-		"name": "Faroe Islands",
-		"currency": "DKK",
-		"population": "48228",
-		"capital": "Tórshavn",
+		"code": "FI",
+		"name": "Finland",
+		"currency": "EUR",
+		"population": "5244000",
+		"capital": "Helsinki",
 		"continent": "Europe"
 	},
 	{
@@ -600,6 +608,30 @@ export const COUNTRIES = [
 		"continent": "Europe"
 	},
 	{
+		"code": "GF",
+		"name": "French Guiana",
+		"currency": "EUR",
+		"population": "195506",
+		"capital": "Cayenne",
+		"continent": "South America"
+	},
+	{
+		"code": "PF",
+		"name": "French Polynesia",
+		"currency": "XPF",
+		"population": "270485",
+		"capital": "Papeete",
+		"continent": "Oceania"
+	},
+	{
+		"code": "TF",
+		"name": "French Southern Territories",
+		"currency": "EUR",
+		"population": "140",
+		"capital": "Port-aux-Français",
+		"continent": "Antarctica"
+	},
+	{
 		"code": "GA",
 		"name": "Gabon",
 		"currency": "XAF",
@@ -608,20 +640,12 @@ export const COUNTRIES = [
 		"continent": "Africa"
 	},
 	{
-		"code": "GB",
-		"name": "United Kingdom",
-		"currency": "GBP",
-		"population": "62348447",
-		"capital": "London",
-		"continent": "Europe"
-	},
-	{
-		"code": "GD",
-		"name": "Grenada",
-		"currency": "XCD",
-		"population": "107818",
-		"capital": "St. George's",
-		"continent": "North America"
+		"code": "GM",
+		"name": "Gambia",
+		"currency": "GMD",
+		"population": "1593256",
+		"capital": "Bathurst",
+		"continent": "Africa"
 	},
 	{
 		"code": "GE",
@@ -632,19 +656,11 @@ export const COUNTRIES = [
 		"continent": "Asia"
 	},
 	{
-		"code": "GF",
-		"name": "French Guiana",
+		"code": "DE",
+		"name": "Germany",
 		"currency": "EUR",
-		"population": "195506",
-		"capital": "Cayenne",
-		"continent": "South America"
-	},
-	{
-		"code": "GG",
-		"name": "Guernsey",
-		"currency": "GBP",
-		"population": "65228",
-		"capital": "St Peter Port",
+		"population": "81802257",
+		"capital": "Berlin",
 		"continent": "Europe"
 	},
 	{
@@ -664,6 +680,14 @@ export const COUNTRIES = [
 		"continent": "Europe"
 	},
 	{
+		"code": "GR",
+		"name": "Greece",
+		"currency": "EUR",
+		"population": "11000000",
+		"capital": "Athens",
+		"continent": "Europe"
+	},
+	{
 		"code": "GL",
 		"name": "Greenland",
 		"currency": "DKK",
@@ -672,20 +696,12 @@ export const COUNTRIES = [
 		"continent": "North America"
 	},
 	{
-		"code": "GM",
-		"name": "Gambia",
-		"currency": "GMD",
-		"population": "1593256",
-		"capital": "Bathurst",
-		"continent": "Africa"
-	},
-	{
-		"code": "GN",
-		"name": "Guinea",
-		"currency": "GNF",
-		"population": "10324025",
-		"capital": "Conakry",
-		"continent": "Africa"
+		"code": "GD",
+		"name": "Grenada",
+		"currency": "XCD",
+		"population": "107818",
+		"capital": "St. George's",
+		"continent": "North America"
 	},
 	{
 		"code": "GP",
@@ -696,28 +712,12 @@ export const COUNTRIES = [
 		"continent": "North America"
 	},
 	{
-		"code": "GQ",
-		"name": "Equatorial Guinea",
-		"currency": "XAF",
-		"population": "1014999",
-		"capital": "Malabo",
-		"continent": "Africa"
-	},
-	{
-		"code": "GR",
-		"name": "Greece",
-		"currency": "EUR",
-		"population": "11000000",
-		"capital": "Athens",
-		"continent": "Europe"
-	},
-	{
-		"code": "GS",
-		"name": "South Georgia and the South Sandwich Islands",
-		"currency": "GBP",
-		"population": "30",
-		"capital": "Grytviken",
-		"continent": "Antarctica"
+		"code": "GU",
+		"name": "Guam",
+		"currency": "USD",
+		"population": "159358",
+		"capital": "Hagåtña",
+		"continent": "Oceania"
 	},
 	{
 		"code": "GT",
@@ -728,12 +728,20 @@ export const COUNTRIES = [
 		"continent": "North America"
 	},
 	{
-		"code": "GU",
-		"name": "Guam",
-		"currency": "USD",
-		"population": "159358",
-		"capital": "Hagåtña",
-		"continent": "Oceania"
+		"code": "GG",
+		"name": "Guernsey",
+		"currency": "GBP",
+		"population": "65228",
+		"capital": "St Peter Port",
+		"continent": "Europe"
+	},
+	{
+		"code": "GN",
+		"name": "Guinea",
+		"currency": "GNF",
+		"population": "10324025",
+		"capital": "Conakry",
+		"continent": "Africa"
 	},
 	{
 		"code": "GW",
@@ -752,12 +760,12 @@ export const COUNTRIES = [
 		"continent": "South America"
 	},
 	{
-		"code": "HK",
-		"name": "Hong Kong",
-		"currency": "HKD",
-		"population": "6898686",
-		"capital": "Hong Kong",
-		"continent": "Asia"
+		"code": "HT",
+		"name": "Haiti",
+		"currency": "HTG",
+		"population": "9648924",
+		"capital": "Port-au-Prince",
+		"continent": "North America"
 	},
 	{
 		"code": "HM",
@@ -776,20 +784,12 @@ export const COUNTRIES = [
 		"continent": "North America"
 	},
 	{
-		"code": "HR",
-		"name": "Croatia",
-		"currency": "HRK",
-		"population": "4284889",
-		"capital": "Zagreb",
-		"continent": "Europe"
-	},
-	{
-		"code": "HT",
-		"name": "Haiti",
-		"currency": "HTG",
-		"population": "9648924",
-		"capital": "Port-au-Prince",
-		"continent": "North America"
+		"code": "HK",
+		"name": "Hong Kong",
+		"currency": "HKD",
+		"population": "6898686",
+		"capital": "Hong Kong",
+		"continent": "Asia"
 	},
 	{
 		"code": "HU",
@@ -800,35 +800,11 @@ export const COUNTRIES = [
 		"continent": "Europe"
 	},
 	{
-		"code": "ID",
-		"name": "Indonesia",
-		"currency": "IDR",
-		"population": "242968342",
-		"capital": "Jakarta",
-		"continent": "Asia"
-	},
-	{
-		"code": "IE",
-		"name": "Ireland",
-		"currency": "EUR",
-		"population": "4622917",
-		"capital": "Dublin",
-		"continent": "Europe"
-	},
-	{
-		"code": "IL",
-		"name": "Israel",
-		"currency": "ILS",
-		"population": "7353985",
-		"capital": "",
-		"continent": "Asia"
-	},
-	{
-		"code": "IM",
-		"name": "Isle of Man",
-		"currency": "GBP",
-		"population": "75049",
-		"capital": "Douglas",
+		"code": "IS",
+		"name": "Iceland",
+		"currency": "ISK",
+		"population": "308910",
+		"capital": "Reykjavik",
 		"continent": "Europe"
 	},
 	{
@@ -840,19 +816,11 @@ export const COUNTRIES = [
 		"continent": "Asia"
 	},
 	{
-		"code": "IO",
-		"name": "British Indian Ocean Territory",
-		"currency": "USD",
-		"population": "4000",
-		"capital": "",
-		"continent": "Asia"
-	},
-	{
-		"code": "IQ",
-		"name": "Iraq",
-		"currency": "IQD",
-		"population": "29671605",
-		"capital": "Baghdad",
+		"code": "ID",
+		"name": "Indonesia",
+		"currency": "IDR",
+		"population": "242968342",
+		"capital": "Jakarta",
 		"continent": "Asia"
 	},
 	{
@@ -864,12 +832,36 @@ export const COUNTRIES = [
 		"continent": "Asia"
 	},
 	{
-		"code": "IS",
-		"name": "Iceland",
-		"currency": "ISK",
-		"population": "308910",
-		"capital": "Reykjavik",
+		"code": "IQ",
+		"name": "Iraq",
+		"currency": "IQD",
+		"population": "29671605",
+		"capital": "Baghdad",
+		"continent": "Asia"
+	},
+	{
+		"code": "IE",
+		"name": "Ireland",
+		"currency": "EUR",
+		"population": "4622917",
+		"capital": "Dublin",
 		"continent": "Europe"
+	},
+	{
+		"code": "IM",
+		"name": "Isle of Man",
+		"currency": "GBP",
+		"population": "75049",
+		"capital": "Douglas",
+		"continent": "Europe"
+	},
+	{
+		"code": "IL",
+		"name": "Israel",
+		"currency": "ILS",
+		"population": "7353985",
+		"capital": "",
+		"continent": "Asia"
 	},
 	{
 		"code": "IT",
@@ -880,12 +872,12 @@ export const COUNTRIES = [
 		"continent": "Europe"
 	},
 	{
-		"code": "JE",
-		"name": "Jersey",
-		"currency": "GBP",
-		"population": "90812",
-		"capital": "Saint Helier",
-		"continent": "Europe"
+		"code": "CI",
+		"name": "Ivory Coast",
+		"currency": "XOF",
+		"population": "21058798",
+		"capital": "Yamoussoukro",
+		"continent": "Africa"
 	},
 	{
 		"code": "JM",
@@ -896,6 +888,22 @@ export const COUNTRIES = [
 		"continent": "North America"
 	},
 	{
+		"code": "JP",
+		"name": "Japan",
+		"currency": "JPY",
+		"population": "127288000",
+		"capital": "Tokyo",
+		"continent": "Asia"
+	},
+	{
+		"code": "JE",
+		"name": "Jersey",
+		"currency": "GBP",
+		"population": "90812",
+		"capital": "Saint Helier",
+		"continent": "Europe"
+	},
+	{
 		"code": "JO",
 		"name": "Jordan",
 		"currency": "JOD",
@@ -904,11 +912,11 @@ export const COUNTRIES = [
 		"continent": "Asia"
 	},
 	{
-		"code": "JP",
-		"name": "Japan",
-		"currency": "JPY",
-		"population": "127288000",
-		"capital": "Tokyo",
+		"code": "KZ",
+		"name": "Kazakhstan",
+		"currency": "KZT",
+		"population": "15340000",
+		"capital": "Astana",
 		"continent": "Asia"
 	},
 	{
@@ -920,22 +928,6 @@ export const COUNTRIES = [
 		"continent": "Africa"
 	},
 	{
-		"code": "KG",
-		"name": "Kyrgyzstan",
-		"currency": "KGS",
-		"population": "5776500",
-		"capital": "Bishkek",
-		"continent": "Asia"
-	},
-	{
-		"code": "KH",
-		"name": "Cambodia",
-		"currency": "KHR",
-		"population": "14453680",
-		"capital": "Phnom Penh",
-		"continent": "Asia"
-	},
-	{
 		"code": "KI",
 		"name": "Kiribati",
 		"currency": "AUD",
@@ -944,36 +936,12 @@ export const COUNTRIES = [
 		"continent": "Oceania"
 	},
 	{
-		"code": "KM",
-		"name": "Comoros",
-		"currency": "KMF",
-		"population": "773407",
-		"capital": "Moroni",
-		"continent": "Africa"
-	},
-	{
-		"code": "KN",
-		"name": "Saint Kitts and Nevis",
-		"currency": "XCD",
-		"population": "51134",
-		"capital": "Basseterre",
-		"continent": "North America"
-	},
-	{
-		"code": "KP",
-		"name": "North Korea",
-		"currency": "KPW",
-		"population": "22912177",
-		"capital": "Pyongyang",
-		"continent": "Asia"
-	},
-	{
-		"code": "KR",
-		"name": "South Korea",
-		"currency": "KRW",
-		"population": "48422644",
-		"capital": "Seoul",
-		"continent": "Asia"
+		"code": "XK",
+		"name": "Kosovo",
+		"currency": "EUR",
+		"population": "1800000",
+		"capital": "Pristina",
+		"continent": "Europe"
 	},
 	{
 		"code": "KW",
@@ -984,19 +952,11 @@ export const COUNTRIES = [
 		"continent": "Asia"
 	},
 	{
-		"code": "KY",
-		"name": "Cayman Islands",
-		"currency": "KYD",
-		"population": "44270",
-		"capital": "George Town",
-		"continent": "North America"
-	},
-	{
-		"code": "KZ",
-		"name": "Kazakhstan",
-		"currency": "KZT",
-		"population": "15340000",
-		"capital": "Astana",
+		"code": "KG",
+		"name": "Kyrgyzstan",
+		"currency": "KGS",
+		"population": "5776500",
+		"capital": "Bishkek",
 		"continent": "Asia"
 	},
 	{
@@ -1008,6 +968,14 @@ export const COUNTRIES = [
 		"continent": "Asia"
 	},
 	{
+		"code": "LV",
+		"name": "Latvia",
+		"currency": "EUR",
+		"population": "2217969",
+		"capital": "Riga",
+		"continent": "Europe"
+	},
+	{
 		"code": "LB",
 		"name": "Lebanon",
 		"currency": "LBP",
@@ -1016,28 +984,12 @@ export const COUNTRIES = [
 		"continent": "Asia"
 	},
 	{
-		"code": "LC",
-		"name": "Saint Lucia",
-		"currency": "XCD",
-		"population": "160922",
-		"capital": "Castries",
-		"continent": "North America"
-	},
-	{
-		"code": "LI",
-		"name": "Liechtenstein",
-		"currency": "CHF",
-		"population": "35000",
-		"capital": "Vaduz",
-		"continent": "Europe"
-	},
-	{
-		"code": "LK",
-		"name": "Sri Lanka",
-		"currency": "LKR",
-		"population": "21513990",
-		"capital": "Colombo",
-		"continent": "Asia"
+		"code": "LS",
+		"name": "Lesotho",
+		"currency": "LSL",
+		"population": "1919552",
+		"capital": "Maseru",
+		"continent": "Africa"
 	},
 	{
 		"code": "LR",
@@ -1048,12 +1000,20 @@ export const COUNTRIES = [
 		"continent": "Africa"
 	},
 	{
-		"code": "LS",
-		"name": "Lesotho",
-		"currency": "LSL",
-		"population": "1919552",
-		"capital": "Maseru",
+		"code": "LY",
+		"name": "Libya",
+		"currency": "LYD",
+		"population": "6461454",
+		"capital": "Tripoli",
 		"continent": "Africa"
+	},
+	{
+		"code": "LI",
+		"name": "Liechtenstein",
+		"currency": "CHF",
+		"population": "35000",
+		"capital": "Vaduz",
+		"continent": "Europe"
 	},
 	{
 		"code": "LT",
@@ -1072,76 +1032,12 @@ export const COUNTRIES = [
 		"continent": "Europe"
 	},
 	{
-		"code": "LV",
-		"name": "Latvia",
-		"currency": "EUR",
-		"population": "2217969",
-		"capital": "Riga",
-		"continent": "Europe"
-	},
-	{
-		"code": "LY",
-		"name": "Libya",
-		"currency": "LYD",
-		"population": "6461454",
-		"capital": "Tripoli",
-		"continent": "Africa"
-	},
-	{
-		"code": "MA",
-		"name": "Morocco",
-		"currency": "MAD",
-		"population": "33848242",
-		"capital": "Rabat",
-		"continent": "Africa"
-	},
-	{
-		"code": "MC",
-		"name": "Monaco",
-		"currency": "EUR",
-		"population": "32965",
-		"capital": "Monaco",
-		"continent": "Europe"
-	},
-	{
-		"code": "MD",
-		"name": "Moldova",
-		"currency": "MDL",
-		"population": "4324000",
-		"capital": "Chişinău",
-		"continent": "Europe"
-	},
-	{
-		"code": "ME",
-		"name": "Montenegro",
-		"currency": "EUR",
-		"population": "666730",
-		"capital": "Podgorica",
-		"continent": "Europe"
-	},
-	{
-		"code": "MF",
-		"name": "Saint Martin",
-		"currency": "EUR",
-		"population": "35925",
-		"capital": "Marigot",
-		"continent": "North America"
-	},
-	{
-		"code": "MG",
-		"name": "Madagascar",
-		"currency": "MGA",
-		"population": "21281844",
-		"capital": "Antananarivo",
-		"continent": "Africa"
-	},
-	{
-		"code": "MH",
-		"name": "Marshall Islands",
-		"currency": "USD",
-		"population": "65859",
-		"capital": "Majuro",
-		"continent": "Oceania"
+		"code": "MO",
+		"name": "Macao",
+		"currency": "MOP",
+		"population": "449198",
+		"capital": "Macao",
+		"continent": "Asia"
 	},
 	{
 		"code": "MK",
@@ -1152,6 +1048,38 @@ export const COUNTRIES = [
 		"continent": "Europe"
 	},
 	{
+		"code": "MG",
+		"name": "Madagascar",
+		"currency": "MGA",
+		"population": "21281844",
+		"capital": "Antananarivo",
+		"continent": "Africa"
+	},
+	{
+		"code": "MW",
+		"name": "Malawi",
+		"currency": "MWK",
+		"population": "15447500",
+		"capital": "Lilongwe",
+		"continent": "Africa"
+	},
+	{
+		"code": "MY",
+		"name": "Malaysia",
+		"currency": "MYR",
+		"population": "28274729",
+		"capital": "Kuala Lumpur",
+		"continent": "Asia"
+	},
+	{
+		"code": "MV",
+		"name": "Maldives",
+		"currency": "MVR",
+		"population": "395650",
+		"capital": "Malé",
+		"continent": "Asia"
+	},
+	{
 		"code": "ML",
 		"name": "Mali",
 		"currency": "XOF",
@@ -1160,35 +1088,19 @@ export const COUNTRIES = [
 		"continent": "Africa"
 	},
 	{
-		"code": "MM",
-		"name": "Myanmar [Burma]",
-		"currency": "MMK",
-		"population": "53414374",
-		"capital": "Naypyitaw",
-		"continent": "Asia"
+		"code": "MT",
+		"name": "Malta",
+		"currency": "EUR",
+		"population": "403000",
+		"capital": "Valletta",
+		"continent": "Europe"
 	},
 	{
-		"code": "MN",
-		"name": "Mongolia",
-		"currency": "MNT",
-		"population": "3086918",
-		"capital": "Ulan Bator",
-		"continent": "Asia"
-	},
-	{
-		"code": "MO",
-		"name": "Macao",
-		"currency": "MOP",
-		"population": "449198",
-		"capital": "Macao",
-		"continent": "Asia"
-	},
-	{
-		"code": "MP",
-		"name": "Northern Mariana Islands",
+		"code": "MH",
+		"name": "Marshall Islands",
 		"currency": "USD",
-		"population": "53883",
-		"capital": "Saipan",
+		"population": "65859",
+		"capital": "Majuro",
 		"continent": "Oceania"
 	},
 	{
@@ -1208,22 +1120,6 @@ export const COUNTRIES = [
 		"continent": "Africa"
 	},
 	{
-		"code": "MS",
-		"name": "Montserrat",
-		"currency": "XCD",
-		"population": "9341",
-		"capital": "Plymouth",
-		"continent": "North America"
-	},
-	{
-		"code": "MT",
-		"name": "Malta",
-		"currency": "EUR",
-		"population": "403000",
-		"capital": "Valletta",
-		"continent": "Europe"
-	},
-	{
 		"code": "MU",
 		"name": "Mauritius",
 		"currency": "MUR",
@@ -1232,19 +1128,11 @@ export const COUNTRIES = [
 		"continent": "Africa"
 	},
 	{
-		"code": "MV",
-		"name": "Maldives",
-		"currency": "MVR",
-		"population": "395650",
-		"capital": "Malé",
-		"continent": "Asia"
-	},
-	{
-		"code": "MW",
-		"name": "Malawi",
-		"currency": "MWK",
-		"population": "15447500",
-		"capital": "Lilongwe",
+		"code": "YT",
+		"name": "Mayotte",
+		"currency": "EUR",
+		"population": "159042",
+		"capital": "Mamoudzou",
 		"continent": "Africa"
 	},
 	{
@@ -1256,12 +1144,60 @@ export const COUNTRIES = [
 		"continent": "North America"
 	},
 	{
-		"code": "MY",
-		"name": "Malaysia",
-		"currency": "MYR",
-		"population": "28274729",
-		"capital": "Kuala Lumpur",
+		"code": "FM",
+		"name": "Micronesia",
+		"currency": "USD",
+		"population": "107708",
+		"capital": "Palikir",
+		"continent": "Oceania"
+	},
+	{
+		"code": "MD",
+		"name": "Moldova",
+		"currency": "MDL",
+		"population": "4324000",
+		"capital": "Chişinău",
+		"continent": "Europe"
+	},
+	{
+		"code": "MC",
+		"name": "Monaco",
+		"currency": "EUR",
+		"population": "32965",
+		"capital": "Monaco",
+		"continent": "Europe"
+	},
+	{
+		"code": "MN",
+		"name": "Mongolia",
+		"currency": "MNT",
+		"population": "3086918",
+		"capital": "Ulan Bator",
 		"continent": "Asia"
+	},
+	{
+		"code": "ME",
+		"name": "Montenegro",
+		"currency": "EUR",
+		"population": "666730",
+		"capital": "Podgorica",
+		"continent": "Europe"
+	},
+	{
+		"code": "MS",
+		"name": "Montserrat",
+		"currency": "XCD",
+		"population": "9341",
+		"capital": "Plymouth",
+		"continent": "North America"
+	},
+	{
+		"code": "MA",
+		"name": "Morocco",
+		"currency": "MAD",
+		"population": "33848242",
+		"capital": "Rabat",
+		"continent": "Africa"
 	},
 	{
 		"code": "MZ",
@@ -1272,76 +1208,20 @@ export const COUNTRIES = [
 		"continent": "Africa"
 	},
 	{
+		"code": "MM",
+		"name": "Myanmar [Burma]",
+		"currency": "MMK",
+		"population": "53414374",
+		"capital": "Naypyitaw",
+		"continent": "Asia"
+	},
+	{
 		"code": "NA",
 		"name": "Namibia",
 		"currency": "NAD",
 		"population": "2128471",
 		"capital": "Windhoek",
 		"continent": "Africa"
-	},
-	{
-		"code": "NC",
-		"name": "New Caledonia",
-		"currency": "XPF",
-		"population": "216494",
-		"capital": "Noumea",
-		"continent": "Oceania"
-	},
-	{
-		"code": "NE",
-		"name": "Niger",
-		"currency": "XOF",
-		"population": "15878271",
-		"capital": "Niamey",
-		"continent": "Africa"
-	},
-	{
-		"code": "NF",
-		"name": "Norfolk Island",
-		"currency": "AUD",
-		"population": "1828",
-		"capital": "Kingston",
-		"continent": "Oceania"
-	},
-	{
-		"code": "NG",
-		"name": "Nigeria",
-		"currency": "NGN",
-		"population": "154000000",
-		"capital": "Abuja",
-		"continent": "Africa"
-	},
-	{
-		"code": "NI",
-		"name": "Nicaragua",
-		"currency": "NIO",
-		"population": "5995928",
-		"capital": "Managua",
-		"continent": "North America"
-	},
-	{
-		"code": "NL",
-		"name": "Netherlands",
-		"currency": "EUR",
-		"population": "16645000",
-		"capital": "Amsterdam",
-		"continent": "Europe"
-	},
-	{
-		"code": "NO",
-		"name": "Norway",
-		"currency": "NOK",
-		"population": "5009150",
-		"capital": "Oslo",
-		"continent": "Europe"
-	},
-	{
-		"code": "NP",
-		"name": "Nepal",
-		"currency": "NPR",
-		"population": "28951852",
-		"capital": "Kathmandu",
-		"continent": "Asia"
 	},
 	{
 		"code": "NR",
@@ -1352,11 +1232,27 @@ export const COUNTRIES = [
 		"continent": "Oceania"
 	},
 	{
-		"code": "NU",
-		"name": "Niue",
-		"currency": "NZD",
-		"population": "2166",
-		"capital": "Alofi",
+		"code": "NP",
+		"name": "Nepal",
+		"currency": "NPR",
+		"population": "28951852",
+		"capital": "Kathmandu",
+		"continent": "Asia"
+	},
+	{
+		"code": "NL",
+		"name": "Netherlands",
+		"currency": "EUR",
+		"population": "16645000",
+		"capital": "Amsterdam",
+		"continent": "Europe"
+	},
+	{
+		"code": "NC",
+		"name": "New Caledonia",
+		"currency": "XPF",
+		"population": "216494",
+		"capital": "Noumea",
 		"continent": "Oceania"
 	},
 	{
@@ -1368,51 +1264,75 @@ export const COUNTRIES = [
 		"continent": "Oceania"
 	},
 	{
+		"code": "NI",
+		"name": "Nicaragua",
+		"currency": "NIO",
+		"population": "5995928",
+		"capital": "Managua",
+		"continent": "North America"
+	},
+	{
+		"code": "NE",
+		"name": "Niger",
+		"currency": "XOF",
+		"population": "15878271",
+		"capital": "Niamey",
+		"continent": "Africa"
+	},
+	{
+		"code": "NG",
+		"name": "Nigeria",
+		"currency": "NGN",
+		"population": "154000000",
+		"capital": "Abuja",
+		"continent": "Africa"
+	},
+	{
+		"code": "NU",
+		"name": "Niue",
+		"currency": "NZD",
+		"population": "2166",
+		"capital": "Alofi",
+		"continent": "Oceania"
+	},
+	{
+		"code": "NF",
+		"name": "Norfolk Island",
+		"currency": "AUD",
+		"population": "1828",
+		"capital": "Kingston",
+		"continent": "Oceania"
+	},
+	{
+		"code": "KP",
+		"name": "North Korea",
+		"currency": "KPW",
+		"population": "22912177",
+		"capital": "Pyongyang",
+		"continent": "Asia"
+	},
+	{
+		"code": "MP",
+		"name": "Northern Mariana Islands",
+		"currency": "USD",
+		"population": "53883",
+		"capital": "Saipan",
+		"continent": "Oceania"
+	},
+	{
+		"code": "NO",
+		"name": "Norway",
+		"currency": "NOK",
+		"population": "5009150",
+		"capital": "Oslo",
+		"continent": "Europe"
+	},
+	{
 		"code": "OM",
 		"name": "Oman",
 		"currency": "OMR",
 		"population": "2967717",
 		"capital": "Muscat",
-		"continent": "Asia"
-	},
-	{
-		"code": "PA",
-		"name": "Panama",
-		"currency": "PAB",
-		"population": "3410676",
-		"capital": "Panama City",
-		"continent": "North America"
-	},
-	{
-		"code": "PE",
-		"name": "Peru",
-		"currency": "PEN",
-		"population": "29907003",
-		"capital": "Lima",
-		"continent": "South America"
-	},
-	{
-		"code": "PF",
-		"name": "French Polynesia",
-		"currency": "XPF",
-		"population": "270485",
-		"capital": "Papeete",
-		"continent": "Oceania"
-	},
-	{
-		"code": "PG",
-		"name": "Papua New Guinea",
-		"currency": "PGK",
-		"population": "6064515",
-		"capital": "Port Moresby",
-		"continent": "Oceania"
-	},
-	{
-		"code": "PH",
-		"name": "Philippines",
-		"currency": "PHP",
-		"population": "99900177",
-		"capital": "Manila",
 		"continent": "Asia"
 	},
 	{
@@ -1424,36 +1344,12 @@ export const COUNTRIES = [
 		"continent": "Asia"
 	},
 	{
-		"code": "PL",
-		"name": "Poland",
-		"currency": "PLN",
-		"population": "38500000",
-		"capital": "Warsaw",
-		"continent": "Europe"
-	},
-	{
-		"code": "PM",
-		"name": "Saint Pierre and Miquelon",
-		"currency": "EUR",
-		"population": "7012",
-		"capital": "Saint-Pierre",
-		"continent": "North America"
-	},
-	{
-		"code": "PN",
-		"name": "Pitcairn Islands",
-		"currency": "NZD",
-		"population": "46",
-		"capital": "Adamstown",
-		"continent": "Oceania"
-	},
-	{
-		"code": "PR",
-		"name": "Puerto Rico",
+		"code": "PW",
+		"name": "Palau",
 		"currency": "USD",
-		"population": "3916632",
-		"capital": "San Juan",
-		"continent": "North America"
+		"population": "19907",
+		"capital": "Melekeok",
+		"continent": "Oceania"
 	},
 	{
 		"code": "PS",
@@ -1464,19 +1360,19 @@ export const COUNTRIES = [
 		"continent": "Asia"
 	},
 	{
-		"code": "PT",
-		"name": "Portugal",
-		"currency": "EUR",
-		"population": "10676000",
-		"capital": "Lisbon",
-		"continent": "Europe"
+		"code": "PA",
+		"name": "Panama",
+		"currency": "PAB",
+		"population": "3410676",
+		"capital": "Panama City",
+		"continent": "North America"
 	},
 	{
-		"code": "PW",
-		"name": "Palau",
-		"currency": "USD",
-		"population": "19907",
-		"capital": "Melekeok",
+		"code": "PG",
+		"name": "Papua New Guinea",
+		"currency": "PGK",
+		"population": "6064515",
+		"capital": "Port Moresby",
 		"continent": "Oceania"
 	},
 	{
@@ -1488,12 +1384,68 @@ export const COUNTRIES = [
 		"continent": "South America"
 	},
 	{
+		"code": "PE",
+		"name": "Peru",
+		"currency": "PEN",
+		"population": "29907003",
+		"capital": "Lima",
+		"continent": "South America"
+	},
+	{
+		"code": "PH",
+		"name": "Philippines",
+		"currency": "PHP",
+		"population": "99900177",
+		"capital": "Manila",
+		"continent": "Asia"
+	},
+	{
+		"code": "PN",
+		"name": "Pitcairn Islands",
+		"currency": "NZD",
+		"population": "46",
+		"capital": "Adamstown",
+		"continent": "Oceania"
+	},
+	{
+		"code": "PL",
+		"name": "Poland",
+		"currency": "PLN",
+		"population": "38500000",
+		"capital": "Warsaw",
+		"continent": "Europe"
+	},
+	{
+		"code": "PT",
+		"name": "Portugal",
+		"currency": "EUR",
+		"population": "10676000",
+		"capital": "Lisbon",
+		"continent": "Europe"
+	},
+	{
+		"code": "PR",
+		"name": "Puerto Rico",
+		"currency": "USD",
+		"population": "3916632",
+		"capital": "San Juan",
+		"continent": "North America"
+	},
+	{
 		"code": "QA",
 		"name": "Qatar",
 		"currency": "QAR",
 		"population": "840926",
 		"capital": "Doha",
 		"continent": "Asia"
+	},
+	{
+		"code": "CG",
+		"name": "Republic of the Congo",
+		"currency": "XAF",
+		"population": "3039126",
+		"capital": "Brazzaville",
+		"continent": "Africa"
 	},
 	{
 		"code": "RE",
@@ -1509,14 +1461,6 @@ export const COUNTRIES = [
 		"currency": "RON",
 		"population": "21959278",
 		"capital": "Bucharest",
-		"continent": "Europe"
-	},
-	{
-		"code": "RS",
-		"name": "Serbia",
-		"currency": "RSD",
-		"population": "7344847",
-		"capital": "Belgrade",
 		"continent": "Europe"
 	},
 	{
@@ -1536,52 +1480,12 @@ export const COUNTRIES = [
 		"continent": "Africa"
 	},
 	{
-		"code": "SA",
-		"name": "Saudi Arabia",
-		"currency": "SAR",
-		"population": "25731776",
-		"capital": "Riyadh",
-		"continent": "Asia"
-	},
-	{
-		"code": "SB",
-		"name": "Solomon Islands",
-		"currency": "SBD",
-		"population": "559198",
-		"capital": "Honiara",
-		"continent": "Oceania"
-	},
-	{
-		"code": "SC",
-		"name": "Seychelles",
-		"currency": "SCR",
-		"population": "88340",
-		"capital": "Victoria",
-		"continent": "Africa"
-	},
-	{
-		"code": "SD",
-		"name": "Sudan",
-		"currency": "SDG",
-		"population": "35000000",
-		"capital": "Khartoum",
-		"continent": "Africa"
-	},
-	{
-		"code": "SE",
-		"name": "Sweden",
-		"currency": "SEK",
-		"population": "9828655",
-		"capital": "Stockholm",
-		"continent": "Europe"
-	},
-	{
-		"code": "SG",
-		"name": "Singapore",
-		"currency": "SGD",
-		"population": "4701069",
-		"capital": "Singapore",
-		"continent": "Asia"
+		"code": "BL",
+		"name": "Saint Barthélemy",
+		"currency": "EUR",
+		"population": "8450",
+		"capital": "Gustavia",
+		"continent": "North America"
 	},
 	{
 		"code": "SH",
@@ -1592,36 +1496,52 @@ export const COUNTRIES = [
 		"continent": "Africa"
 	},
 	{
-		"code": "SI",
-		"name": "Slovenia",
+		"code": "KN",
+		"name": "Saint Kitts and Nevis",
+		"currency": "XCD",
+		"population": "51134",
+		"capital": "Basseterre",
+		"continent": "North America"
+	},
+	{
+		"code": "LC",
+		"name": "Saint Lucia",
+		"currency": "XCD",
+		"population": "160922",
+		"capital": "Castries",
+		"continent": "North America"
+	},
+	{
+		"code": "MF",
+		"name": "Saint Martin",
 		"currency": "EUR",
-		"population": "2007000",
-		"capital": "Ljubljana",
-		"continent": "Europe"
+		"population": "35925",
+		"capital": "Marigot",
+		"continent": "North America"
 	},
 	{
-		"code": "SJ",
-		"name": "Svalbard and Jan Mayen",
-		"currency": "NOK",
-		"population": "2550",
-		"capital": "Longyearbyen",
-		"continent": "Europe"
-	},
-	{
-		"code": "SK",
-		"name": "Slovakia",
+		"code": "PM",
+		"name": "Saint Pierre and Miquelon",
 		"currency": "EUR",
-		"population": "5455000",
-		"capital": "Bratislava",
-		"continent": "Europe"
+		"population": "7012",
+		"capital": "Saint-Pierre",
+		"continent": "North America"
 	},
 	{
-		"code": "SL",
-		"name": "Sierra Leone",
-		"currency": "SLL",
-		"population": "5245695",
-		"capital": "Freetown",
-		"continent": "Africa"
+		"code": "VC",
+		"name": "Saint Vincent and the Grenadines",
+		"currency": "XCD",
+		"population": "104217",
+		"capital": "Kingstown",
+		"continent": "North America"
+	},
+	{
+		"code": "WS",
+		"name": "Samoa",
+		"currency": "WST",
+		"population": "192001",
+		"capital": "Apia",
+		"continent": "Oceania"
 	},
 	{
 		"code": "SM",
@@ -1632,6 +1552,22 @@ export const COUNTRIES = [
 		"continent": "Europe"
 	},
 	{
+		"code": "ST",
+		"name": "São Tomé and Príncipe",
+		"currency": "STD",
+		"population": "175808",
+		"capital": "São Tomé",
+		"continent": "Africa"
+	},
+	{
+		"code": "SA",
+		"name": "Saudi Arabia",
+		"currency": "SAR",
+		"population": "25731776",
+		"capital": "Riyadh",
+		"continent": "Asia"
+	},
+	{
 		"code": "SN",
 		"name": "Senegal",
 		"currency": "XOF",
@@ -1640,11 +1576,131 @@ export const COUNTRIES = [
 		"continent": "Africa"
 	},
 	{
+		"code": "RS",
+		"name": "Serbia",
+		"currency": "RSD",
+		"population": "7344847",
+		"capital": "Belgrade",
+		"continent": "Europe"
+	},
+	{
+		"code": "SC",
+		"name": "Seychelles",
+		"currency": "SCR",
+		"population": "88340",
+		"capital": "Victoria",
+		"continent": "Africa"
+	},
+	{
+		"code": "SL",
+		"name": "Sierra Leone",
+		"currency": "SLL",
+		"population": "5245695",
+		"capital": "Freetown",
+		"continent": "Africa"
+	},
+	{
+		"code": "SG",
+		"name": "Singapore",
+		"currency": "SGD",
+		"population": "4701069",
+		"capital": "Singapore",
+		"continent": "Asia"
+	},
+	{
+		"code": "SX",
+		"name": "Sint Maarten",
+		"currency": "ANG",
+		"population": "37429",
+		"capital": "Philipsburg",
+		"continent": "North America"
+	},
+	{
+		"code": "SK",
+		"name": "Slovakia",
+		"currency": "EUR",
+		"population": "5455000",
+		"capital": "Bratislava",
+		"continent": "Europe"
+	},
+	{
+		"code": "SI",
+		"name": "Slovenia",
+		"currency": "EUR",
+		"population": "2007000",
+		"capital": "Ljubljana",
+		"continent": "Europe"
+	},
+	{
+		"code": "SB",
+		"name": "Solomon Islands",
+		"currency": "SBD",
+		"population": "559198",
+		"capital": "Honiara",
+		"continent": "Oceania"
+	},
+	{
 		"code": "SO",
 		"name": "Somalia",
 		"currency": "SOS",
 		"population": "10112453",
 		"capital": "Mogadishu",
+		"continent": "Africa"
+	},
+	{
+		"code": "ZA",
+		"name": "South Africa",
+		"currency": "ZAR",
+		"population": "49000000",
+		"capital": "Pretoria",
+		"continent": "Africa"
+	},
+	{
+		"code": "GS",
+		"name": "South Georgia and the South Sandwich Islands",
+		"currency": "GBP",
+		"population": "30",
+		"capital": "Grytviken",
+		"continent": "Antarctica"
+	},
+	{
+		"code": "KR",
+		"name": "South Korea",
+		"currency": "KRW",
+		"population": "48422644",
+		"capital": "Seoul",
+		"continent": "Asia"
+	},
+	{
+		"code": "SS",
+		"name": "South Sudan",
+		"currency": "SSP",
+		"population": "8260490",
+		"capital": "Juba",
+		"continent": "Africa"
+	},
+	{
+		"code": "ES",
+		"name": "Spain",
+		"currency": "EUR",
+		"population": "46505963",
+		"capital": "Madrid",
+		"continent": "Europe"
+	},
+	{
+		"code": "LK",
+		"name": "Sri Lanka",
+		"currency": "LKR",
+		"population": "21513990",
+		"capital": "Colombo",
+		"continent": "Asia"
+	},
+	{
+		"code": "SD",
+		"name": "Sudan",
+		"currency": "SDG",
+		"population": "35000000",
+		"capital": "Khartoum",
 		"continent": "Africa"
 	},
 	{
@@ -1656,44 +1712,12 @@ export const COUNTRIES = [
 		"continent": "South America"
 	},
 	{
-		"code": "SS",
-		"name": "South Sudan",
-		"currency": "SSP",
-		"population": "8260490",
-		"capital": "Juba",
-		"continent": "Africa"
-	},
-	{
-		"code": "ST",
-		"name": "São Tomé and Príncipe",
-		"currency": "STD",
-		"population": "175808",
-		"capital": "São Tomé",
-		"continent": "Africa"
-	},
-	{
-		"code": "SV",
-		"name": "El Salvador",
-		"currency": "USD",
-		"population": "6052064",
-		"capital": "San Salvador",
-		"continent": "North America"
-	},
-	{
-		"code": "SX",
-		"name": "Sint Maarten",
-		"currency": "ANG",
-		"population": "37429",
-		"capital": "Philipsburg",
-		"continent": "North America"
-	},
-	{
-		"code": "SY",
-		"name": "Syria",
-		"currency": "SYP",
-		"population": "22198110",
-		"capital": "Damascus",
-		"continent": "Asia"
+		"code": "SJ",
+		"name": "Svalbard and Jan Mayen",
+		"currency": "NOK",
+		"population": "2550",
+		"capital": "Longyearbyen",
+		"continent": "Europe"
 	},
 	{
 		"code": "SZ",
@@ -1704,43 +1728,35 @@ export const COUNTRIES = [
 		"continent": "Africa"
 	},
 	{
-		"code": "TC",
-		"name": "Turks and Caicos Islands",
-		"currency": "USD",
-		"population": "20556",
-		"capital": "Cockburn Town",
-		"continent": "North America"
+		"code": "SE",
+		"name": "Sweden",
+		"currency": "SEK",
+		"population": "9828655",
+		"capital": "Stockholm",
+		"continent": "Europe"
 	},
 	{
-		"code": "TD",
-		"name": "Chad",
-		"currency": "XAF",
-		"population": "10543464",
-		"capital": "N'Djamena",
-		"continent": "Africa"
+		"code": "CH",
+		"name": "Switzerland",
+		"currency": "CHF",
+		"population": "7581000",
+		"capital": "Bern",
+		"continent": "Europe"
 	},
 	{
-		"code": "TF",
-		"name": "French Southern Territories",
-		"currency": "EUR",
-		"population": "140",
-		"capital": "Port-aux-Français",
-		"continent": "Antarctica"
+		"code": "SY",
+		"name": "Syria",
+		"currency": "SYP",
+		"population": "22198110",
+		"capital": "Damascus",
+		"continent": "Asia"
 	},
 	{
-		"code": "TG",
-		"name": "Togo",
-		"currency": "XOF",
-		"population": "6587239",
-		"capital": "Lomé",
-		"continent": "Africa"
-	},
-	{
-		"code": "TH",
-		"name": "Thailand",
-		"currency": "THB",
-		"population": "67089500",
-		"capital": "Bangkok",
+		"code": "TW",
+		"name": "Taiwan",
+		"currency": "TWD",
+		"population": "22894384",
+		"capital": "Taipei",
 		"continent": "Asia"
 	},
 	{
@@ -1752,36 +1768,36 @@ export const COUNTRIES = [
 		"continent": "Asia"
 	},
 	{
+		"code": "TZ",
+		"name": "Tanzania",
+		"currency": "TZS",
+		"population": "41892895",
+		"capital": "Dodoma",
+		"continent": "Africa"
+	},
+	{
+		"code": "TH",
+		"name": "Thailand",
+		"currency": "THB",
+		"population": "67089500",
+		"capital": "Bangkok",
+		"continent": "Asia"
+	},
+	{
+		"code": "TG",
+		"name": "Togo",
+		"currency": "XOF",
+		"population": "6587239",
+		"capital": "Lomé",
+		"continent": "Africa"
+	},
+	{
 		"code": "TK",
 		"name": "Tokelau",
 		"currency": "NZD",
 		"population": "1466",
 		"capital": "",
 		"continent": "Oceania"
-	},
-	{
-		"code": "TL",
-		"name": "East Timor",
-		"currency": "USD",
-		"population": "1154625",
-		"capital": "Dili",
-		"continent": "Oceania"
-	},
-	{
-		"code": "TM",
-		"name": "Turkmenistan",
-		"currency": "TMT",
-		"population": "4940916",
-		"capital": "Ashgabat",
-		"continent": "Asia"
-	},
-	{
-		"code": "TN",
-		"name": "Tunisia",
-		"currency": "TND",
-		"population": "10589025",
-		"capital": "Tunis",
-		"continent": "Africa"
 	},
 	{
 		"code": "TO",
@@ -1792,6 +1808,22 @@ export const COUNTRIES = [
 		"continent": "Oceania"
 	},
 	{
+		"code": "TT",
+		"name": "Trinidad and Tobago",
+		"currency": "TTD",
+		"population": "1228691",
+		"capital": "Port of Spain",
+		"continent": "North America"
+	},
+	{
+		"code": "TN",
+		"name": "Tunisia",
+		"currency": "TND",
+		"population": "10589025",
+		"capital": "Tunis",
+		"continent": "Africa"
+	},
+	{
 		"code": "TR",
 		"name": "Turkey",
 		"currency": "TRY",
@@ -1800,11 +1832,19 @@ export const COUNTRIES = [
 		"continent": "Asia"
 	},
 	{
-		"code": "TT",
-		"name": "Trinidad and Tobago",
-		"currency": "TTD",
-		"population": "1228691",
-		"capital": "Port of Spain",
+		"code": "TM",
+		"name": "Turkmenistan",
+		"currency": "TMT",
+		"population": "4940916",
+		"capital": "Ashgabat",
+		"continent": "Asia"
+	},
+	{
+		"code": "TC",
+		"name": "Turks and Caicos Islands",
+		"currency": "USD",
+		"population": "20556",
+		"capital": "Cockburn Town",
 		"continent": "North America"
 	},
 	{
@@ -1816,19 +1856,27 @@ export const COUNTRIES = [
 		"continent": "Oceania"
 	},
 	{
-		"code": "TW",
-		"name": "Taiwan",
-		"currency": "TWD",
-		"population": "22894384",
-		"capital": "Taipei",
-		"continent": "Asia"
+		"code": "UM",
+		"name": "U.S. Minor Outlying Islands",
+		"currency": "USD",
+		"population": "0",
+		"capital": "",
+		"continent": "Oceania"
 	},
 	{
-		"code": "TZ",
-		"name": "Tanzania",
-		"currency": "TZS",
-		"population": "41892895",
-		"capital": "Dodoma",
+		"code": "VI",
+		"name": "U.S. Virgin Islands",
+		"currency": "USD",
+		"population": "108708",
+		"capital": "Charlotte Amalie",
+		"continent": "North America"
+	},
+	{
+		"code": "UG",
+		"name": "Uganda",
+		"currency": "UGX",
+		"population": "33398682",
+		"capital": "Kampala",
 		"continent": "Africa"
 	},
 	{
@@ -1840,20 +1888,20 @@ export const COUNTRIES = [
 		"continent": "Europe"
 	},
 	{
-		"code": "UG",
-		"name": "Uganda",
-		"currency": "UGX",
-		"population": "33398682",
-		"capital": "Kampala",
-		"continent": "Africa"
+		"code": "AE",
+		"name": "United Arab Emirates",
+		"currency": "AED",
+		"population": "4975593",
+		"capital": "Abu Dhabi",
+		"continent": "Asia"
 	},
 	{
-		"code": "UM",
-		"name": "U.S. Minor Outlying Islands",
-		"currency": "USD",
-		"population": "0",
-		"capital": "",
-		"continent": "Oceania"
+		"code": "GB",
+		"name": "United Kingdom",
+		"currency": "GBP",
+		"population": "62348447",
+		"capital": "London",
+		"continent": "Europe"
 	},
 	{
 		"code": "US",
@@ -1880,20 +1928,20 @@ export const COUNTRIES = [
 		"continent": "Asia"
 	},
 	{
+		"code": "VU",
+		"name": "Vanuatu",
+		"currency": "VUV",
+		"population": "221552",
+		"capital": "Port Vila",
+		"continent": "Oceania"
+	},
+	{
 		"code": "VA",
 		"name": "Vatican City",
 		"currency": "EUR",
 		"population": "921",
 		"capital": "Vatican City",
 		"continent": "Europe"
-	},
-	{
-		"code": "VC",
-		"name": "Saint Vincent and the Grenadines",
-		"currency": "XCD",
-		"population": "104217",
-		"capital": "Kingstown",
-		"continent": "North America"
 	},
 	{
 		"code": "VE",
@@ -1904,36 +1952,12 @@ export const COUNTRIES = [
 		"continent": "South America"
 	},
 	{
-		"code": "VG",
-		"name": "British Virgin Islands",
-		"currency": "USD",
-		"population": "21730",
-		"capital": "Road Town",
-		"continent": "North America"
-	},
-	{
-		"code": "VI",
-		"name": "U.S. Virgin Islands",
-		"currency": "USD",
-		"population": "108708",
-		"capital": "Charlotte Amalie",
-		"continent": "North America"
-	},
-	{
 		"code": "VN",
 		"name": "Vietnam",
 		"currency": "VND",
 		"population": "89571130",
 		"capital": "Hanoi",
 		"continent": "Asia"
-	},
-	{
-		"code": "VU",
-		"name": "Vanuatu",
-		"currency": "VUV",
-		"population": "221552",
-		"capital": "Port Vila",
-		"continent": "Oceania"
 	},
 	{
 		"code": "WF",
@@ -1944,20 +1968,12 @@ export const COUNTRIES = [
 		"continent": "Oceania"
 	},
 	{
-		"code": "WS",
-		"name": "Samoa",
-		"currency": "WST",
-		"population": "192001",
-		"capital": "Apia",
-		"continent": "Oceania"
-	},
-	{
-		"code": "XK",
-		"name": "Kosovo",
-		"currency": "EUR",
-		"population": "1800000",
-		"capital": "Pristina",
-		"continent": "Europe"
+		"code": "EH",
+		"name": "Western Sahara",
+		"currency": "MAD",
+		"population": "273008",
+		"capital": "Laâyoune / El Aaiún",
+		"continent": "Africa"
 	},
 	{
 		"code": "YE",
@@ -1966,22 +1982,6 @@ export const COUNTRIES = [
 		"population": "23495361",
 		"capital": "Sanaa",
 		"continent": "Asia"
-	},
-	{
-		"code": "YT",
-		"name": "Mayotte",
-		"currency": "EUR",
-		"population": "159042",
-		"capital": "Mamoudzou",
-		"continent": "Africa"
-	},
-	{
-		"code": "ZA",
-		"name": "South Africa",
-		"currency": "ZAR",
-		"population": "49000000",
-		"capital": "Pretoria",
-		"continent": "Africa"
 	},
 	{
 		"code": "ZM",

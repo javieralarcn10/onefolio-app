@@ -1,7 +1,7 @@
 import { ASSETS_OPTIONS, getAssetValue } from "@/components/assets/asset-config";
 import { AssetTypeSection } from "@/components/assets/asset-type-section";
 import { EmptyState } from "@/components/assets/empty-state";
-import { isFullySold, getNetQuantity } from "@/components/assets/asset-detail-helpers";
+import { isFullySold, getNetQuantity, getAssetSymbol, getAssetCurrentValue, LIVE_PRICE_TYPES, type PriceData } from "@/components/assets/asset-detail-helpers";
 import { Colors } from "@/constants/colors";
 import { Asset, AssetType } from "@/types/custom";
 import { getAssets } from "@/utils/storage";
@@ -13,36 +13,6 @@ import { Pressable, ScrollView, Text, View } from "react-native";
 import Icon from "react-native-remix-icon";
 import { transformNumberToUserCurrency } from "@/utils/exchange-rates";
 import { useSession } from "@/utils/auth-context";
-
-const LIVE_PRICE_TYPES = new Set(["stocks_etfs", "crypto", "precious_metals"]);
-
-function getAssetSymbol(asset: Asset): string {
-	switch (asset.type) {
-		case "stocks_etfs": return asset.ticker;
-		case "crypto": return asset.symbol;
-		case "precious_metals":
-			switch (asset.metalType) {
-				case "gold": return "GC=F";
-				case "silver": return "SI=F";
-				case "platinum": return "PL=F";
-				case "palladium": return "PA=F";
-				default: return "";
-			}
-		default: return "";
-	}
-}
-
-type PriceData = { price: number; currency: string };
-
-function getAssetCurrentValue(asset: Asset, currentPrices: Record<string, PriceData>): number {
-	if (LIVE_PRICE_TYPES.has(asset.type)) {
-		const symbol = getAssetSymbol(asset);
-		if (symbol && currentPrices[symbol]) {
-			return getNetQuantity(asset) * currentPrices[symbol].price;
-		}
-	}
-	return getAssetValue(asset);
-}
 
 export default function AssetsScreen() {
 	const { user } = useSession();

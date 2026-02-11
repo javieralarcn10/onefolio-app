@@ -263,3 +263,92 @@ export function useNewsBulk(symbols: string, enabled: boolean = true) {
 		retry: 1,
 	});
 }
+
+// ── Portfolio History ────────────────────────────────────────────────────
+
+/**
+ * Represents a single asset in the portfolio-history request.
+ *
+ * • Live-price assets (stocks, crypto, metals): symbol + quantity.
+ * • Interest-bearing assets (bonds, deposits, private investments):
+ *   staticValue + interestRate / expectedReturn + maturityDate so the
+ *   backend can compute daily accrual.
+ * • Flat-value assets (cash, real estate): staticValue only.
+ */
+export type PortfolioAssetPayload = {
+	symbol: string | null;
+	quantity: number | null;
+	quantityUnit?: 'oz' | 'g' | null;
+	purchaseDate: string;
+	type: string;
+	staticValue: number | null;
+	currency: string;
+
+	// Interest-bearing assets (bonds, deposits)
+	interestRate?: number | null;   // annual % (e.g. 4.5)
+	maturityDate?: string | null;
+
+	// Private investments
+	expectedReturn?: number | null; // annual % (e.g. 8.0)
+	investmentType?: string | null; // 'loan' | 'crowdlending' | 'equity' | 'other'
+
+	// Bonds
+	bondType?: string | null;       // 'government' | 'corporate'
+};
+
+export type PortfolioHistoryRequest = {
+	assets: PortfolioAssetPayload[];
+	period: string;          // "1W" | "1M" | "3M" | "YTD" | "1Y" | "ALL"
+	targetCurrency: string;  // user's display currency, e.g. "USD"
+};
+
+export type PortfolioHistoryPoint = {
+	date: string;
+	value: number;
+};
+
+export type PortfolioHistoryResponse = {
+	data: PortfolioHistoryPoint[];
+	currency: string;
+};
+
+async function fetchPortfolioHistory(
+	payload: PortfolioHistoryRequest,
+): Promise<PortfolioHistoryResponse> {
+	const response = await axios.post<PortfolioHistoryResponse>(
+		`${API_URL}/finance/portfolio-history`,
+		payload,
+		{
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json",
+			},
+		},
+	);
+	return response.data;
+}
+
+/**
+ * Fetches the aggregated portfolio value over time.
+ * The backend receives every asset in the portfolio, fetches their individual
+ * price histories in parallel, and returns a single aggregated time-series.
+ */
+export function usePortfolioHistory(
+	payload: PortfolioHistoryRequest | null,
+	enabled: boolean = true,
+) {
+	// Build a stable, human-readable key that captures the asset composition.
+	const assetsKey = payload?.assets
+		?.map((a) => `${a.symbol ?? a.type}:${a.quantity ?? a.staticValue}`)
+		.sort()
+		.join("|") ?? "";
+
+	return useQuery<PortfolioHistoryResponse>({
+		queryKey: ["portfolio-history", payload?.period, payload?.targetCurrency, assetsKey],
+		queryFn: () => fetchPortfolioHistory(payload!),
+		enabled: enabled && payload !== null && payload.assets.length > 0,
+		staleTime: 15 * 60 * 1000,  // 15 min
+		gcTime: 30 * 60 * 1000,     // 30 min
+		retry: 1,
+	});
+}

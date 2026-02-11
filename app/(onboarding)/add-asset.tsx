@@ -107,13 +107,13 @@ export default function AddInvestment() {
 	// Maximum date is today
 	const MAX_DATE = new Date();
 
+	/** Normalize a localized numeric string (commas → dots) and parse it */
+	const parseLocalized = (value: string): number => parseFloat(value.replace(/,/g, "."));
+
 	// Validation helper for numeric fields
 	const isValidNumber = (value: string): boolean => {
 		if (!value.trim()) return false;
-		// Remove commas used as thousand separators
-		const normalized = value.replace(/,/g, ".");
-		// Check if it's a valid positive number
-		const num = parseFloat(normalized);
+		const num = parseLocalized(value);
 		return !isNaN(num) && num > 0;
 	};
 
@@ -293,8 +293,8 @@ export default function AddInvestment() {
 						industry: industry,
 						country: stockCountry,
 						exchange: exchange,
-						quantity: parseFloat(quantity),
-						purchasePrice: parseFloat(purchasePrice),
+						quantity: parseLocalized(quantity),
+						purchasePrice: parseLocalized(purchasePrice),
 						purchaseDate: purchaseDate?.toISOString() || now,
 					} as StockAsset;
 					break;
@@ -309,8 +309,8 @@ export default function AddInvestment() {
 						type: "bonds",
 						bondType: bondType!,
 						bondCountry: bondType === "government" ? bondCountry.trim() : undefined,
-						amount: parseFloat(amount),
-						interestRate: interestRate ? parseFloat(interestRate) : 0,
+						amount: parseLocalized(amount),
+						interestRate: interestRate ? parseLocalized(interestRate) : 0,
 						purchaseDate: purchaseDate?.toISOString() || now,
 						maturityDate: maturityDate?.toISOString() || "",
 					} as BondAsset;
@@ -325,18 +325,18 @@ export default function AddInvestment() {
 						updatedAt: now,
 						type: "deposits",
 						bankName: bankName.trim(),
-						amount: parseFloat(amount),
-						interestRate: interestRate ? parseFloat(interestRate) : 0,
+						amount: parseLocalized(amount),
+						interestRate: interestRate ? parseLocalized(interestRate) : 0,
 						purchaseDate: purchaseDate?.toISOString(),
 						maturityDate: maturityDate?.toISOString(),
 					} as DepositAsset;
 					break;
 
 			case "precious_metals": {
-				const qty = parseFloat(quantity);
+				const qty = parseLocalized(quantity);
 				const pricePerUnit = metalFormat === "physical"
-					? parseFloat(totalPrice) / qty
-					: parseFloat(purchasePrice);
+					? parseLocalized(totalPrice) / qty
+					: parseLocalized(purchasePrice);
 				asset = {
 					id: generateAssetId(),
 					name: name.trim(),
@@ -362,7 +362,7 @@ export default function AddInvestment() {
 						updatedAt: now,
 						type: "real_estate",
 						propertyType: propertyType!,
-						estimatedValue: parseFloat(estimatedValue),
+						estimatedValue: parseLocalized(estimatedValue),
 						country: country.trim(),
 						city: city.trim(),
 						zip: zip.trim(),
@@ -379,8 +379,8 @@ export default function AddInvestment() {
 						updatedAt: now,
 						type: "private_investments",
 						investmentType: investmentType!,
-						amount: parseFloat(amount),
-						expectedReturn: expectedReturn ? parseFloat(expectedReturn) : undefined,
+						amount: parseLocalized(amount),
+						expectedReturn: expectedReturn ? parseLocalized(expectedReturn) : undefined,
 						purchaseDate: purchaseDate?.toISOString(),
 						maturityDate: maturityDate?.toISOString(),
 					} as PrivateInvestmentAsset;
@@ -395,7 +395,7 @@ export default function AddInvestment() {
 						updatedAt: now,
 						type: "cash",
 						accountName: accountName.trim(),
-						amount: parseFloat(amount),
+						amount: parseLocalized(amount),
 					} as CashAsset;
 					break;
 
@@ -408,8 +408,8 @@ export default function AddInvestment() {
 						updatedAt: now,
 						type: "crypto",
 						symbol: selectedCryptoSymbol!,
-						quantity: parseFloat(quantity),
-						purchasePrice: purchasePrice ? parseFloat(purchasePrice) : 0,
+						quantity: parseLocalized(quantity),
+						purchasePrice: purchasePrice ? parseLocalized(purchasePrice) : 0,
 					} as CryptoAsset;
 					break;
 

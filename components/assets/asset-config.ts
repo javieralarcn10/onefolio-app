@@ -82,25 +82,8 @@ export function getAssetTypeConfig(type: AssetType): AssetOption {
 	return ASSETS_OPTIONS.find((opt) => opt.assetType === type) || ASSETS_OPTIONS[0];
 }
 
-export function getAssetValue(asset: Asset): number {
-	switch (asset.type) {
-		case "stocks_etfs":
-			return getNetQuantity(asset) * getAvgPurchasePrice(asset);
-		case "bonds":
-		case "deposits":
-		case "private_investments":
-		case "cash":
-			return getNetAmount(asset);
-		case "precious_metals":
-			return getNetQuantity(asset) * getAvgPurchasePrice(asset);
-		case "real_estate":
-			return asset.estimatedValue;
-		case "crypto":
-			return getNetQuantity(asset) * getAvgPurchasePrice(asset);
-		default:
-			return 0;
-	}
-}
+// getAssetValue is now defined in asset-detail-helpers.ts and re-exported here
+export { getAssetValue } from "./asset-detail-helpers";
 
 export function getAssetDisplayName(asset: Asset): string {
 	switch (asset.type) {

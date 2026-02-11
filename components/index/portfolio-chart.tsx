@@ -214,6 +214,7 @@ export function PortfolioChart({
 		<View>
 			{/* Value and Change — fixed height to prevent layout jumps */}
 			<View className="mb-2">
+				<Text className="text-muted-foreground text-sm font-lausanne-medium">{selectedPoint ? "Point Value" : "Current Total Value"}</Text>
 				<Text className="text-foreground text-3xl font-lausanne-bold leading-tight">
 					{displayValue}
 				</Text>

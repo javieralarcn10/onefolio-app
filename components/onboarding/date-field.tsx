@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Keyboard, Modal, Platform, Pressable, Text, View } from "react-native";
 import * as Localization from "expo-localization";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
+import { Colors } from "@/constants/colors";
 
 type DateFieldProps = {
 	label: string;
@@ -88,6 +89,7 @@ export function DateField({
 					value={tempDate}
 					mode="date"
 					themeVariant="light"
+					textColor={Colors.foreground}
 					display="default"
 					locale={locale}
 					onChange={handleChange}
@@ -140,7 +142,8 @@ export function DateField({
 									onChange={handleChange}
 									minimumDate={minimumDate}
 									maximumDate={maximumDate}
-									style={{ height: 200, }}
+									textColor={Colors.foreground}
+									style={{ height: 200 }}
 								/>
 							</View>
 						</Pressable>

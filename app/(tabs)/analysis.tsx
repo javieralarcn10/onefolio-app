@@ -1,5 +1,5 @@
 import { Colors } from "@/constants/colors";
-import { isFullySold } from "@/components/assets/asset-detail-helpers";
+import { isFullySold, getAssetSymbol, LIVE_PRICE_TYPES, type PriceData } from "@/components/assets/asset-detail-helpers";
 import { Asset } from "@/types/custom";
 import { getAssets, getAssetsSync } from "@/utils/storage";
 import { useCurrentPriceBulk } from "@/utils/api/finance";
@@ -15,31 +15,6 @@ import { CurrencyExposure } from "@/components/analysis/currency-exposure";
 import { SectorTreemap } from "@/components/analysis/sector-treemap";
 import { useSession } from "@/utils/auth-context";
 import { EmptyState } from "@/components/analysis/empty-state";
-
-/** Asset types that support live price fetching */
-const LIVE_PRICE_TYPES = new Set(["stocks_etfs", "crypto", "precious_metals"]);
-
-/** Get the ticker/symbol used to fetch the current price for an asset */
-function getAssetSymbol(asset: Asset): string {
-	switch (asset.type) {
-		case "stocks_etfs":
-			return asset.ticker;
-		case "crypto":
-			return asset.symbol;
-		case "precious_metals":
-			switch (asset.metalType) {
-				case "gold": return "GC=F";
-				case "silver": return "SI=F";
-				case "platinum": return "PL=F";
-				case "palladium": return "PA=F";
-				default: return "";
-			}
-		default:
-			return "";
-	}
-}
-
-type PriceData = { price: number; currency: string };
 
 /** Load filtered assets synchronously for instant first render */
 function loadInitialAssets(): Asset[] {

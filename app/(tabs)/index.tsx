@@ -1,10 +1,13 @@
-import { isFullySold, getNetQuantity } from "@/components/assets/asset-detail-helpers";
-import { getAssetValue } from "@/components/assets/asset-config";
+import { isFullySold, getNetQuantity, isQuantityBased, getAssetValue, getAssetSymbol, getAssetCurrentValue, LIVE_PRICE_TYPES, type PriceData } from "@/components/assets/asset-detail-helpers";
 import { Asset } from "@/types/custom";
 import { formatNumber } from "@/utils/numbers";
 import { formatDateShort } from "@/utils/dates";
 import { getAssets } from "@/utils/storage";
-import { useCurrentPriceBulk } from "@/utils/api/finance";
+import {
+	useCurrentPriceBulk,
+	usePortfolioHistory,
+	type PortfolioAssetPayload,
+} from "@/utils/api/finance";
 import { useFocusEffect } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
@@ -30,44 +33,15 @@ const PERIOD_OPTIONS: PeriodOption[] = [
 
 type DisplayMode = "value" | "performance";
 
-/** Asset types that support live price fetching */
-const LIVE_PRICE_TYPES = new Set(["stocks_etfs", "crypto", "precious_metals"]);
-
-/** Get the ticker/symbol used to fetch the current price for an asset */
-function getAssetSymbol(asset: Asset): string {
-	switch (asset.type) {
-		case "stocks_etfs":
-			return asset.ticker;
-		case "crypto":
-			return asset.symbol;
-		case "precious_metals":
-			switch (asset.metalType) {
-				case "gold": return "GC=F";
-				case "silver": return "SI=F";
-				case "platinum": return "PL=F";
-				case "palladium": return "PA=F";
-				default: return "";
-			}
-		default:
-			return "";
-	}
-}
-
-type PriceData = { price: number; currency: string };
-
-/** Get the current value of an asset using live prices when available */
-function getAssetCurrentValue(asset: Asset, currentPrices: Record<string, PriceData>): number {
-	if (LIVE_PRICE_TYPES.has(asset.type)) {
-		const symbol = getAssetSymbol(asset);
-		if (symbol && currentPrices[symbol]) {
-			return getNetQuantity(asset) * currentPrices[symbol].price;
-		}
-	}
-	return getAssetValue(asset);
-}
-
-function calculatePortfolioValue(assets: Asset[]): number {
-	return assets.reduce((total, asset) => total + getAssetValue(asset), 0);
+/** Portfolio value using live prices when available, cost basis as fallback */
+function calculatePortfolioValue(
+	assets: Asset[],
+	currentPrices: Record<string, PriceData>,
+): number {
+	return assets.reduce(
+		(total, asset) => total + getAssetCurrentValue(asset, currentPrices),
+		0,
+	);
 }
 
 function getAssetTypeDistribution(
@@ -109,64 +83,55 @@ function getAssetTypeDistribution(
 }
 
 /**
- * Generate mock historical data for the portfolio chart.
- * Uses index-based x values (like AssetPriceChart) to avoid weekend gaps.
+ * Build the asset payload list for the portfolio-history endpoint.
+ *
+ * • Live-price assets → symbol + quantity (backend fetches price history).
+ * • Interest-bearing assets → staticValue + interestRate / expectedReturn +
+ *   maturityDate so the backend can compute daily accrual.
+ * • Flat assets (cash, real estate) → staticValue only.
  */
-function generateHistoricalData(
-	period: string,
-	currentValue: number,
-): Array<{ x: number; y: number; extraData?: any }> {
-	const now = new Date();
-	let dataPoints: number;
+function buildAssetPayloads(assets: Asset[]): PortfolioAssetPayload[] {
+	return assets.map((asset): PortfolioAssetPayload => {
+		const isLive = LIVE_PRICE_TYPES.has(asset.type);
 
-	switch (period) {
-		case "1W":
-			dataPoints = 7;
-			break;
-		case "1M":
-			dataPoints = 30;
-			break;
-		case "3M":
-			dataPoints = 90;
-			break;
-		case "AAF": {
-			// Year to date: from Jan 1 to today
-			const startOfYear = new Date(now.getFullYear(), 0, 1);
-			dataPoints = Math.max(2, Math.ceil((now.getTime() - startOfYear.getTime()) / (24 * 60 * 60 * 1000)));
-			break;
+		// ── Base fields (every asset) ────────────────────────────────────
+		const base: PortfolioAssetPayload = {
+			symbol: isLive ? getAssetSymbol(asset) : null,
+			quantity: isQuantityBased(asset.type) ? getNetQuantity(asset) : null,
+			purchaseDate: (asset as any).purchaseDate || asset.createdAt,
+			type: asset.type,
+			staticValue: isLive ? null : getAssetValue(asset),
+			currency: asset.currency,
+		};
+
+		// ── Type-specific enrichment ─────────────────────────────────────
+		switch (asset.type) {
+			case "precious_metals":
+				if (asset.format === "physical") {
+					base.quantityUnit = asset.quantityUnit ?? "oz";
+				}
+				break;
+
+			case "bonds":
+				base.interestRate = asset.interestRate ?? null;
+				base.maturityDate = asset.maturityDate ?? null;
+				base.bondType = asset.bondType ?? null;
+				break;
+
+			case "deposits":
+				base.interestRate = asset.interestRate ?? null;
+				base.maturityDate = asset.maturityDate ?? null;
+				break;
+
+			case "private_investments":
+				base.expectedReturn = asset.expectedReturn ?? null;
+				base.maturityDate = asset.maturityDate ?? null;
+				base.investmentType = asset.investmentType ?? null;
+				break;
 		}
-		case "1A":
-			dataPoints = 365;
-			break;
-		case "ALL":
-			dataPoints = 730;
-			break;
-		default:
-			dataPoints = 30;
-	}
 
-	const volatility = 0.015;
-	const trend = 0.0003;
-
-	const data: Array<{ x: number; y: number; extraData?: any }> = [];
-	let value = currentValue * (1 - trend * dataPoints);
-	const msPerDay = 24 * 60 * 60 * 1000;
-
-	for (let i = 0; i < dataPoints; i++) {
-		const randomChange = (Math.random() - 0.5) * 2 * volatility;
-		value = value * (1 + randomChange + trend);
-		const date = new Date(now.getTime() - (dataPoints - i) * msPerDay);
-
-		data.push({
-			x: i,
-			y: value,
-			extraData: {
-				formattedTime: formatDateShort(date),
-			},
-		});
-	}
-
-	return data;
+		return base;
+	});
 }
 
 export default function HomeScreen() {
@@ -223,7 +188,10 @@ export default function HomeScreen() {
 		return prices;
 	}, [bulkPrices, liveSymbols]);
 
-	const portfolioValue = useMemo(() => calculatePortfolioValue(assets), [assets]);
+	const portfolioValue = useMemo(
+		() => calculatePortfolioValue(assets, currentPrices),
+		[assets, currentPrices],
+	);
 	const assetDistribution = useMemo(() => getAssetTypeDistribution(assets, currentPrices), [assets, currentPrices]);
 
 	// Format value to user's currency
@@ -235,10 +203,29 @@ export default function HomeScreen() {
 		}
 	}, [portfolioValue, user?.currency]);
 
+	// ── Portfolio chart data (real historical prices) ────────────────────
+	const portfolioPayload = useMemo(() => {
+		if (assets.length === 0) return null;
+		return {
+			assets: buildAssetPayloads(assets),
+			period: selectedPeriod,
+			targetCurrency: user?.currency ?? "USD",
+		};
+	}, [assets, selectedPeriod, user?.currency]);
+
+	const { data: portfolioHistory, isLoading: isChartLoading } =
+		usePortfolioHistory(portfolioPayload);
+
 	const chartData = useMemo(() => {
-		if (portfolioValue === 0) return [];
-		return generateHistoricalData(selectedPeriod, portfolioValue);
-	}, [selectedPeriod, portfolioValue]);
+		if (!portfolioHistory?.data?.length) return [];
+		return portfolioHistory.data.map((point, index) => ({
+			x: index,
+			y: point.value,
+			extraData: {
+				formattedTime: formatDateShort(new Date(point.date)),
+			},
+		}));
+	}, [portfolioHistory]);
 
 	const handlePeriodChange = useCallback(
 		(period: string) => {
@@ -275,7 +262,7 @@ export default function HomeScreen() {
 				<View className="mt-4 mb-8">
 					<PortfolioChart
 						data={chartData}
-						isLoading={isLoading}
+						isLoading={isLoading || isChartLoading}
 						currency={user?.currency ?? "USD"}
 						currentValue={portfolioValue}
 						formattedValue={formattedValue}

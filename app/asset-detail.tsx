@@ -2,6 +2,7 @@ import { Colors } from "@/constants/colors";
 import { Asset, Transaction, TransactionType } from "@/types/custom";
 import { getAssets, addTransactionToAsset } from "@/utils/storage";
 import { usePriceHistory, PriceHistoryPoint, useAnalystRating, useCurrentPrice } from "@/utils/api/finance";
+import { getMetalPricePerUnit } from "@/components/assets/asset-detail-helpers";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
@@ -155,7 +156,8 @@ export default function AssetDetailScreen() {
 
 	useEffect(() => {
 		if (!currentPriceQuery.data || !asset) return;
-		const liveTotalValue = currentPriceQuery.data.current_price * getNetQuantity(asset);
+		const pricePerUnit = getMetalPricePerUnit(asset, currentPriceQuery.data.current_price);
+		const liveTotalValue = pricePerUnit * getNetQuantity(asset);
 		transformNumberToUserCurrency(liveTotalValue, currentPriceQuery.data.currency)
 			.then(setLiveFormattedValue);
 	}, [currentPriceQuery.data, asset]);

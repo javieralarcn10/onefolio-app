@@ -1,7 +1,6 @@
 import { Colors } from "@/constants/colors";
 import { Asset } from "@/types/custom";
-import { getAssetValue } from "@/components/assets/asset-config";
-import { getNetQuantity } from "@/components/assets/asset-detail-helpers";
+import { getAssetCurrentValue, type PriceData } from "@/components/assets/asset-detail-helpers";
 import { formatNumber } from "@/utils/numbers";
 import React, { useCallback, useMemo } from "react";
 import { Dimensions, Pressable, Text, View } from "react-native";
@@ -21,41 +20,6 @@ type SectorItem = {
 };
 
 type CellLayout = { x: number; y: number; w: number; h: number; item: SectorItem };
-
-type PriceData = { price: number; currency: string };
-
-// ── Helpers ──────────────────────────────────────────────────────────────
-
-const LIVE_PRICE_TYPES = new Set(["stocks_etfs", "crypto", "precious_metals"]);
-
-function getAssetSymbol(asset: Asset): string {
-	switch (asset.type) {
-		case "stocks_etfs":
-			return asset.ticker;
-		case "crypto":
-			return asset.symbol;
-		case "precious_metals":
-			switch (asset.metalType) {
-				case "gold": return "GC=F";
-				case "silver": return "SI=F";
-				case "platinum": return "PL=F";
-				case "palladium": return "PA=F";
-				default: return "";
-			}
-		default:
-			return "";
-	}
-}
-
-function getAssetCurrentValue(asset: Asset, currentPrices: Record<string, PriceData>): number {
-	if (LIVE_PRICE_TYPES.has(asset.type)) {
-		const symbol = getAssetSymbol(asset);
-		if (symbol && currentPrices[symbol]) {
-			return getNetQuantity(asset) * currentPrices[symbol].price;
-		}
-	}
-	return getAssetValue(asset);
-}
 
 function getAssetSector(asset: Asset): string {
 	switch (asset.type) {

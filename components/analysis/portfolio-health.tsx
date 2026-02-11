@@ -1,12 +1,9 @@
 import { Colors } from "@/constants/colors";
 import { Asset, AssetType } from "@/types/custom";
-import { getAssetValue } from "@/components/assets/asset-config";
-import { getNetQuantity } from "@/components/assets/asset-detail-helpers";
+import { getAssetValue, getNetQuantity, getAssetSymbol, getAssetCurrentValue, LIVE_PRICE_TYPES, type PriceData } from "@/components/assets/asset-detail-helpers";
 import React, { useMemo } from "react";
 import { Text, View } from "react-native";
 import Icon, { IconName } from "react-native-remix-icon";
-
-type PriceData = { price: number; currency: string };
 
 type RiskLevel = "low" | "moderate" | "high";
 
@@ -33,39 +30,6 @@ function getLevel(score: number): RiskLevel {
 	if (score >= 70) return "low";
 	if (score >= 40) return "moderate";
 	return "high";
-}
-
-// ── Shared helpers ────────────────────────────────────────────────────────
-
-const LIVE_PRICE_TYPES = new Set(["stocks_etfs", "crypto", "precious_metals"]);
-
-function getAssetSymbol(asset: Asset): string {
-	switch (asset.type) {
-		case "stocks_etfs":
-			return asset.ticker;
-		case "crypto":
-			return asset.symbol;
-		case "precious_metals":
-			switch (asset.metalType) {
-				case "gold": return "GC=F";
-				case "silver": return "SI=F";
-				case "platinum": return "PL=F";
-				case "palladium": return "PA=F";
-				default: return "";
-			}
-		default:
-			return "";
-	}
-}
-
-function getAssetCurrentValue(asset: Asset, currentPrices: Record<string, PriceData>): number {
-	if (LIVE_PRICE_TYPES.has(asset.type)) {
-		const symbol = getAssetSymbol(asset);
-		if (symbol && currentPrices[symbol]) {
-			return getNetQuantity(asset) * currentPrices[symbol].price;
-		}
-	}
-	return getAssetValue(asset);
 }
 
 // ── Risk score calculations ──────────────────────────────────────────────

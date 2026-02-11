@@ -459,13 +459,13 @@ export default function AddAssetScreen() {
 		selectedCryptoSymbol, selectedCryptoName
 	]);
 
+	/** Normalize a localized numeric string (commas → dots) and parse it */
+	const parseLocalized = (value: string): number => parseFloat(value.replace(/,/g, "."));
+
 	// Validation helper for numeric fields
 	const isValidNumber = (value: string): boolean => {
 		if (!value.trim()) return false;
-		// Remove commas used as thousand separators
-		const normalized = value.replace(/,/g, ".");
-		// Check if it's a valid positive number
-		const num = parseFloat(normalized);
+		const num = parseLocalized(value);
 		return !isNaN(num) && num > 0;
 	};
 
@@ -700,8 +700,8 @@ export default function AddAssetScreen() {
 						industry: industry,
 						country: stockCountry,
 						exchange: exchange,
-						quantity: parseFloat(quantity),
-						purchasePrice: parseFloat(purchasePrice),
+						quantity: parseLocalized(quantity),
+						purchasePrice: parseLocalized(purchasePrice),
 						purchaseDate: purchaseDate?.toISOString() || undefined,
 					} as StockAsset;
 					break;
@@ -713,8 +713,8 @@ export default function AddAssetScreen() {
 						type: "bonds",
 						bondType: bondType!,
 						bondCountry: bondType === "government" ? bondCountry.trim() : undefined,
-						amount: parseFloat(amount),
-						interestRate: interestRate ? parseFloat(interestRate) : undefined,
+						amount: parseLocalized(amount),
+						interestRate: interestRate ? parseLocalized(interestRate) : undefined,
 						purchaseDate: purchaseDate?.toISOString() || undefined,
 						maturityDate: maturityDate?.toISOString() || "",
 					} as BondAsset;
@@ -726,18 +726,18 @@ export default function AddAssetScreen() {
 						name: name.trim(),
 						type: "deposits",
 						bankName: bankName.trim(),
-						amount: parseFloat(amount),
-						interestRate: interestRate ? parseFloat(interestRate) : undefined,
+						amount: parseLocalized(amount),
+						interestRate: interestRate ? parseLocalized(interestRate) : undefined,
 						purchaseDate: purchaseDate?.toISOString(),
 						maturityDate: maturityDate?.toISOString() || undefined,
 					} as DepositAsset;
 					break;
 
 				case "precious_metals": {
-					const qty = parseFloat(quantity);
+					const qty = parseLocalized(quantity);
 					const pricePerUnit = metalFormat === "physical"
-						? parseFloat(totalPrice) / qty
-						: parseFloat(purchasePrice);
+						? parseLocalized(totalPrice) / qty
+						: parseLocalized(purchasePrice);
 					asset = {
 						...baseFields,
 						name: name.trim(),
@@ -757,7 +757,7 @@ export default function AddAssetScreen() {
 						name: name.trim(),
 						type: "real_estate",
 						propertyType: propertyType!,
-						estimatedValue: parseFloat(estimatedValue),
+						estimatedValue: parseLocalized(estimatedValue),
 						country: country.trim(),
 						city: city.trim(),
 						zip: zip.trim(),
@@ -771,8 +771,8 @@ export default function AddAssetScreen() {
 						name: name.trim(),
 						type: "private_investments",
 						investmentType: investmentType!,
-						amount: parseFloat(amount),
-						expectedReturn: expectedReturn ? parseFloat(expectedReturn) : undefined,
+						amount: parseLocalized(amount),
+						expectedReturn: expectedReturn ? parseLocalized(expectedReturn) : undefined,
 						purchaseDate: purchaseDate?.toISOString(),
 						maturityDate: maturityDate?.toISOString() || undefined,
 					} as PrivateInvestmentAsset;
@@ -784,7 +784,7 @@ export default function AddAssetScreen() {
 						name: name.trim(),
 						type: "cash",
 						accountName: accountName.trim(),
-						amount: parseFloat(amount),
+						amount: parseLocalized(amount),
 					} as CashAsset;
 					break;
 
@@ -794,8 +794,8 @@ export default function AddAssetScreen() {
 						name: selectedCryptoName!,
 						type: "crypto",
 						symbol: selectedCryptoSymbol!,
-						quantity: parseFloat(quantity),
-						purchasePrice: purchasePrice ? parseFloat(purchasePrice) : undefined,
+						quantity: parseLocalized(quantity),
+						purchasePrice: purchasePrice ? parseLocalized(purchasePrice) : undefined,
 					} as CryptoAsset;
 					break;
 

@@ -1,7 +1,6 @@
 import { Colors } from "@/constants/colors";
 import { Asset } from "@/types/custom";
-import { getAssetValue } from "@/components/assets/asset-config";
-import { getNetQuantity } from "@/components/assets/asset-detail-helpers";
+import { getAssetCurrentValue, getAssetSymbol, LIVE_PRICE_TYPES, type PriceData } from "@/components/assets/asset-detail-helpers";
 import { formatNumber } from "@/utils/numbers";
 import { useHaptics } from "@/hooks/haptics";
 import { PAYWALL_RESULT, showPaywallIfNeeded } from "@/utils/revenue-cat";
@@ -11,39 +10,6 @@ import Icon from "react-native-remix-icon";
 import Svg, { Defs, Pattern, Rect, Path } from "react-native-svg";
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing } from "react-native-reanimated";
 import { BlurView } from "expo-blur";
-
-type PriceData = { price: number; currency: string };
-
-const LIVE_PRICE_TYPES = new Set(["stocks_etfs", "crypto", "precious_metals"]);
-
-function getAssetSymbol(asset: Asset): string {
-	switch (asset.type) {
-		case "stocks_etfs":
-			return asset.ticker;
-		case "crypto":
-			return asset.symbol;
-		case "precious_metals":
-			switch (asset.metalType) {
-				case "gold": return "GC=F";
-				case "silver": return "SI=F";
-				case "platinum": return "PL=F";
-				case "palladium": return "PA=F";
-				default: return "";
-			}
-		default:
-			return "";
-	}
-}
-
-function getAssetCurrentValue(asset: Asset, currentPrices: Record<string, PriceData>): number {
-	if (LIVE_PRICE_TYPES.has(asset.type)) {
-		const symbol = getAssetSymbol(asset);
-		if (symbol && currentPrices[symbol]) {
-			return getNetQuantity(asset) * currentPrices[symbol].price;
-		}
-	}
-	return getAssetValue(asset);
-}
 
 const CURRENCY_INFO: Record<string, { name: string; symbol: string }> = {
 	USD: { name: "US Dollar", symbol: "$" },
