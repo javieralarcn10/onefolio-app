@@ -94,7 +94,7 @@ export function DateField({
 					locale={locale}
 					onChange={handleChange}
 					minimumDate={minimumDate}
-					maximumDate={maximumDate}
+					maximumDate={maximumDate ?? new Date(2100, 11, 31)}
 				/>
 			)}
 
@@ -111,7 +111,7 @@ export function DateField({
 						onPress={handleCancel}
 					>
 						<Pressable
-							className="bg-background"
+							className="bg-background -pb-safe-offset-2"
 							onPress={(e) => e.stopPropagation()}
 						>
 							{/* Header */}
@@ -141,7 +141,7 @@ export function DateField({
 									locale={locale}
 									onChange={handleChange}
 									minimumDate={minimumDate}
-									maximumDate={maximumDate}
+									maximumDate={maximumDate ?? new Date(2100, 11, 31)}
 									textColor={Colors.foreground}
 									style={{ height: 200 }}
 								/>
