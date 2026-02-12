@@ -1,83 +1,85 @@
-# Welcome to your Expo app 👋
+# Onefolio: Global Exposure Intelligence
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+> **Geopolitical Intelligence for Your Wealth**
+> The first personal finance app that visualizes your true exposure across countries, currencies, and sectors.
 
-## Get started
+## 📖 Overview
 
-1. Install dependencies
+**Onefolio** is a mobile portfolio tracker that goes beyond simple price monitoring. It deconstructs your investments into their fundamental components—revealing your real exposure to countries, currencies, and sectors.
 
+Unlike traditional trackers that focus on price, Onefolio focuses on **Risk**, helping you understand your diversification through a privacy-first architecture.
+
+## ✨ Key Features
+
+*   **True Asset Deconstruction:** Maps assets to underlying country risk, currency, and sector.
+*   **Portfolio Health Score:** Advanced diversification analysis (0-100 score).
+*   **Privacy-First:** All portfolio data is stored locally on your device.
+*   **Multi-Asset Support:** Stocks, ETFs, Crypto, Bonds, Real Estate, and Commodities.
+*   **Premium Analytics:** Advanced exposure metrics powered by RevenueCat.
+
+## 📚 Documentation
+
+Detailed documentation about the project's logic, stack, and future plans can be found here:
+
+- [**About the Project**](./hackathon-docs/about-the-project.md)
+  *Inspiration, the HHI scoring algorithm, challenges, and roadmap.*
+- [**Technical Documentation**](./hackathon-docs/technical-documentation.md)
+  *Full tech stack, architecture diagrams, data flow, and database structure.*
+- [**Written Proposal**](./hackathon-docs/written-proposal.md)
+  *Deep dive into the problem, solution, and target audience.*
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Node.js 18+
+- Expo CLI
+- iOS Simulator (Mac) or Android Emulator
+
+### Installation
+
+1. **Install dependencies**
    ```bash
    npm install
    ```
 
-2. Start the app
-
+2. **Start the development server**
    ```bash
    npx expo start
    ```
 
-In the output, you'll find options to open the app in a
+3. **Run on a platform**
+   - Press `i` for iOS simulator
+   - Press `a` for Android emulator
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## 🛠 Useful Commands
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
+### Development
 ```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
-
-
-### Useful Commands
-
-**Start the project without cache:**
-```bash
+# Start with cache cleared
 npx expo start --clear
-```
 
-**Rebuild native code from scratch:**
-```bash
+# Rebuild native code from scratch
 npx expo prebuild --clean
 ```
 
-
-**Create build in eas:**
+### Build & Deploy (EAS)
 ```bash
+# Create iOS build
 eas build --platform ios
 
+# Build and auto-submit to App Store
 eas build --platform ios --auto-submit
 
+# Local build
 eas build --platform ios --local
-```
 
-**Submit build in eas to app store:**
-```bash
+# Submit existing build
 eas submit --platform ios
-```
 
-**Update app without submit new version:**
-```bash
+# Over-the-air update
 eas update --channel production
 ```
+
+## 📄 License
+
+This project is private and proprietary.
